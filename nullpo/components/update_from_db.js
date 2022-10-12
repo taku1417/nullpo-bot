@@ -34,7 +34,6 @@ function update_from_db(mode,type){
                                                 });
                                         console.log(columns);
                                 }
-
                         });
                 }
         }
@@ -48,7 +47,7 @@ function update_from_db(mode,type){
                         console.log(err);
                 }
                 else{
-                        console.log(res.rows[0]);
+                        console.log(res.rows);
                         console.log("[update_from_db] success");
                         return;
                 }
