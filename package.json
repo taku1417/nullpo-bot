@@ -1,0 +1,13 @@
+{
+  "dependencies": {
+    "@keyv/postgres": "^1.2.1",
+    "discord.js": "^13.8.1",
+    "dotenv": "^16.0.1",
+    "keyv": "^4.3.3",
+    "node-cron": "^3.0.1",
+    "node-schedule": "^2.1.0",
+    "pg": "^8.7.3",
+    "pify": "^6.0.0",
+    "uuid": "^8.3.2"
+  }
+}

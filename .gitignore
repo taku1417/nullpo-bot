@@ -1,0 +1,8 @@
+node_modules/
+bot起動.bat
+debug bot起動.bat
+debug.exe.lnk
+nullpo.exe.lnk
+config.json
+debug/
+.vscode/settings.json
