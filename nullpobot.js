@@ -1,8 +1,7 @@
 const { Client, Intents, MessageButton, MessageActionRow, Role } = require('discord.js');
 const logger = require('./nullpo/log/logger.js');
 all_log = 0,join_log = 0,move_log = 0,leave_log = 0,clock_log = 0,restart_log = 0,command_log = 0,unknown_log = 0;
-const tintiro = require('./nullpo/command/dice/tintiro.js');
-const dice_custom = require('./nullpo/command/dice/custom.js');
+const dice = require('./nullpo/command/dice/dice.js');
 const update_from_db = require('./nullpo/components/update_from_db.js');
 const print = require('./nullpo/command/recipe/print.js');
 
@@ -1028,33 +1027,7 @@ client.on('interactionCreate', async (interaction) => {//コマンド・ボタ�
 			job.reschedule(mori);
 		}
 	}
-	if (interaction.commandName === 'dice') {
-		logger("command");
-		if(interaction.options.getSubcommand() === 'tintiro') {
-			const dice = [Math.floor(Math.random() * 6) + 1, Math.floor(Math.random() * 6) + 1, Math.floor(Math.random() * 6) + 1];
-			await interaction.reply({ content: "チンチロリンの結果\n"+dice[0]+"\n"+dice[1]+"\n"+dice[2]+"\n"+tintiro(dice)+"が出ました。", ephemeral: false});
-		}
-		if(interaction.options.getSubcommand() === '100') {
-			const dice = Math.floor(Math.random() * 100) + 1;
-			await interaction.reply({ content: "100式の結果\n"+dice+"が出ました。", ephemeral: false});
-		}
-		if(interaction.options.getSubcommand() === 'custom') {
-			const dice = [];//ダイスが複数になるため空配列
-			const amount = interaction.options.getInteger('個数');
-			const max = interaction.options.getInteger('最大値');
-			dice_custom(amount, max, dice);
-			if(amount < 1 || max < 1) {
-				await interaction.reply({ content: "個数または最大値が0以下になっています。正の整数を指定してください。", ephemeral: true});
-			} else {
-			try {
-			await interaction.reply({ content: amount+"d"+max+"の結果\n"+dice+"\nが出ました。", ephemeral: false});
-			} catch (error) {
-				await interaction.reply({ content: "なんらかの要因でエラーが発生しました。殆どの場合discord側の文字数制限によるものです。個数等を減らして再度試してください。", ephemeral: true});
-				console.error(error);
-			}
-			}
-		}
-	}
+	if (interaction.commandName === 'dice') dice(interaction);
 	if (interaction.customId === 'yes') {
 		const channelrental = client.channels.cache.get(tex_rental);
 		if (rental_current['mjc_pic'] === 1) {
