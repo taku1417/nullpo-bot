@@ -4,6 +4,7 @@ all_log = 0,join_log = 0,move_log = 0,leave_log = 0,clock_log = 0,restart_log = 
 const tintiro = require('./nullpo/command/dice/tintiro.js');
 const dice_custom = require('./nullpo/command/dice/custom.js');
 const update_from_db = require('./nullpo/components/update_from_db.js');
+const print = require('./nullpo/command/recipe/print.js');
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_VOICE_STATES] });
 client.once('ready', () => {	
@@ -410,154 +411,7 @@ client.on('interactionCreate', async (interaction) => {//コマンド・ボタ�
 			await interaction.reply({ content: "公式wikiトップページ : https://tinyurl.com/2lj858o9 \nアイテムリスト : https://tinyurl.com/2a9hlk89 \npet : https://azisabaofficial.playing.wiki/d/MyPet \n非公式wikiトップページ : https://azisaba-hikousiki-life.memo.wiki/ \nFF map : https://tinyurl.com/24a7gz34 \npve ドロップ早見表 : https://tinyurl.com/24tayden \n圧倒的ネタバレ : https://tinyurl.com/2btvntcn \n一部短縮URLです。悪質なサイトにはいきません。\nページは随時追加予定。追加の要望はDMにお願いします。", ephemeral: true});
 	}
 	if (interaction.commandName === 'recipe') {
-			logger("command");
-			switch(interaction.options.getString('item_name')){
-			case 'mithril':
-				await interaction.reply({ 
-				content: "ミスリルインゴット\n必要素材:圧縮ダイヤブロック×4、圧縮鉄ブロック×2、鋼鉄インゴット×2、ネザースター×1",
-				files:['./recipe/mithril.png','./recipe/res_mithril.png'], 
-				ephemeral: true
-				});
-				break;
-			case 'steel':
-				await interaction.reply({ 
-				content: "鋼鉄インゴット\n必要素材:圧縮鉄ブロックx8、圧縮石炭ブロックx1",
-				files:['./recipe/steel.png','./recipe/res_steel.png'], 
-				ephemeral: true
-				});
-				break;
-			case 'reinforced_obsidian':
-				await interaction.reply({ 
-				content: "強化黒曜石\n必要素材:黒曜石x8、ダイヤモンドx1",
-				files:['./recipe/reinforced_obsidian.png','./recipe/res_reinforced_obsidian.png'], 
-				ephemeral: true
-				});
-				break;
-			case 'narikin':
-				await interaction.reply({ 
-				content: "$成金ブロック$\n必要素材:圧縮金ブロックx9",
-				files:['./recipe/narikin.png','./recipe/res_narikin.png'], 
-				ephemeral: true
-				});
-				break;
-			case 'complex_ore':
-				await interaction.reply({ 
-				content: "複合鉱石の塊\n必要素材:$成金ブロック$x6、ミスリルインゴットx3",
-				files:['./recipe/complex_ore.png','./recipe/res_complex_ore.png'], 
-				ephemeral: true
-				});
-				break;
-			case 'ripe_red_complex_ore':
-				await interaction.reply({ 
-				content: "― 赤熟した複合鉱石の塊 ―\n必要素材:圧縮石炭ブロックx8、複合鉱石の塊x1",
-				files:['./recipe/ripe_red_complex_ore.png','./recipe/res_ripe_red_complex_ore.png'], 
-				ephemeral: true
-				});
-				break;
-			case 'super_strong_coolant':
-				await interaction.reply({ 
-				content: "超強力冷却剤x2\n必要素材:水バケツ圧縮チケットx5、青氷x3、海洋の心x1",
-				files:['./recipe/super_strong_coolant.png','./recipe/res_super_strong_coolant.png'], 
-				ephemeral: true
-				});
-				break;
-			case 'orichalcum':
-				await interaction.reply({ 
-				content: "ΟριχαρόνIngot\n必要素材:― 赤熟した複合鉱石 ―x1、超強力冷却剤x1",
-				files:['./recipe/orichalcum.png','./recipe/res_orichalcum.png'], 
-				ephemeral: true
-				});
-				break;
-			case 'blue_magical_power':
-				await interaction.reply({ 
-				content: "青き魔力の源\n必要素材:圧縮ラピスブロックx9",
-				files:['./recipe/blue_magical_power.png','./recipe/res_blue_magical_power.png'], 
-				ephemeral: true
-				});
-				break;
-			case 'red_burning_power':
-				await interaction.reply({ 
-				content: "赤き燃力の源\n必要素材:圧縮レッドストーンブロックx9",
-				files:['./recipe/red_burning_power.png','./recipe/res_red_burning_power.png'], 
-				ephemeral: true
-				});
-				break;
-			case 'majicatron_crystal':
-				await interaction.reply({ 
-				content: "マジカトロン結晶\n必要素材:赤き燃力の源x256、青き魔力の源x256、ネザースターx16",
-				files:['./recipe/majicatron_crystal.png','./recipe/res_majicatron_crystal.png'], 
-				ephemeral: true
-				});
-				break;
-			case 'water_ticket':
-				await interaction.reply({ 
-				content: "水バケツ圧縮チケット\n必要素材:水バケツx1(バケツは返ってくる)",
-				files:['./recipe/water_ticket.png','./recipe/res_water_ticket.png'], 
-				ephemeral: true
-				});
-				break;
-			case 'ocean_heart':
-				await interaction.reply({ 
-				content: "海洋の心\n必要素材:水バケツ圧縮チケットx4、釣りチケットプラスx2、釣りチケットx2、ネザースターx1\n↓配置↓\n釣りチケ+・水チケ・釣りチケ\n水チケ・ネザースター・水チケ\n釣りチケ・水チケ・釣りチケ+",
-				files:['./recipe/ocean_heart.png','./recipe/res_ocean_heart.png'], 
-				ephemeral: true
-				});
-				break;
-			case 'sponge':
-				await interaction.reply({ 
-				content: "スポンジ\n必要素材:黄色の染料x4、砂x2、砂利x2、干草の俵x1",
-				files:['./recipe/sponge.png','./recipe/res_sponge.png'], 
-				ephemeral: true
-				});
-				break;
-			case 'super_duranium_drill':
-				await interaction.reply({ 
-				content: "超合金ドリルクァーリー\n必要素材:鉄隕石の欠片x64、超合金メイプルx8\n性能:効率強化20、修繕、耐久力10",
-				files:['./recipe/super_duranium_drill.png','./recipe/res_super_duranium_drill.png'], 
-				ephemeral: true
-				});
-				break;
-			case 'super_duranium_drill_upgrade':
-				await interaction.reply({ 
-				content: "超合金ドリルクァーリー(強化レシピ)\n必要素材:超合金ドリルクァーリーx1、研磨剤(II～X)x2、彗星の欠片x4、ルチルプラチナx4\n性能:効率強化20、修繕、耐久力(20～100)\n研磨剤はII、III...と必要となる",
-				files:['./recipe/super_duranium_drill.png','./recipe/res_super_duranium_drill_upgrade.png'], 
-				ephemeral: true
-				});
-				break;
-			case 'axe_of_helmes':
-				await interaction.reply({ 
-				content: "ヘルメスの斧\n必要素材:資源アックスx1、資源カスタムチケットA,B,C,Dx各32\n性能:効率強化8、修繕、幸運orシルクタッチ(資源アックスと同一)、耐久力20",
-				files:['./recipe/axe_of_helmes.png','./recipe/res_axe_of_helmes.png'], 
-				ephemeral: true
-				});
-				break;
-			case 'ice_sword':
-				await interaction.reply({ 
-				content: "アイスソード極\n必要素材:霊氷x4032(63st)、投票チケットx1008(15st+48)、オンタイムチケットx128(2st)\n個別素材:凍結チケット=霊氷x32、投票チケx8  アイスソード=凍結チケx30、圧縮OTTlv1x64\n凍剣ブリザード=アイスソード、凍結チケx32  アイスソード極=凍剣ブリザード、凍結チケx64\n作成場所:上級取引所のうさぎ\n詳細: https://tinyurl.com/2jbu37rt",
-				files:['./recipe/ice_sword.png','./recipe/res_ice_sword.png'], 
-				ephemeral: true
-				});
-				break;
-			case 'cure_stick':
-				await interaction.reply({ 
-				content: "キュアステッキ\n必要素材:弱化、鈍化、毒、負傷、治癒、再生、暗視、力のスプラッシュポーションx各1\n作成場所:激ムズ・闇森側の右から2番目の村人\n",
-				files:['./recipe/cure_stick.png','./recipe/res_cure_stick.png'], 
-				ephemeral: true
-				});
-				break;
-			case 'godly_mana_rod':
-				await interaction.reply({
-				content: "Godlyマナロッド\n必要素材:遥か夢の機材x32、研磨剤1x16384(256st)、黒魔鉄鉱x1024(16st)、FF小判x4096(64st)、マテラカイトx512(8st)、賢者の輝石x512(8st)、上質な原木x2048(32st)、鉄インゴットx8192(128st)\n作成場所:マナロッドG1～G3、漆黒剣、漆黒晶…FFSHOP\n儚き夢の器、Godlyマナロッド…FFSHOP裏のウィザスケ\n研磨剤X…クラフトor焚き火交換所",
-				files:['./recipe/godly_mana_rod.png','./recipe/res_godly_mana_rod.png'],
-				ephemeral: true
-				});
-				break;
-			default:
-				await interaction.reply({
-					content: "このメッセージが表示された場合は、入力した文字列とともにtaku1417に問い合わせてください。",
-					ephemeral: true
-				});
-			}
+		print(interaction.options.getString('item_name'),interaction);
 	}
 	if (interaction.commandName === 'rental') {
 			logger("command");
@@ -1190,7 +1044,7 @@ client.on('interactionCreate', async (interaction) => {//コマンド・ボタ�
 			const dice = [];//ダイスが複数になるため空配列
 			const amount = interaction.options.getInteger('個数');
 			const max = interaction.options.getInteger('最大値');
-			dice_custom(amount, max, dice);// ./nullpo/command/dice_custom.js
+			dice_custom(amount, max, dice);
 			if(amount < 1 || max < 1) {
 				await interaction.reply({ content: "個数または最大値が0以下になっています。正の整数を指定してください。", ephemeral: true});
 			} else {
