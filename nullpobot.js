@@ -5,7 +5,7 @@ const dice = require('./nullpo/command/dice/dice.js');
 const update_from_db = require('./nullpo/components/update_from_db.js');
 const print = require('./nullpo/command/recipe/print.js');
 const test = require('./nullpo/command/test/test.js');
-const rental_com = require('./nullpo/command/rental/rental.js');
+const rental_command = require('./nullpo/command/rental/rental.js');
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_VOICE_STATES] });
 client.once('ready', () => {	
@@ -33,6 +33,7 @@ const channeljihou = client.channels.cache.get(tex_jihou);
 //});
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 const dbClient = require('pg/lib/client');
+const rental_command = require('./nullpo/command/rental/rental.js');
 const dbclient = new dbClient({
 	user: process.env.DATABASE_USER,
 	password: process.env.DATABASE_PASS,
@@ -410,7 +411,7 @@ client.on('interactionCreate', async (interaction) => {//コマンド・ボタ�
 			await interaction.reply({ content: "公式wikiトップページ : https://tinyurl.com/2lj858o9 \nアイテムリスト : https://tinyurl.com/2a9hlk89 \npet : https://azisabaofficial.playing.wiki/d/MyPet \n非公式wikiトップページ : https://azisaba-hikousiki-life.memo.wiki/ \nFF map : https://tinyurl.com/24a7gz34 \npve ドロップ早見表 : https://tinyurl.com/24tayden \n圧倒的ネタバレ : https://tinyurl.com/2btvntcn \n一部短縮URLです。悪質なサイトにはいきません。\nページは随時追加予定。追加の要望はDMにお願いします。", ephemeral: true});
 	}
 	if (interaction.commandName === 'recipe') print(interaction);
-	if (interaction.commandName === 'rental') rental_com(interaction);
+	if (interaction.commandName === 'rental') rental_command(interaction);
 	if (interaction.commandName === 'return') {
 			logger("command");
 			const buttonyes = new MessageButton().setCustomId('yes').setStyle("SUCCESS").setLabel('はい');
