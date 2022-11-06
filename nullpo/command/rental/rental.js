@@ -1,5 +1,5 @@
 const logger = require('../../log/logger.js');
-const { Client, MessageActionRow, MessageButton } = require('discord.js');
+const { Client, MessageActionRow, MessageButton, Intents } = require('discord.js');
 const client = new Client({intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS]});
 
 function rental(interaction) {
