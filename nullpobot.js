@@ -28,6 +28,8 @@ const jllog_enable = [tex_jllog,vc_atumare];
 const svid = '966674976956645407',ncsvid = '1015585928779137105';
 const mori = new schedule.RecurrenceRule();
 mori.minute = 0;
+const tex_rental = '981371600203046964';
+channelrental = member.guild.channels.cache.get(tex_rental);
 const channeljihou = client.channels.cache.get(tex_jihou);
 //const job = schedule.scheduleJob(mori, function(){//森レイドのやつ
 	//channeljihou.send(`__**あと3分で森レイドが始まります！**__`)
