@@ -1,4 +1,4 @@
-const { Client } = require('discord.js');
+const { Client, Intents } = require('discord.js');
 const client = new Client({intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS]});
 const svid = '966674976956645407',ncsvid = '1015585928779137105';
 const tex_test = '980304691604881419', tex_nlpcs_nofi = '1015852168810606592';

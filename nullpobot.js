@@ -26,11 +26,11 @@ const svid = '966674976956645407',ncsvid = '1015585928779137105';
 const mori = new schedule.RecurrenceRule();
 mori.minute = 0;
 const channeljihou = client.channels.cache.get(tex_jihou);
-const job = schedule.scheduleJob(mori, function(){//森レイドのやつ
+//const job = schedule.scheduleJob(mori, function(){//森レイドのやつ
 	//channeljihou.send(`__**あと3分で森レイドが始まります！**__`)
-	logger("clock");
-	console.log(`森レイド通知`);
-});
+	//logger("clock");
+	//console.log(`森レイド通知`);
+//});
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 const dbClient = require('pg/lib/client');
 const dbclient = new dbClient({
