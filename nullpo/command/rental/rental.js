@@ -2,7 +2,7 @@ const logger = require('../../log/logger.js');
 const { Client, MessageActionRow, MessageButton, Intents } = require('discord.js');
 const client = new Client({intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS]});
 
-function rental(interaction) {
+function rental_com(interaction) {
         logger("command");
 	//update_from_db("rental");
 	const buttonyes = new MessageButton().setCustomId('yes').setStyle("SUCCESS").setLabel('はい');
@@ -301,4 +301,4 @@ function rental(interaction) {
         }
 }
 
-module.exports = rental;
+module.exports = rental_com;
