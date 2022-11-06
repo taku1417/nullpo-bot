@@ -6,13 +6,14 @@ const dice_custom = require('./nullpo/command/dice/custom.js');
 const update_from_db = require('./nullpo/components/update_from_db.js');
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_VOICE_STATES] });
-/*client.user.setPresence({
-	activities: [{
-	name: `Starting up... | 起動中...`,
-	}],
-	status: "dnd"
-	});*/
-
+client.once('ready', () => {	
+	client.user.setPresence({
+		activities: [{
+			name: `Starting up... | 起動中...`,
+		}],
+		status: "dnd"
+	});
+});
 const cron = require('node-cron');
 const schedule = require('node-schedule');
 errorCount = 0,SuccessLogin = 0;
