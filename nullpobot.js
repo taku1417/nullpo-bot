@@ -4,6 +4,8 @@ all_log = 0,join_log = 0,move_log = 0,leave_log = 0,clock_log = 0,restart_log = 
 const dice = require('./nullpo/command/dice/dice.js');
 const update_from_db = require('./nullpo/components/update_from_db.js');
 const print = require('./nullpo/command/recipe/print.js');
+const test = require('./nullpo/command/test/test.js');
+const rental = require('./nullpo/command/rental/rental.js');
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_VOICE_STATES] });
 client.once('ready', () => {	
@@ -18,7 +20,7 @@ const cron = require('node-cron');
 const schedule = require('node-schedule');
 errorCount = 0,SuccessLogin = 0;
 const vc_atumare = '997274624045879407',vc_pjsekai = '981173824294879322',vc_apex = '992161885862502400',vc_music = '982523943309180978',vc_spla = '1017431011442819142';
-const tex_dblog = '979084899703218186',tex_jllog = '978962695418155019',tex_jihou = '997274370122731611',tex_rental = '981371600203046964',tex_pjsekai = '999675995936280717',tex_test = '980304691604881419',tex_nlpcs_nofi = '1015852168810606592';
+const tex_dblog = '979084899703218186',tex_jllog = '978962695418155019',tex_jihou = '997274370122731611',tex_rental = '981371600203046964',tex_pjsekai = '999675995936280717',tex_nlpcs_nofi = '1015852168810606592';
 const jllog_enable = [tex_jllog,vc_atumare];
 const svid = '966674976956645407',ncsvid = '1015585928779137105';
 const mori = new schedule.RecurrenceRule();
@@ -50,8 +52,8 @@ dbclient.connect()
 	dbclient.end();
 }
 rental = { mjc_pic: 0, mjc_swo: 0, mjc_sho: 0, star_guide: 0,ravan: 0,beer: 0,mrz_iron: 0,mrz_gold: 0,mrz_dia: 0,mrz_eme:0,soul_protection: 0,vortex: 0,haruspe: 0,re_haruspe: 0,luck: 0,MGF: 0,MTF: 0,all_pic: 0};
-const rental_current = { mjc_pic: 0, mjc_swo: 0, mjc_sho: 0, star_guide: 0,ravan: 0,beer: 0,mrz_iron: 0,mrz_gold: 0,mrz_dia: 0,mrz_eme:0,soul_protection: 0,vortex: 0,haruspe: 0,re_haruspe: 0,luck: 0,MGF: 0,MTF: 0,all_pic: 0};
-const return_current = { mjc_pic: 0, mjc_swo: 0, mjc_sho: 0, star_guide: 0,ravan: 0,beer: 0,mrz_iron: 0,mrz_gold: 0,mrz_dia: 0,mrz_eme:0,soul_protection: 0,vortex: 0,haruspe: 0,re_haruspe: 0,luck: 0,MGF: 0,MTF: 0,all_pic: 0};
+rental_current = { mjc_pic: 0, mjc_swo: 0, mjc_sho: 0, star_guide: 0,ravan: 0,beer: 0,mrz_iron: 0,mrz_gold: 0,mrz_dia: 0,mrz_eme:0,soul_protection: 0,vortex: 0,haruspe: 0,re_haruspe: 0,luck: 0,MGF: 0,MTF: 0,all_pic: 0};
+return_current = { mjc_pic: 0, mjc_swo: 0, mjc_sho: 0, star_guide: 0,ravan: 0,beer: 0,mrz_iron: 0,mrz_gold: 0,mrz_dia: 0,mrz_eme:0,soul_protection: 0,vortex: 0,haruspe: 0,re_haruspe: 0,luck: 0,MGF: 0,MTF: 0,all_pic: 0};
 
 client.once('ready', () => {
 	client.channels.cache.get(tex_dblog).send('ぬるぽbotが起動しました。');//デバッグ鯖のログに流れる
@@ -262,41 +264,8 @@ client.once("ready", async () => {//コマンド定義
 				name: "number",
 				description: "表示するtipsを指定します。",
 				required: true
-			}]},{
-			type: "SUB_COMMAND",
-			name: "nofi",
-			description: "nofi test"
-		}]
-	},
-		{name: "recipe", description: "lifeのレシピを参照します。",
-		options: [{
-			type: "STRING",
-			name: "item_name",
-			description: "レシピを参照したいアイテムの名前を選択してください。",
-			required: true,
-			choices:[
-				{name:"ミスリルインゴット", value:"mithril"},
-				{name:"鋼鉄インゴット", value:"steel"},
-				{name:"強化黒曜石", value:"reinforced_obsidian"},
-				{name:"$成金ブロック$", value:"narikin"},
-				{name:"複合鉱石の塊", value:"complex_ore"},
-				{name:"― 赤熟した複合鉱石の塊 ―", value:"ripe_red_complex_ore"},
-				{name:"超強力冷却剤", value:"super_strong_coolant"},
-				{name:"ΟριχαρόνIngot(オリハルコン)", value:"orichalcum"},
-				{name:"青き魔力の源", value:"blue_magical_power"},
-				{name:"赤き燃力の源", value:"red_burning_power"},
-				{name:"マジカトロン結晶", value:"majicatron_crystal"},
-				{name:"水バケツ圧縮チケット", value:"water_ticket"},
-				{name:"海洋の心", value:"ocean_heart"},
-				{name:"スポンジ", value:"sponge"},
-				{name:"超合金ドリルクァーリー", value:"super_duranium_drill"},
-				{name:"超合金ドリルクァーリー(強化)", value:"super_duranium_drill_upgrade"},
-				{name:"ヘルメスの斧", value:"axe_of_helmes"},
-				{name:"アイスソード(極含む)", value:"ice_sword"},
-				{name:"キュアステッキ", value:"cure_stick"},
-				{name:"Godlyマナロッド", value:"godly_mana_rod"}, 
-				]
 			}]
+		}]
 	},
 		{name: "rental", description: "共用品の貸借記録をします。",
 		options: [{
@@ -354,7 +323,7 @@ client.once("ready", async () => {//コマンド定義
 				]
 			}]
 	},
-		{name: "mori", description: "森レイドの時間を指定します。",
+/*		{name: "mori", description: "森レイドの時間を指定します。",
 		options: [{
 			type: "INTEGER",
 			name: "minute",
@@ -362,6 +331,7 @@ client.once("ready", async () => {//コマンド定義
 			required: true
 		}]
 	},
+*/
 		{name: "dice",description: "ダイスを振ります。",
 		options: [{
 			type: "SUB_COMMAND",
@@ -395,7 +365,37 @@ client.once("ready", async () => {//コマンド定義
 			name: "nofi",
 			description: "nofi test"
 		}]
-	}];
+	},
+		{name: "recipe", description: "lifeのレシピを参照します。",
+		options: [{
+			type: "STRING",
+			name: "item_name",
+			description: "レシピを参照したいアイテムの名前を選択してください。",
+			required: true,
+			choices:[
+				{name:"ミスリルインゴット", value:"mithril"},
+				{name:"鋼鉄インゴット", value:"steel"},
+				{name:"強化黒曜石", value:"reinforced_obsidian"},
+				{name:"$成金ブロック$", value:"narikin"},
+				{name:"複合鉱石の塊", value:"complex_ore"},
+				{name:"― 赤熟した複合鉱石の塊 ―", value:"ripe_red_complex_ore"},
+				{name:"超強力冷却剤", value:"super_strong_coolant"},
+				{name:"ΟριχαρόνIngot(オリハルコン)", value:"orichalcum"},
+				{name:"青き魔力の源", value:"blue_magical_power"},
+				{name:"赤き燃力の源", value:"red_burning_power"},
+				{name:"マジカトロン結晶", value:"majicatron_crystal"},
+				{name:"水バケツ圧縮チケット", value:"water_ticket"},
+				{name:"海洋の心", value:"ocean_heart"},
+				{name:"スポンジ", value:"sponge"},
+				{name:"超合金ドリルクァーリー", value:"super_duranium_drill"},
+				{name:"超合金ドリルクァーリー(強化)", value:"super_duranium_drill_upgrade"},
+				{name:"ヘルメスの斧", value:"axe_of_helmes"},
+				{name:"アイスソード(極含む)", value:"ice_sword"},
+				{name:"キュアステッキ", value:"cure_stick"},
+				{name:"Godlyマナロッド", value:"godly_mana_rod"}, 
+				]
+			}]
+	},];
 	await client.application.commands.set(data, svid);
 	await client.application.commands.set(data2);
 });
@@ -409,305 +409,8 @@ client.on('interactionCreate', async (interaction) => {//コマンド・ボタ�
 			logger("command");
 			await interaction.reply({ content: "公式wikiトップページ : https://tinyurl.com/2lj858o9 \nアイテムリスト : https://tinyurl.com/2a9hlk89 \npet : https://azisabaofficial.playing.wiki/d/MyPet \n非公式wikiトップページ : https://azisaba-hikousiki-life.memo.wiki/ \nFF map : https://tinyurl.com/24a7gz34 \npve ドロップ早見表 : https://tinyurl.com/24tayden \n圧倒的ネタバレ : https://tinyurl.com/2btvntcn \n一部短縮URLです。悪質なサイトにはいきません。\nページは随時追加予定。追加の要望はDMにお願いします。", ephemeral: true});
 	}
-	if (interaction.commandName === 'recipe') print(interaction.options.getString('item_name'),interaction);
-	if (interaction.commandName === 'rental') {
-			logger("command");
-			//update_from_db("rental");
-			const buttonyes = new MessageButton().setCustomId('yes').setStyle("SUCCESS").setLabel('はい');
-			const buttonno = new MessageButton().setCustomId('no').setStyle("DANGER").setLabel('いいえ');
-			switch (interaction.options.getString('item_name')) {
-			case 'mjc_pickaxe':
-				if (rental['mjc_pic'] === 0) {
-					rental_current['mjc_pic'] = 1;
-					await interaction.reply({
-						content: "マジカトロンピッケルは貸し出しされていません。借りますか？",
-						components: [new MessageActionRow().addComponents(buttonyes, buttonno)],
-						ephemeral: true
-					})	
-				} 
-				if (rental['mjc_pic'] === 1) {
-					await interaction.reply({
-						content: "現在マジカトロンピッケルは__貸し出されています__。返却をお待ちください。",
-						ephemeral: true
-					})
-				}
-				break;
-			case 'mjc_shovel':
-				if (rental['mjc_sho'] === 0) {
-					rental_current['mjc_sho'] = 1;
-					await interaction.reply({
-						content: "マジカトロンショベルは貸し出しされていません。借りますか？",
-						components: [new MessageActionRow().addComponents(buttonyes, buttonno)],
-						ephemeral: true
-					})
-				}
-				if (rental['mjc_sho'] === 1) {
-					await interaction.reply({
-						content: "現在マジカトロンショベルは__貸し出されています__。返却をお待ちください。",
-						ephemeral: true
-					})
-				}
-				break;
-			case 'mjc_sword':
-				if (rental['mjc_swo'] === 0) {
-					rental_current['mjc_swo'] = 1;
-					await interaction.reply({
-						content: "マジカトロンソードは貸し出しされていません。借りますか？",
-						components: [new MessageActionRow().addComponents(buttonyes, buttonno)],
-						ephemeral: true
-					})
-				}
-				if (rental['mjc_swo'] === 1) {
-					await interaction.reply({
-						content: "現在マジカトロンソードは__貸し出されています__。返却をお待ちください。",
-						ephemeral: true
-					})
-				}
-				break;
-			case 'star_guide':
-				if (rental['star_guide'] === 0) {
-					rental_current['star_guide'] = 1;
-					await interaction.reply({
-						content: "星の導きは貸し出しされていません。借りますか？",
-						components: [new MessageActionRow().addComponents(buttonyes, buttonno)],
-						ephemeral: true
-					})
-				}
-				if (rental['star_guide'] === 1) {
-					await interaction.reply({
-						content: "現在星の導きは__貸し出されています__。返却をお待ちください。",
-						ephemeral: true
-					})
-				}
-				break;
-			case 'ravan':
-				if (rental['ravan'] === 0) {
-					rental_current['ravan'] = 1;
-					await interaction.reply({
-						content: "赫灼大斧ラヴァンは貸し出しされていません。借りますか？",
-						components: [new MessageActionRow().addComponents(buttonyes, buttonno)],
-						ephemeral: true
-					})
-				}
-				if (rental['ravan'] === 1) {
-					await interaction.reply({
-						content: "現在赫灼大斧ラヴァンは__貸し出されています__。返却をお待ちください。",
-						ephemeral: true
-					})
-				}
-				break;
-			case 'beer':
-				if (rental['beer'] <= 1) {
-					rental_current['beer'] = 1;
-					await interaction.reply({
-						content: "ビール装備は在庫があります。借りますか？",
-						components: [new MessageActionRow().addComponents(buttonyes, buttonno)],
-						ephemeral: true
-					})
-				}
-				if (rental['beer'] === 2) {
-					await interaction.reply({
-						content: "現在ビール装備は全て__貸し出されています__。返却をお待ちください。",
-						ephemeral: true
-					})
-				}
-				break;
-			case 'MGF':
-				if (rental['MGF'] <= 0) {
-					rental_current['MGF'] = 1;
-					await interaction.reply({
-						content: "Master of Gold Fishing装備は在庫があります。借りますか？",
-						components: [new MessageActionRow().addComponents(buttonyes, buttonno)],
-						ephemeral: true
-					})
-				}
-				if (rental['MGF'] === 1) {
-					await interaction.reply({
-						content: "現在Master of Gold Fishing装備は__貸し出されています__。返却をお待ちください。",
-						ephemeral: true
-					})
-				}
-				break;
-			case 'MTF':
-				if (rental['MTF'] <= 0) {
-					rental_current['MTF'] = 1;
-					await interaction.reply({
-						content: "Master of Treasure Fishing装備は在庫があります。借りますか？",
-						components: [new MessageActionRow().addComponents(buttonyes, buttonno)],
-						ephemeral: true
-					})
-				}
-				if (rental['MTF'] === 1) {
-					await interaction.reply({
-						content: "現在Master of Treasure Fishing装備は__貸し出されています__。返却をお待ちください。",
-						ephemeral: true
-					})
-				}
-				break;
-			case 'mrz_iron':
-				if (rental['mrz_iron'] === 0) {
-					rental_current['mrz_iron'] = 1;
-					await interaction.reply({
-						content: "マスターロッドZアイアンカスタムは貸し出しされていません。借りますか？",
-						components: [new MessageActionRow().addComponents(buttonyes, buttonno)],
-						ephemeral: true
-					})
-				}
-				if (rental['mrz_iron'] === 1) {
-					await interaction.reply({
-						content: "現在マスターロッドZアイアンカスタムは__貸し出されています__。返却をお待ちください。",
-						ephemeral: true
-					})
-				}
-				break;
-			case 'mrz_gold':
-				if (rental['mrz_gold'] === 0) {
-					rental_current['mrz_gold'] = 1;
-					await interaction.reply({
-						content: "マスターロッドZゴールドカスタムは貸し出しされていません。借りますか？",
-						components: [new MessageActionRow().addComponents(buttonyes, buttonno)],
-						ephemeral: true
-					})
-				}
-				if (rental['mrz_gold'] === 1) {
-					await interaction.reply({
-						content: "現在マスターロッドZゴールドカスタムは__貸し出されています__。返却をお待ちください。",
-						ephemeral: true
-					})
-				}
-				break;
-			case 'mrz_dia':
-				if (rental['mrz_dia'] === 0) {
-					rental_current['mrz_dia'] = 1;
-					await interaction.reply({
-						content: "マスターロッドZダイヤカスタムは貸し出しされていません。借りますか？",
-						components: [new MessageActionRow().addComponents(buttonyes, buttonno)],
-						ephemeral: true
-					})
-				}
-				if (rental['mrz_dia'] === 1) {
-					await interaction.reply({
-						content: "現在マスターロッドZダイヤカスタムは__貸し出されています__。返却をお待ちください。",
-						ephemeral: true
-					})
-				}
-				break;
-			case 'mrz_eme':
-				if (rental['mrz_eme'] === 0) {
-					rental_current['mrz_eme'] = 1;
-					await interaction.reply({
-						content: "マスターロッドZエメラルドカスタムは貸し出しされていません。借りますか？",
-						components: [new MessageActionRow().addComponents(buttonyes, buttonno)],
-						ephemeral: true
-					})
-				}
-				if (rental['mrz_eme'] === 1) {
-					await interaction.reply({
-						content: "現在マスターロッドZエメラルドカスタムは__貸し出されています__。返却をお待ちください。",
-						ephemeral: true
-					})
-				}
-				break;
-			case 'soul_protection':
-				if (rental['soul_protection'] === 0) {
-					rental_current['soul_protection'] = 1;
-					await interaction.reply({
-						content: "精霊の加護は貸し出しされていません。借りますか？",
-						components: [new MessageActionRow().addComponents(buttonyes, buttonno)],
-						ephemeral: true
-					})
-				}
-				if (rental['soul_protection'] === 1) {
-					await interaction.reply({
-						content: "現在精霊の加護は__貸し出されています__。返却をお待ちください。",
-						ephemeral: true
-					})
-				}
-				break;
-			case 'vortex':
-				if (rental['vortex'] === 0) {
-					rental_current['vortex'] = 1;
-					await interaction.reply({
-						content: "Vortex Hurricaneは貸し出しされていません。借りますか？",
-						components: [new MessageActionRow().addComponents(buttonyes, buttonno)],
-						ephemeral: true
-					})
-				}
-				if (rental['vortex'] === 1) {
-					await interaction.reply({
-						content: "現在Vortex Hurricaneは__貸し出されています__。返却をお待ちください。",
-						ephemeral: true
-					})
-				}
-				break;
-			case 'haruspe':
-				if (rental['haruspe'] === 0) {
-					rental_current['haruspe'] = 1;
-					await interaction.reply({
-						content: "Springスペランカーソードは貸し出しされていません。借りますか？",
-						components: [new MessageActionRow().addComponents(buttonyes, buttonno)],
-						ephemeral: true
-					})
-				}
-				if (rental['haruspe'] === 1) {
-					await interaction.reply({
-						content: "現在Springスペランカーソードは__貸し出されています__。返却をお待ちください。",
-						ephemeral: true
-					})
-				}
-				break;
-			case 're_haruspe':
-				if (rental['re_haruspe'] === 0) {
-					rental_current['re_haruspe'] = 1;
-					await interaction.reply({
-						content: "[復刻]Springスペランカーソードは貸し出しされていません。借りますか？",
-						components: [new MessageActionRow().addComponents(buttonyes, buttonno)],
-						ephemeral: true
-					})
-				}
-				if (rental['re_haruspe'] === 1) {
-					await interaction.reply({
-						content: "現在[復刻]Springスペランカーソードは__貸し出されています__。返却をお待ちください。",
-						ephemeral: true
-					})
-				}
-				break;
-			case 'luck':
-				if (rental['luck'] <= 3) {
-					rental_current['luck'] = 1;
-					await interaction.reply({
-						content: "運上昇Lv5は在庫があります。借りますか？",
-						components: [new MessageActionRow().addComponents(buttonyes, buttonno)],
-						ephemeral: true
-					})
-				}
-				if (rental['luck'] === 4) {
-					await interaction.reply({
-						content: "現在運上昇Lv5は全て__貸し出されています__。返却をお待ちください。",
-						ephemeral: true
-					})
-				}
-				break;
-			case 'all_pic':
-				if (rental['all_pic'] === 0) {
-					rental_current['all_pic'] = 1;
-					await interaction.reply({
-						content: "資源成長型ピッケルX AllCustomは貸し出しされていません。借りますか？",
-						components: [new MessageActionRow().addComponents(buttonyes, buttonno)],
-						ephemeral: true
-					})
-				}
-				if (rental['all_pic'] === 1) {
-					await interaction.reply({
-						content: "現在資源成長型ピッケルX AllCustomは__貸し出されています__。返却をお待ちください。",
-						ephemeral: true
-					})
-				}
-				break;
-			default:
-				break;
-			}
-	}
+	if (interaction.commandName === 'recipe') print(interaction);
+	if (interaction.commandName === 'rental') rental(interaction);
 	if (interaction.commandName === 'return') {
 			logger("command");
 			const buttonyes = new MessageButton().setCustomId('yes').setStyle("SUCCESS").setLabel('はい');
@@ -1002,19 +705,9 @@ client.on('interactionCreate', async (interaction) => {//コマンド・ボタ�
 				}
 			}
 	}
-	if (interaction.commandName === 'test') {
-			const member = interaction.options.getMember(interaction.member.displayName);
-			const channelTest = client.guilds.cache.get(svid).channels.cache.get(tex_test);
-			const channelncnofi = client.guilds.cache.get(ncsvid).channels.cache.get(tex_nlpcs_nofi);
-				if(interaction.options.getSubcommand() === 'tips') {
-				const tips = ["美味しいヤミー❗️✨🤟😁👍感謝❗️🙌✨感謝❗️🙌✨またいっぱい食べたいな❗️🍖😋🍴✨デリシャッ‼️🙏✨ｼｬ‼️🙏✨ ｼｬ‼️🙏✨ ｼｬ‼️🙏✨ ｼｬ‼️🙏✨ ｼｬ‼️🙏✨ ｼｬｯｯ‼ハッピー🌟スマイル❗️👉😁👈","食前の合掌、いただきます。"];
-				channelTest.send("[Tips:" + tips[interaction.options.getInteger('number')] + "]");
-				}
-				if(interaction.options.getSubcommand() === 'nofi') {
-					channelncnofi.send(`再起動通知のテストメッセージです。`);
-				}
-	}
-	if (interaction.commandName === 'mori') {
+	if (interaction.commandName === 'test') test(interaction);
+/*	
+if (interaction.commandName === 'mori') {
 		var minute = interaction.options.getInteger('minute');
 		if(minute < 0 || minute > 59){
 			await interaction.reply({ content: "設定できません。0~59の範囲で入力してください。", ephemeral: true});
@@ -1027,6 +720,7 @@ client.on('interactionCreate', async (interaction) => {//コマンド・ボタ�
 			job.reschedule(mori);
 		}
 	}
+*/
 	if (interaction.commandName === 'dice') dice(interaction);
 	if (interaction.customId === 'yes') {
 		const channelrental = client.channels.cache.get(tex_rental);
