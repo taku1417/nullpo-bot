@@ -7,8 +7,8 @@ const print = require('./nullpo/command/recipe/print.js');
 const test = require('./nullpo/command/test/test.js');
 const rental_command = require('./nullpo/command/rental/rental.js');
 const return_command = require('./nullpo/command/return/return.js');
-const yes_button = require('./nullpo/command/button/yes.js');
-const no_button = require('./nullpo/command/button/no.js');
+const yes_button = require('./nullpo/components/button/yes.js');
+const no_button = require('./nullpo/components/button/no.js');
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_VOICE_STATES] });
 client.once('ready', () => {	
