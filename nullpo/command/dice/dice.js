@@ -1,5 +1,6 @@
-const tintiro = require('./nullpo/command/dice/tintiro.js');
-const dice_custom = require('./nullpo/command/dice/custom.js');
+const tintiro = require('./tintiro.js');
+const dice_custom = require('./custom.js');
+
 function dice(interaction) {
         logger("command");
 	if(interaction.options.getSubcommand() === 'tintiro') {
