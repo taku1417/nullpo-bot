@@ -1,5 +1,6 @@
 const tintiro = require('./tintiro.js');
 const dice_custom = require('./custom.js');
+const logger = require('../../log/logger.js');
 
 function dice(interaction) {
         logger("command");
