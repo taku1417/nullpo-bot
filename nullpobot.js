@@ -6,6 +6,7 @@ const update_from_db = require('./nullpo/components/update_from_db.js');
 const print = require('./nullpo/command/recipe/print.js');
 const test = require('./nullpo/command/test/test.js');
 const rental_command = require('./nullpo/command/rental/rental.js');
+const return_command = require('./nullpo/command/return/return.js');
 const yes_button = require('./nullpo/command/button/yes.js');
 const no_button = require('./nullpo/command/button/no.js');
 
@@ -35,9 +36,6 @@ const channeljihou = client.channels.cache.get(tex_jihou);
 //});
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 const dbClient = require('pg/lib/client');
-const return_command = require('./nullpo/command/return/return.js');
-const yes_button = require('./nullpo/components/button/yes.js');
-const no_button = require('./nullpo/components/button/no.js');
 const dbclient = new dbClient({
 	user: process.env.DATABASE_USER,
 	password: process.env.DATABASE_PASS,
