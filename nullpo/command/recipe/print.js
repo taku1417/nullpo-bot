@@ -1,4 +1,7 @@
 const logger = require("../../log/logger");
+const { Client } = require("discord.js");
+const client = new Client({ intents: [Intents.FLAGS.GUILDS]});
+const admin_command_notification = client.channels.cache.get('1038810354853085245');
 function recipe_print(type,interaction){
 logger("command");
 switch(type){
@@ -144,9 +147,10 @@ switch(type){
                 break;
         default:
                 interaction.reply({
-                        content: "このメッセージが表示された場合は、入力した文字列とともにtaku1417に問い合わせてください。",
+                        content: "定義されていないレシピが選択されました。管理者に通知されましたので、修正までお待ちください。",
                         ephemeral: true
                 });
+                admin_command_notification.send("レシピコマンドで定義されていないレシピが選択されました。レシピID: " + type);
         }
 }
 
