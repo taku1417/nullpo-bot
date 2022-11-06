@@ -33,7 +33,6 @@ const channeljihou = client.channels.cache.get(tex_jihou);
 //});
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 const dbClient = require('pg/lib/client');
-const rental_command = require('./nullpo/command/rental/rental.js');
 const dbclient = new dbClient({
 	user: process.env.DATABASE_USER,
 	password: process.env.DATABASE_PASS,
