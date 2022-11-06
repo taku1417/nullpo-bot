@@ -1,5 +1,5 @@
 const logger = require("../../log/logger");
-function print(type,interaction){
+function recipe_print(type,interaction){
 logger("command");
 switch(type){
         case 'mithril':
