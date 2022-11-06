@@ -1,7 +1,7 @@
 const { Client, Intents } = require('discord.js');
 const client = new Client({intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_MESSAGES]});
 const tex_rental = '981371600203046964';
-const channelrental = client.channels.cache.get(tex_rental);
+const channelrental = member.guild.channels.cache.get(tex_rental);
 client.channels.fetch(tex_rental);
 
 function yes_button(interaction) {
