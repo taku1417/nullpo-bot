@@ -1,4 +1,4 @@
-const logger = require("../../log/logger");picture
+const logger = require("../../log/logger");
 function recipe_print(type,interaction){
 logger("command");
 switch(type){
