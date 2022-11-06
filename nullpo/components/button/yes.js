@@ -2,6 +2,7 @@ const { Client, Intents } = require('discord.js');
 const client = new Client({intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS]});
 const tex_rental = '981371600203046964';
 const channelrental = client.channels.cache.get(tex_rental);
+client.channels.fetch(tex_rental);
 
 function yes_button(interaction) {
 		if (rental_current['mjc_pic'] === 1) {
