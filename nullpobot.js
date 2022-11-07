@@ -9,6 +9,8 @@ const rental_command = require('./nullpo/command/rental/rental.js');
 const return_command = require('./nullpo/command/return/return.js');
 const yes_button = require('./nullpo/components/button/yes.js');
 const no_button = require('./nullpo/components/button/no.js');
+const voiceInOut = require('./nullpo/components/voiceinout.js');
+const cron_schedule = require('./nullpo/components/schedule.js');
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_VOICE_STATES] });
 client.once('ready', () => {	
@@ -22,8 +24,8 @@ client.once('ready', () => {
 const cron = require('node-cron');
 const schedule = require('node-schedule');
 errorCount = 0,SuccessLogin = 0;
-const vc_atumare = '997274624045879407',vc_pjsekai = '981173824294879322',vc_apex = '992161885862502400',vc_music = '982523943309180978',vc_spla = '1017431011442819142';
-const tex_dblog = '979084899703218186',tex_jllog = '978962695418155019',tex_jihou = '997274370122731611',tex_pjsekai = '999675995936280717',tex_nlpcs_nofi = '1015852168810606592';
+vc_atumare = '997274624045879407',vc_pjsekai = '981173824294879322',vc_apex = '992161885862502400',vc_music = '982523943309180978',vc_spla = '1017431011442819142';
+tex_dblog = '979084899703218186',tex_jllog = '978962695418155019',tex_jihou = '997274370122731611',tex_pjsekai = '999675995936280717',tex_nlpcs_nofi = '1015852168810606592';
 const jllog_enable = [tex_jllog,vc_atumare];
 const svid = '966674976956645407',ncsvid = '1015585928779137105';
 const mori = new schedule.RecurrenceRule();
@@ -75,185 +77,8 @@ client.on('ready', () => {
 /*ステメメモ
 
 */
-client.on('voiceStateUpdate', (oldState, newState) => {
-	const channeljllog = client.channels.cache.get(tex_jllog), channelatumare = oldState.member.guild.channels.cache.get(vc_atumare), channelvcpjsekai = oldState.member.guild.channels.cache.get(vc_pjsekai), channelapex = oldState.member.guild.channels.cache.get(vc_apex),channelmusic = oldState.member.guild.channels.cache.get(vc_music),Ochanneljihou = oldState.member.guild.channels.cache.get(tex_jihou),channelpjsekai = oldState.member.guild.channels.cache.get(tex_pjsekai),channelspla = oldState.member.guild.channels.cache.get(vc_spla);
-
-	if (oldState.channelId === null && newState.channelId === vc_atumare) {
-		logger("join");
-		channelatumare.send(`__**参加** ${oldState.member.displayName} さんが入室しました。__`);
-		Ochanneljihou.send(`**参加** 🌸あつまれVCに${oldState.member.displayName} さんが入室しました。`);
-		return channeljllog.send(`**参加** 🌸あつまれVCに${oldState.member.displayName} さんが入室しました。`);
-	}
-	else if (oldState.channelId === null && newState.channelId === vc_pjsekai) {
-		logger("join");
-		channelpjsekai.send(`__**参加** ${oldState.member.displayName} さんが入室しました。__`);
-		channelvcpjsekai.send(`__**参加🎼** ${oldState.member.displayName} さんが入室しました。__`);
-		//Ochanneljihou.send(`**参加🎼** プロセカルームに${oldState.member.displayName} さんが入室しました。`);
-		return channeljllog.send(`**参加🎼** プロセカルームに${oldState.member.displayName} さんが入室しました。`);
-	}
-	else if (oldState.channelId === null && newState.channelId === vc_spla) {
-		logger("join");
-		channelspla.send(`__**参加** ${oldState.member.displayName} さんが入室しました。__`);
-		Ochanneljihou.send(`**参加🦑** スプラキッズに${oldState.member.displayName} さんが入室しました。`);
-		return channeljllog.send(`**参加🦑** スプラキッズに${oldState.member.displayName} さんが入室しました。`);
-	}
-	else if (oldState.channelId === null && newState.channelId === vc_apex) {
-		logger("join");
-		channelapex.send(`__**参加💥** ${oldState.member.displayName} さんが入室しました。__`);
-		Ochanneljihou.send(`**参加💥** APEXルームに${oldState.member.displayName} さんが入室しました。`);
-		return channeljllog.send(`**参加💥** APEXルームに${oldState.member.displayName} さんが入室しました。`);
-	}
-	else if (oldState.channelId === null && newState.channelId === vc_music) {
-		logger("join");
-		channelmusic.send(`__**参加♪** ${oldState.member.displayName} さんが入室しました。__`);
-		Ochanneljihou.send(`**参加♪** 音楽鑑賞に${oldState.member.displayName} さんが入室しました。`);
-		return channeljllog.send(`**参加♪** 音楽鑑賞に${oldState.member.displayName} さんが入室しました。`);
-	}
-	else if (oldState.channelId === (vc_pjsekai || vc_spla || vc_apex || vc_music) && newState.channelId === vc_atumare) {
-		logger("move");
-		channelatumare.send(`__**移動🌸** ${oldState.member.displayName} さんが🌸あつまれVCに移動しました。__`);
-		Ochanneljihou.send(`**移動🌸** ${oldState.member.displayName} さんが🌸あつまれVCに移動しました。`);
-		return channeljllog.send(`**移動🌸** ${oldState.member.displayName} さんが🌸あつまれVCに移動しました。`);
-	}
-	else if (oldState.channelId === (vc_atumare || vc_spla || vc_apex || vc_music) && newState.channelId === vc_pjsekai) {
-		logger("move");
-		channelpjsekai.send(`__**移動🎼** ${oldState.member.displayName} さんがプロセカルームに移動しました。__`);
-		channelvcpjsekai.send(`__**移動🎼** ${oldState.member.displayName} さんがプロセカルームに移動しました。__`);
-		Ochanneljihou.send(`**移動🎼** ${oldState.member.displayName} さんがプロセカルームに移動しました。`);
-		return channeljllog.send(`**移動🎼** ${oldState.member.displayName} さんがプロセカルームに移動しました。`);
-	}
-	else if (oldState.channelId === (vc_atumare || vc_pjsekai || vc_apex || vc_music) && newState.channelId === vc_spla) {
-		logger("move");
-		channelspla.send(`__**移動🦑** ${oldState.member.displayName} さんがスプラキッズに移動しました。__`);
-		Ochanneljihou.send(`**移動🦑** ${oldState.member.displayName} さんがスプラキッズに移動しました。`);
-		return channeljllog.send(`**移動🦑** ${oldState.member.displayName} さんがスプラキッズに移動しました。`);
-	}
-	else if (oldState.channelId === (vc_atumare || vc_pjsekai || vc_spla || vc_music) && newState.channelId === vc_apex) {
-		logger("move");
-		channelapex.send(`__**移動💥** ${oldState.member.displayName} さんがAPEXルームに移動しました。__`);
-		Ochanneljihou.send(`**移動💥** ${oldState.member.displayName} さんがAPEXルームに移動しました。`);
-		return channeljllog.send(`**移動💥** ${oldState.member.displayName} さんがAPEXルームに移動しました。`);
-	}
-	else if (oldState.channelId === (vc_atumare || vc_pjsekai || vc_spla || vc_apex) && newState.channelId === vc_music) {
-		logger("move");
-		channelmusic.send(`__**移動♪** ${oldState.member.displayName} さんが音楽鑑賞に移動しました。__`);
-		Ochanneljihou.send(`**移動♪** ${oldState.member.displayName} さんが音楽鑑賞に移動しました。`);
-		return channeljllog.send(`**移動♪** ${oldState.member.displayName} さんが音楽鑑賞に移動しました。`);
-	}
-	else if (oldState.channelId === (vc_atumare || vc_pjsekai || vc_spla || vc_apex || vc_music) && newState.channelId === null) {
-		logger("leave");
-		channeljllog.send(`**退出:x:**  ${newState.member.displayName} さんが退出しました。`);
-		//Ochanneljihou.send(`**退出:x:**  ${newState.member.displayName} さんが退出しました。`);
-		switch (oldState.channelId) {
-			case vc_atumare:
-				channelatumare.send(`__**退出:x:** ${newState.member.displayName} さんが退出しました。__`);
-				Ochanneljihou.send(`**退出:x:**  ${newState.member.displayName} さんが🌸あつまれVCから退出しました。`);
-				break;
-			case vc_pjsekai:
-				channelvcpjsekai.send(`__**退出:x:** ${newState.member.displayName} さんが退出しました。__`);
-				channelpjsekai.send(`__**退出:x:** ${newState.member.displayName} さんが退出しました。__`);
-				break;
-			case vc_spla:
-				channelspla.send(`__**退出:x:** ${newState.member.displayName} さんが退出しました。__`);
-				Ochanneljihou.send(`**退出:x:**  ${newState.member.displayName} さんがスプラキッズから退出しました。`);
-				break;
-			case vc_apex:
-				channelapex.send(`__**退出:x:** ${newState.member.displayName} さんが退出しました。__`);
-				Ochanneljihou.send(`**退出:x:**  ${newState.member.displayName} さんがAPEXルームから退出しました。`);
-				break;
-			case vc_music:
-				channelmusic.send(`__**退出:x:** ${newState.member.displayName} さんが退出しました。__`);
-				Ochanneljihou.send(`**退出:x:**  ${newState.member.displayName} さんが音楽鑑賞から退出しました。`);
-				break;
-			default:
-				break;
-		}
-
-	}
-});
-client.on('ready', () => {//cron.schedule
-	const tips = ["pve鯖は15時(1)、16時(2)に自動再起動されます。","Ebiflyは/fly [分数]で飛ぶ分数の指定が出来ます","life本鯖の再起動は4時、5時(全体)、14時です","どうでもいいTipsです。追加希望はtaku1417のDMまで。",/*"コマンドはキーボードの↑キーで一つ前の自分が打ったコマンドを入力省略できるが、しかしこれでは種などの購入と圧縮を繰り返す作業には不向きである、そこで二度↑キーを押すと2つ前の自分が打ったコマンドに戻れる。これで/shopと/rguiを簡単に交互に実行することができる",*/"きりんとねこの身長が180cmなのは嘘である。本当は270cmである","パンに生ハムを乗せると美味しい","薄皮一枚無いスキンをもとに戻したい場合はF3+H","このbotはHerokuというサービス上で稼働しています","あおいんは逆転ものも好き","しまりんはそこまで地上絵が好きじゃない","Monocraftは0時、JMSは9時に投票が可能になります","実はあもさんは下ネタが嫌い","うおみーの言うことは全て嘘","でも実は本当","って言ってるのも嘘かもしれない","でも実は嘘","初めましてronpenです 初めてすぐに10m獲得しました() まだまだ分からないことしかないので色々教えてくれたら嬉しいです","ぬるぽ語録集はVCで生まれた名(迷)言をまとめたものです","この鯖には実に60個ものロールが存在します","畑では植え直しを忘れずに。","木こりは稼げません、マジで。","lifeには統合版でもアクセスできます","釣りをしていると出てくる心の闇は、どこかに座っていると攻撃を大体回避できます","/wikiと打つと主要なwikiページを見ることが出来ます","/recipeと打つとlife独自レシピを見ることが出来ます。レシピは随時追加。","/rentalと打つと貸出記録をbotがやってくれます","/returnと打つと返却記録をbotがやってくれます","真のSはMの天才だし、真のMはSの天才である。それが僕の持論ですね。~LingThai~","しまりんかわいいね","堅あげポテトで口内炎ができるやつ落ち着きがない","命を知ろう〜バイシクル川崎の生体について〜\n一日に生まれるバイシクル川崎のうち約9割がバイク川崎になれないと言われています。\nそしてバイク川崎になれなかったバイシクル川崎の過半数は自然淘汰に対抗するためにコックカワサキへと姿を変えるのです","美味しいヤミー❗️✨🤟😁👍感謝❗️🙌✨感謝❗️🙌✨またいっぱい食べたいな❗️🍖😋🍴✨デリシャッ‼️🙏✨ｼｬ‼️🙏✨ ｼｬ‼️🙏✨ ｼｬ‼️🙏✨ ｼｬ‼️🙏✨ ｼｬ‼️🙏✨ ｼｬｯｯ‼ハッピー🌟スマイル❗️👉😁👈","食前の合掌、いただきます。"];
-	const tipslength = tips.length;
-	const channeljihou = client.channels.cache.get(tex_jihou);
-	const channelncnofi = client.channels.cache.get(tex_nlpcs_nofi);
-	console.log(tipslength + "件のtipsを読み込みました。");
-  	cron.schedule('0 1-3,6-13,18-23 * * *', () => {
-    		channeljihou.send(`${new Date().getHours()}時になりました。` + "[Tips:" + tips[Math.floor(Math.random() * tips.length)] + "]");
-    		logger("clock");
-   	})//tips(大体毎時)
-	cron.schedule('0 0 * * *', () => {
-		channeljihou.send(`${new Date().getMonth()+1}月${new Date().getDate()}日、${new Date().getHours()}時になりました。` + "[Tips:" + tips[Math.floor(Math.random() * tips.length)] + "]");
-		logger("clock");
-	})//tips(0時)
-	cron.schedule('55 3 * * *', () => {
-		channeljihou.send(`**3分後にlife本鯖からkickされる可能性があります。注意してください。**`);
-		logger("restart");
-	})//本鯖kick注意
-	cron.schedule('0 4,14 * * *', () => {
-		channeljihou.send(`${new Date().getHours()}時になりました。**life本鯖再起動です。**(再起動は行われない事があります。)`);
-		logger("restart");
-	})//本鯖再起
-	cron.schedule('0 5 * * *', () => {
-		channeljihou.send(`${new Date().getHours()}時になりました。**まもなくアジ鯖全体再起動です。**`)
-		logger("restart");
-	})//アジ鯖再起
-	/*cron.schedule('0 15 * * *', () => {
-		channeljihou.send(`${new Date().getHours()}時になりました。**pve1鯖の再起動です。**`)
-		logger("restart");
-	})//pve1鯖再起
-	cron.schedule('0 16 * * *', () => {
-		channeljihou.send(`${new Date().getHours()}時になりました。**pve2鯖の再起動です。**`)
-		logger("restart");
-	})//pve2鯖再起
-	cron.schedule('0 17 * * *', () => {
-		channeljihou.send(`${new Date().getHours()}時になりました。**pve3鯖の再起動です。**`)
-		logger("restart");
-	})//pve3鯖再起*/
-	cron.schedule('50 3,13 * * *', () => {
-		channeljihou.send(`__**life本鯖再起動まであと10分です。**__(再起動は行われない事があります。)`)
-		channelncnofi.send(`<@&1018040272506069042> life本鯖再起動まであと10分です。__**回路が動かなくなるため、再起動が終わるまでは回さないようお願いします。**__(再起動は行われない事があります。)`)
-		//channeljihou.send(`**本日、4時より__最大30分のlife全鯖メンテナンス__があります。メンテナンス中はlife系列サーバーにアクセスすることが出来ません。**`)//不定期の長期メンテナンス用
-		logger("clock");
-	})//本鯖再起前
-	cron.schedule('50 4 * * *', () => {
-		channeljihou.send(`__**アジ鯖全体再起動まであと10分です。**__`)
-		channelncnofi.send(`<@&1018040272506069042> アジ鯖全体再起動まであと10分です。__**回路が動かなくなるため、再起動が終わるまでは回さないようお願いします。**__`)
-		logger("clock");
-	})//アジ鯖再起前
-	/*cron.schedule('50 14 * * *', () => {
-		channeljihou.send(`__**pve1鯖再起動まであと10分です。**__`)
-		logger("clock");
-	})//pve1鯖再起前
-	cron.schedule('50 15 * * *', () => {
-		channeljihou.send(`__**pve2鯖再起動まであと10分です。**__`)
-		logger("clock");
-	})//pve2鯖再起前
-	cron.schedule('50 16 * * *', () => {
-		channeljihou.send(`__**pve3鯖再起動まであと10分です。**__`)
-		logger("clock");
-	})//pve3鯖再起前*/
-	cron.schedule('30 23 * * *', () => {
-		channeljihou.send(`<@&1010053868987617310> **投票はしましたか？まもなくMonocraftで本日分の投票が出来なくなります。**`)
-		logger("clock");
-	})//投票リマインド
-	//cron.schedule('0 4 * * *', () => {
-		//channeljihou.send(`**只今より最大30分の__life全鯖__メンテナンスが行われます。**`)
-		//logger("clock");
-	//})//臨時
-	cron.schedule('0 18 10,25 * *', () => {
-		channeljihou.send(`**<@431843298588622858> Prince鯖にログインしましょう。**`)
-		logger("clock");
-	})//ナショさん用のリマインド
-});
-/*
-	client.on('ready', () => {
-		const channeljihou = client.channels.cache.get(tex_jihou);
-  		cron.schedule('45 1 5,17 * * *', () => {
-     			channeljihou.send(`__**再起動終了予定時刻になりました。**__`)
-     			logger("restart");
-		})
-	})
-*/
+client.on('voiceStateUpdate', (oldState, newState) => voiceInOut(oldState, newState));
+client.on('ready', () => cron_schedule());
 client.once("ready", async () => {//コマンド定義
 	const data = [
 		{name: "wiki", description: "公式、非公式アジ鯖wikiページを表示します。"},
