@@ -129,10 +129,6 @@ client.on('ready', () => {
 		channeljihou.send(`**<@431843298588622858> Prince鯖にログインしましょう。**`)
 		logger("clock");
 	})//ナショさん用のリマインド
-	cron.schedule('* * * * * *', () => {
-		channeltest.send(`てすと`)
-		logger("clock");
-	})
 });
 client.once("ready", async () => {//コマンド定義
 	const data = [
