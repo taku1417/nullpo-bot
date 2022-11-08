@@ -10,7 +10,6 @@ const return_command = require('./nullpo/command/return/return.js');
 const yes_button = require('./nullpo/components/button/yes.js');
 const no_button = require('./nullpo/components/button/no.js');
 const voiceInOut = require('./nullpo/components/voiceinout.js');
-const cron_schedule = require('./nullpo/components/schedule.js');
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_VOICE_STATES] });
 client.once('ready', () => {	
@@ -84,6 +83,7 @@ client.on('ready', () => {
 	const channeljihou = client.channels.cache.get(tex_jihou);
 	const channelncnofi = client.channels.cache.get(tex_nlpcs_nofi);
 	const channeltest = client.channels.cache.get('979084899703218186');
+
 	console.log(tips.length + "件のtipsを読み込みました。");
 
 	cron.schedule('0 1-3,6-13,18-23 * * *', () => {
