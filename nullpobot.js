@@ -23,13 +23,10 @@ client.once('ready', () => {
 const cron = require('node-cron');
 const schedule = require('node-schedule');
 errorCount = 0,SuccessLogin = 0;
-vc_atumare = '997274624045879407',vc_pjsekai = '981173824294879322',vc_apex = '992161885862502400',vc_music = '982523943309180978',vc_spla = '1017431011442819142';
-tex_dblog = '979084899703218186',tex_jllog = '978962695418155019',tex_jihou = '997274370122731611',tex_pjsekai = '999675995936280717',tex_nlpcs_nofi = '1015852168810606592';
-const jllog_enable = [tex_jllog,vc_atumare];
+const tex_dblog = '979084899703218186',tex_jihou = '997274370122731611',tex_nlpcs_nofi = '1015852168810606592';
 const svid = '966674976956645407',ncsvid = '1015585928779137105';
 const mori = new schedule.RecurrenceRule();
 mori.minute = 0;
-const channeljihou = client.channels.cache.get(tex_jihou);
 //const job = schedule.scheduleJob(mori, function(){//森レイドのやつ
 	//channeljihou.send(`__**あと3分で森レイドが始まります！**__`)
 	//logger("clock");
