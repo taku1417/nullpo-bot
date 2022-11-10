@@ -1,5 +1,5 @@
-const { Client, Intents } = require('discord.js');
-const client = new Client({intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_MESSAGES]});
+//const { Client, Intents } = require('discord.js');
+//const client = new Client({intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_MESSAGES]});
 
 function yes_button(interaction) {
 		if (rental_current['mjc_pic'] === 1) {
