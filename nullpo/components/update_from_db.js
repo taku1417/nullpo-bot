@@ -7,9 +7,6 @@ const dbclient = new dbClient({
 	database: process.env.DATABASE,
 	ssl: true
 });
-const Keyv = require('keyv');
-const keyv = new Keyv(process.env.DATABASE_URL);
-keyv.on("error", (err) => console.log("[keyv] Connection Error", err));
 
 function update_from_db(mode,type){
         var query = "SELECT * FROM rental;";
