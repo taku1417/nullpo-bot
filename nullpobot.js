@@ -176,7 +176,7 @@ client.on('ready', () => {
 
 	console.log(tips.length + "件のtipsを読み込みました。");
 
-	cron.schedule('0 1-3,6-13,18-23 * * *', () => {
+	cron.schedule('0 1-3,6-13,15-23 * * *', () => {
 		channeljihou.send(`${new Date().getHours()}時になりました。` + "[Tips:" + tips[Math.floor(Math.random() * tips.length)] + "]");
 		logger("clock");
 	})//tips(大体毎時)

@@ -19,21 +19,19 @@ function update_from_db(mode,type){
         if(mode === "load"){
                 if(type === "rental" || type === "all"){
                         var query = "SELECT * FROM rental;";
+                        const test = [];
                         dbclient.query(query, function(err, result) {
                                 if (err) {
                                         console.error("[update_from_db] query error", err);
                                         process.exit(1);
                                 } else {
-                                        const fields = result.fields;
-                                        const types = result._types._types.builtins;
-                                        const columns = [];
-                                        fields.forEach( f => {
-                                                const dt = Object.keys(types).reduce( (r, key) => {
-                                                        return types[key] === f.dataTypeID ? key : r;
-                                                }, null);
-                                                columns.push({columnName: f.name, type: dt});
-                                                });
-                                        console.log(columns);
+                                        Object.keys(result).forEach(key => {
+                                                var row = result[key];
+                                                if(row.toolname !== null){
+                                                        test[row.toolname] = row;
+                                                }
+                                        })
+                                        console.log(test);
                                 }
                         });
                 }
