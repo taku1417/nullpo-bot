@@ -27,8 +27,8 @@ function update_from_db(mode,type){
                                 } else {
                                         Object.keys(result).forEach(key => {
                                                 var row = result[key];
-                                                if(row.toolname !== null){
-                                                        test[row.toolname] = row;
+                                                if(row.tool_name !== null){
+                                                        test[row.tool_name] = row;
                                                 }
                                         })
                                         console.log(test);
