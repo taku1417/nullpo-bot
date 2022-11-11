@@ -20,15 +20,20 @@ function update_from_db(mode,type){
                 if(type === "rental" || type === "all"){
                         var query = "SELECT * FROM rental;";
                         const test = [];
+                        var row = [];
                         dbclient.query(query, function(err, result) {
                                 if (err) {
                                         console.error("[update_from_db] query error", err);
                                         process.exit(1);
                                 } else {
                                         Object.keys(result).forEach(key => {
-                                                var row = result[key];
-                                                if(row.tool_name !== null){
-                                                        test[row.tool_name] = row;
+                                                row = result[key];
+                                                console.log(row);
+                                                try {
+                                                        if(row.tool_name !== null){
+                                                                test[row.tool_name] = row;
+                                                        }
+                                                } catch (e) {
                                                 }
                                         })
                                         console.log(test);
