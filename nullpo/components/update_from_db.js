@@ -26,16 +26,6 @@ function update_from_db(mode,type){
                                         console.error("[update_from_db] query error", err);
                                         process.exit(1);
                                 } else {
-                                        Object.keys(result).forEach(key => {
-                                                row = result[key];
-                                                console.log(row);
-                                                try {
-                                                        if(row.tool_name !== null){
-                                                                test[row.tool_name] = row;
-                                                        }
-                                                } catch (e) {
-                                                }
-                                        })
                                         console.log(test);
                                 }
                         });
