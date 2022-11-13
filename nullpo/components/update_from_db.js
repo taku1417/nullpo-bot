@@ -26,6 +26,7 @@ function update_from_db(mode,type){
                                         console.error("[update_from_db] query error", err);
                                         process.exit(1);
                                 } else {
+                                        
                                         console.log(test);
                                 }
                         });
