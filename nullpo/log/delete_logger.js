@@ -1,5 +1,6 @@
-const { MessageEmbed } = require('discord.js');
-const nullpo_server_id = '966674976956645407',nullpo_casino_server_id = '1015585928779137105',debug_server_id = '979084665958834216';
+const { Client,Intents,MessageEmbed } = require('discord.js');
+const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES]});
+const nullpo_server_id = '966674976956645407',nullpo_casino_server_id = '1015585928779137105';
 const nullpo_admin_log = '997341001809133588',nullpo_casino_admin_log = '1042484015720042546';
 
 function delete_logger(message) {
