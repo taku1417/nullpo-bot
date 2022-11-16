@@ -1,4 +1,4 @@
-const { Client, Intents, Role } = require('discord.js');
+const { Client, Intents, Role, MessageEmbed } = require('discord.js');
 const logger = require('./nullpo/log/logger.js');
 const delete_logger = require('./nullpo/log/delete_logger.js');
 all_log = 0,join_log = 0,move_log = 0,leave_log = 0,clock_log = 0,restart_log = 0,command_log = 0,unknown_log = 0;
@@ -10,6 +10,8 @@ const rental_command = require('./nullpo/command/rental/rental.js');
 const return_command = require('./nullpo/command/return/return.js');
 const yes_button = require('./nullpo/components/button/yes.js');
 const no_button = require('./nullpo/components/button/no.js');
+const nullpo_server_id = '966674976956645407',nullpo_casino_server_id = '1015585928779137105';
+const nullpo_admin_log = '997341001809133588',nullpo_casino_admin_log = '1042484015720042546';
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_VOICE_STATES, Intents.FLAGS.MESSAGE_CONTENT] });
 client.once('ready', () => {	
@@ -390,8 +392,27 @@ if (interaction.commandName === 'mori') {
 	if (interaction.customId === 'yes') yes_button(interaction);
 	if (interaction.customId === 'no') no_button(interaction);
 });
-client.on('messageDelete', (message) => {//メッセージ削除時の処理
-	delete_logger(message);
+client.on('messageDelete', (message) => {
+	//delete_logger(message);
+	const Month = new Date().getMonth()+1,Day = new Date().getDate(),Hour = new Date().getHours(),Min = new Date().getMinutes(),Sec = new Date().getSeconds(),MilliSec = new Date().getMilliseconds(),Hour0 = ('0' + Hour).slice(-2),Min0 = ('0' + Min).slice(-2),Sec0 = ('0' + Sec).slice(-2),MilliSec0 = ('00' + MilliSec).slice(-3);
+        client.channels.cache.get(nullpo_admin_log).send('[delete_logger]実行されています。');
+        const embed = new MessageEmbed()
+        .setTitle('メッセージ削除')
+        .setColor(0xff0000)
+        .setDescription('削除されたメッセージです。')
+        .addField('メッセージ内容', message.content)
+        .addField('チャンネル', message.channel)
+        .setFooter('削除者: ' + message.author.tag + ' | ' + Month + '/' + Day + ' ' + Hour0 + ':' + Min0 + ':' + Sec0 + '.' + MilliSec0)
+        switch(message.guild.id) {
+                case nullpo_server_id:
+                        client.channels.cache.get(nullpo_admin_log).send({embeds: [embed]});
+                        break;
+                case nullpo_casino_server_id:
+                        client.channels.cache.get(nullpo_casino_admin_log).send({embeds: [embed]});
+                        break;
+                default:
+                        break;
+        }
 });
 client.once('ready', () => {
 	client.channels.cache.get(tex_dblog).send('ぬるぽbotが起動しました。');//デバッグ鯖のログに流れる
