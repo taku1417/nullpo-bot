@@ -57,20 +57,6 @@ rental = { mjc_pic: 0, mjc_swo: 0, mjc_sho: 0, star_guide: 0,ravan: 0,beer: 0,mr
 rental_current = { mjc_pic: 0, mjc_swo: 0, mjc_sho: 0, star_guide: 0,ravan: 0,beer: 0,mrz_iron: 0,mrz_gold: 0,mrz_dia: 0,mrz_eme:0,soul_protection: 0,vortex: 0,haruspe: 0,re_haruspe: 0,luck: 0,MGF: 0,MTF: 0,all_pic: 0};
 return_current = { mjc_pic: 0, mjc_swo: 0, mjc_sho: 0, star_guide: 0,ravan: 0,beer: 0,mrz_iron: 0,mrz_gold: 0,mrz_dia: 0,mrz_eme:0,soul_protection: 0,vortex: 0,haruspe: 0,re_haruspe: 0,luck: 0,MGF: 0,MTF: 0,all_pic: 0};
 
-client.once('ready', () => {
-	client.channels.cache.get(tex_dblog).send('ぬるぽbotが起動しました。');//デバッグ鯖のログに流れる
-});
-
-client.on('ready', () => {
-	setInterval(() => {
-		client.user.setPresence({
-			activities: [{
-			name: `nullpo bot | ${client.ws.ping}ms`,
-			}],
-			status: "online"
-			});
-		}, 3000)
-      });
 /*ステメメモ
 
 */
@@ -406,6 +392,19 @@ if (interaction.commandName === 'mori') {
 });
 client.on('messageDelete', (message) => {//メッセージ削除時の処理
 	delete_logger(message);
+});
+client.once('ready', () => {
+	client.channels.cache.get(tex_dblog).send('ぬるぽbotが起動しました。');//デバッグ鯖のログに流れる
+});
+client.on('ready', () => {
+	setInterval(() => {
+		client.user.setPresence({
+			activities: [{
+			name: `nullpo bot | ${client.ws.ping}ms`,
+			}],
+			status: "online"
+			});
+		}, 3000)
 });
 /*
 const tryLogin = function(){
