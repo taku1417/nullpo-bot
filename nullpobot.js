@@ -1,5 +1,6 @@
 const { Client, Intents, Role } = require('discord.js');
 const logger = require('./nullpo/log/logger.js');
+const delete_logger = require('./nullpo/log/delete_logger.js');
 all_log = 0,join_log = 0,move_log = 0,leave_log = 0,clock_log = 0,restart_log = 0,command_log = 0,unknown_log = 0;
 const dice = require('./nullpo/command/dice/dice.js');
 const update_from_db = require('./nullpo/components/update_from_db.js');
@@ -10,7 +11,7 @@ const return_command = require('./nullpo/command/return/return.js');
 const yes_button = require('./nullpo/components/button/yes.js');
 const no_button = require('./nullpo/components/button/no.js');
 
-const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_VOICE_STATES] });
+const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_VOICE_STATES, Intents.FLAGS.MESSAGE_CONTENT] });
 client.once('ready', () => {	
 	client.user.setPresence({
 		activities: [{
@@ -402,6 +403,9 @@ if (interaction.commandName === 'mori') {
 	if (interaction.commandName === 'dice') dice(interaction);
 	if (interaction.customId === 'yes') yes_button(interaction);
 	if (interaction.customId === 'no') no_button(interaction);
+});
+client.on('messageDelete', (message) => {//メッセージ削除時の処理
+	delete_logger(message);
 });
 /*
 const tryLogin = function(){
