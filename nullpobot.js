@@ -187,13 +187,13 @@ client.on('ready', () => {
 	})//アジ鯖再起
 	cron.schedule('50 3,13 * * *', () => {
 		channeljihou.send(`__**life本鯖再起動まであと10分です。**__(再起動は行われない事があります。)`)
-		channelncnofi.send(`<@&1018040272506069042> life本鯖再起動まであと10分です。__**回路が動かなくなるため、再起動が終わるまでは回さないようお願いします。**__(再起動は行われない事があります。)`)
+		//channelncnofi.send(`<@&1018040272506069042> life本鯖再起動まであと10分です。__**回路が動かなくなるため、再起動が終わるまでは回さないようお願いします。**__(再起動は行われない事があります。)`)
 		//channeljihou.send(`**本日、4時より__最大30分のlife全鯖メンテナンス__があります。メンテナンス中はlife系列サーバーにアクセスすることが出来ません。**`)//不定期の長期メンテナンス用
 		logger("clock");
 	})//本鯖再起前
 	cron.schedule('50 4 * * *', () => {
 		channeljihou.send(`__**アジ鯖全体再起動まであと10分です。**__`)
-		channelncnofi.send(`<@&1018040272506069042> アジ鯖全体再起動まであと10分です。__**回路が動かなくなるため、再起動が終わるまでは回さないようお願いします。**__`)
+		//channelncnofi.send(`<@&1018040272506069042> アジ鯖全体再起動まであと10分です。__**回路が動かなくなるため、再起動が終わるまでは回さないようお願いします。**__`)
 		logger("clock");
 	})//アジ鯖再起前
 	cron.schedule('30 23 * * *', () => {
@@ -392,7 +392,7 @@ if (interaction.commandName === 'mori') {
 	if (interaction.customId === 'yes') yes_button(interaction);
 	if (interaction.customId === 'no') no_button(interaction);
 });
-client.on('messageDelete', (message) => {
+client.on('messageDelete', message => {
 	//delete_logger(message);
 	const Month = new Date().getMonth()+1,Day = new Date().getDate(),Hour = new Date().getHours(),Min = new Date().getMinutes(),Sec = new Date().getSeconds(),MilliSec = new Date().getMilliseconds(),Hour0 = ('0' + Hour).slice(-2),Min0 = ('0' + Min).slice(-2),Sec0 = ('0' + Sec).slice(-2),MilliSec0 = ('00' + MilliSec).slice(-3);
         client.channels.cache.get(nullpo_admin_log).send('[delete_logger]実行されています。');
