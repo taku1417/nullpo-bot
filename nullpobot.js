@@ -55,8 +55,8 @@ dbclient.connect()
 	console.log(update_from_db('load','all'));
 	dbclient.end();
 }
-rental = { mjc_pic: 0, mjc_swo: 0, mjc_sho: 0, star_guide: 0,ravan: 0,beer: 0,mrz_iron: 0,mrz_gold: 0,mrz_dia: 0,mrz_eme:0,soul_protection: 0,vortex: 0,haruspe: 0,re_haruspe: 0,luck: 0,MGF: 0,MTF: 0,all_pic: 0};
-maxRental = { mjc_pic: 1, mjc_swo: 1, mjc_sho: 1, star_guide: 1,ravan: 1,beer: 2,mrz_iron: 1,mrz_gold: 1,mrz_dia: 1,mrz_eme:1,soul_protection: 1,vortex: 1,haruspe: 3,re_haruspe: 0,luck: 3,MGF: 1,MTF: 2,all_pic: 2};
+rental = { mjc_pic: 0, mjc_swo: 0, mjc_sho: 0, star_guide: 0,ravan: 0,beer: 0,mrz_iron: 0,mrz_gold: 0,mrz_dia: 0,mrz_eme:0,soul_protection: 0,vortex: 0,haruspe: 0,re_haruspe: 0,moriDoll: 0,MGF: 0,MTF: 0,all_pic: 0};
+maxRental = { mjc_pic: 1, mjc_swo: 1, mjc_sho: 1, star_guide: 1,ravan: 1,beer: 2,mrz_iron: 1,mrz_gold: 1,mrz_dia: 1,mrz_eme:1,soul_protection: 1,vortex: 1,haruspe: 3,re_haruspe: 0,moriDoll: 3,MGF: 1,MTF: 2,all_pic: 2};
 lendSystemCurrent = '';
 lendSystemMode = '';
 
@@ -276,8 +276,7 @@ client.once("ready", async () => {//コマンド定義
 				{name:"精霊の加護", value:"soul_protection"},
 				{name:"Vortex Hurricane", value:"vortex"},
 				{name:"Springスペランカーソード", value:"haruspe"},
-				{name:"[復刻]Springスペランカーソード", value:"re_haruspe"},
-				{name:"運上昇Lv5", value:"luck"},
+				{name:"運上昇Lv5", value:"moriDoll"},
 				{name:"資源成長型ピッケルX AllCustom", value:"all_pic"},
 				]
 			}]
