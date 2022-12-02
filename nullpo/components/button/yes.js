@@ -13,8 +13,8 @@ function yes_button(interaction) {
 						fetchReply: true
 					});
 					channelrental.send(`${interaction.member.displayName}さんがマジカトロンピッケルを借りました。`);
-					lendSystemCurrent = none;
-					lendSystemMode = none;
+					lendSystemCurrent = '';
+					lendSystemMode = '';
 					break;
 				case 'return':
 					rental['mjc_pic']--;
@@ -24,8 +24,8 @@ function yes_button(interaction) {
 						fetchReply: true
 					});
 					channelrental.send(`${interaction.member.displayName}さんがマジカトロンピッケルを返却しました。`);
-					lendSystemCurrent = none;
-					lendSystemMode = none;
+					lendSystemCurrent = '';
+					lendSystemMode = '';
 					break;
 			}
 		if (rental_current['mjc_sho'] === 1) {

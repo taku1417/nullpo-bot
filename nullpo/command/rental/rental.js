@@ -10,8 +10,8 @@ function rental_command(interaction) {
 	switch (interaction.options.getString('item_name')) {
 		case 'mjc_pickaxe':
 			if (rental['mjc_pic'] < maxRental['mjc_pic']) {
-				lendSystemCurrent = mjc_pic;
-				lendSystemMode = rental;
+				lendSystemCurrent = 'mjc_pic';
+				lendSystemMode = 'rental';
 				interaction.reply({
 					content: "マジカトロンピッケルは貸し出しされていません。借りますか？",
 					components: [new MessageActionRow().addComponents(buttonyes, buttonno)],
