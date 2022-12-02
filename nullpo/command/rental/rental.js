@@ -9,15 +9,16 @@ function rental_command(interaction) {
 	const buttonno = new MessageButton().setCustomId('no').setStyle("DANGER").setLabel('いいえ');
 	switch (interaction.options.getString('item_name')) {
 		case 'mjc_pickaxe':
-			if (rental['mjc_pic'] <= 0) {
-				rental_current['mjc_pic'] = 1;
+			if (rental['mjc_pic'] < maxRental['mjc_pic']) {
+				lendSystemCurrent = mjc_pic;
+				lendSystemMode = rental;
 				interaction.reply({
 					content: "マジカトロンピッケルは貸し出しされていません。借りますか？",
 					components: [new MessageActionRow().addComponents(buttonyes, buttonno)],
 					ephemeral: true
 				})	
 			} 
-			if (rental['mjc_pic'] >= 1) {
+			if (rental['mjc_pic'] >= maxRental['mjc_pic']) {
 				interaction.reply({
 					content: "現在マジカトロンピッケルは__貸し出されています__。返却をお待ちください。",
 					ephemeral: true
@@ -73,7 +74,7 @@ function rental_command(interaction) {
 			}
 			break;
 		case 'ravan':
-		if (rental['ravan'] <= 0) {
+			if (rental['ravan'] <= 0) {
 				rental_current['ravan'] = 1;
         			interaction.reply({
 					content: "赫灼大斧ラヴァンは貸し出しされていません。借りますか？",
@@ -121,7 +122,7 @@ function rental_command(interaction) {
 			}
 			break;
 		case 'MTF':
-			if (rental['MTF'] <= 0) {
+			if (rental['MTF'] <= 1) {
 				rental_current['MTF'] = 1;
 				interaction.reply({
 					content: "Master of Treasure Fishing装備は在庫があります。借りますか？",
@@ -129,7 +130,7 @@ function rental_command(interaction) {
 					ephemeral: true
 				})
 			}
-			if (rental['MTF'] >= 1) {
+			if (rental['MTF'] >= 2) {
 				interaction.reply({
 					content: "現在Master of Treasure Fishing装備は__貸し出されています__。返却をお待ちください。",
 					ephemeral: true

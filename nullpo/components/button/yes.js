@@ -2,16 +2,32 @@
 //const client = new Client({intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_MESSAGES]});
 
 function yes_button(interaction) {
-		if (rental_current['mjc_pic'] === 1) {
-			rental['mjc_pic'] = 1;
-			interaction.reply({
-				content: "マジカトロンピッケルを借りました。ぬるぽ倉庫から取り出してください。",
-				ephemeral: true,
-				fetchReply: true
-			});
-			channelrental.send(`${interaction.member.displayName}さんがマジカトロンピッケルを借りました。`);
-			rental_current['mjc_pic'] = 0;
-		} 
+	switch (lendSystemCurrent) {
+		case 'mjc_pic':
+			switch (lendSystemMode) {
+				case 'rental':
+					rental['mjc_pic']++;
+					interaction.reply({
+						content: "マジカトロンピッケルを借りました。ぬるぽ倉庫から取り出してください。",
+						ephemeral: true,
+						fetchReply: true
+					});
+					channelrental.send(`${interaction.member.displayName}さんがマジカトロンピッケルを借りました。`);
+					lendSystemCurrent = none;
+					lendSystemMode = none;
+					break;
+				case 'return':
+					rental['mjc_pic']--;
+					interaction.reply({
+						content: "マジカトロンピッケルを返却しました。あった場所に戻してください。",
+						ephemeral: true,
+						fetchReply: true
+					});
+					channelrental.send(`${interaction.member.displayName}さんがマジカトロンピッケルを返却しました。`);
+					lendSystemCurrent = none;
+					lendSystemMode = none;
+					break;
+			}
 		if (rental_current['mjc_sho'] === 1) {
 			rental['mjc_sho'] = 1;
 			interaction.reply({
@@ -183,16 +199,6 @@ function yes_button(interaction) {
 			rental_current['all_pic'] = 0;
 		}
 		//ここから返却
-		if (return_current['mjc_pic'] === 1) {
-			rental['mjc_pic'] = 0;
-			interaction.reply({
-				content: "マジカトロンピッケルを返却しました。あった場所に戻してください。",
-				ephemeral: true,
-				fetchReply: true
-			});
-			channelrental.send(`${interaction.member.displayName}さんがマジカトロンピッケルを返却しました。`);
-			return_current['mjc_pic'] = 0;
-		}
 		if (return_current['mjc_sho'] === 1) {
 			rental['mjc_sho'] = 0;
 			interaction.reply({
@@ -363,6 +369,7 @@ function yes_button(interaction) {
 			channelrental.send(`${interaction.member.displayName}さんが資源成長型ピッケルX AllCustomを返却しました。`);
 			return_current['all_pic'] = 0;
 		}
-        }
+	}
+}
 
 module.exports = yes_button;
