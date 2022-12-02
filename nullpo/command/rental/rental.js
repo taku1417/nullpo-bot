@@ -8,7 +8,7 @@ function rental_command(interaction) {
 	const buttonyes = new MessageButton().setCustomId('yes').setStyle("SUCCESS").setLabel('はい');
 	const buttonno = new MessageButton().setCustomId('no').setStyle("DANGER").setLabel('いいえ');
 	switch (interaction.options.getString('item_name')) {
-		case 'mjc_pickaxe':
+		case 'mjc_pic':
 			if (rental['mjc_pic'] < maxRental['mjc_pic']) {
 				lendSystemCurrent = 'mjc_pic';
 				lendSystemMode = 'rental';
@@ -24,7 +24,7 @@ function rental_command(interaction) {
 				})
 			}
 			break;
-		case 'mjc_shovel':
+		case 'mjc_sho':
 			if (rental['mjc_sho'] < maxRental['mjc_sho']) {
 				lendSystemCurrent = 'mjc_sho';
 				lendSystemMode = 'rental';
@@ -40,7 +40,7 @@ function rental_command(interaction) {
 				})
 			}
 			break;
-		case 'mjc_sword':
+		case 'mjc_swo':
 			if (rental['mjc_swo'] < maxRental['mjc_swo']) {
 				lendSystemCurrent = 'mjc_swo';
 				lendSystemMode = 'rental';

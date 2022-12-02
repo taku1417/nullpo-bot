@@ -7,7 +7,7 @@ function return_command(interaction){
 	const buttonyes = new MessageButton().setCustomId('yes').setStyle("SUCCESS").setLabel('はい');
 	const buttonno = new MessageButton().setCustomId('no').setStyle("DANGER").setLabel('いいえ');
 	switch (interaction.options.getString('item_name')) {
-	case 'mjc_pickaxe': 
+	case 'mjc_pic': 
 		if (rental['mjc_pic'] >= 1) {
 			lendSystemCurrent = 'mjc_pic';
 			lendSystemMode = 'return';
@@ -23,7 +23,7 @@ function return_command(interaction){
                        	})
                	}
 		break;
-	case 'mjc_shovel':
+	case 'mjc_sho':
 		if (rental['mjc_sho'] >= 1) {
 			lendSystemCurrent = 'mjc_sho';
 			lendSystemMode = 'return';
@@ -39,7 +39,7 @@ function return_command(interaction){
 			})
 		}
 		break;
-	case 'mjc_sword':
+	case 'mjc_swo':
 		if (rental['mjc_swo'] >= 1) {
 			lendSystemCurrent = 'mjc_swo';
 			lendSystemMode = 'return';
