@@ -280,6 +280,230 @@ function rental_command(interaction) {
 				})
 			}
 			break;
+		case 'GR':
+			if (rental['GR'] < maxRental['GR']) {
+				lendSystemCurrent = 'GR';
+				lendSystemMode = 'rental';
+				interaction.reply({
+					content: "GOLD RUSH装備は貸し出しされていません。借りますか？",
+					components: [new MessageActionRow().addComponents(buttonyes, buttonno)],
+					ephemeral: true
+				})
+			} else {
+				interaction.reply({
+					content: "現在GOLD RUSH装備は__貸し出されています__。返却をお待ちください。",
+					ephemeral: true
+				})
+			}
+			break;
+		case 'origin':
+			if (rental['origin'] < maxRental['origin']) {
+				lendSystemCurrent = 'origin';
+				lendSystemMode = 'rental';
+				interaction.reply({
+					content: "原初装備は貸し出しされていません。借りますか？",
+					components: [new MessageActionRow().addComponents(buttonyes, buttonno)],
+					ephemeral: true
+				})
+			} else {
+				interaction.reply({
+					content: "現在原初装備は__貸し出されています__。返却をお待ちください。",
+					ephemeral: true
+				})
+			}
+			break;
+		case 'orichal':
+			if (rental['orichal'] < maxRental['orichal']) {
+				lendSystemCurrent = 'orichal';
+				lendSystemMode = 'rental';
+				interaction.reply({
+					content: "ΟριχαρόνIngot(オリハルコン)装備は貸し出しされていません。借りますか？",
+					components: [new MessageActionRow().addComponents(buttonyes, buttonno)],
+					ephemeral: true
+				})
+			} else {
+				interaction.reply({
+					content: "現在ΟριχαρόνIngot(オリハルコン)装備は__貸し出されています__。返却をお待ちください。",
+					ephemeral: true
+				})
+			}
+			break;
+		case 'youtou':
+			if (rental['youtou'] < maxRental['youtou']) {
+				lendSystemCurrent = 'youtou';
+				lendSystemMode = 'rental';
+				interaction.reply({
+					content: "[復刻]妖刀「白狐」は貸し出しされていません。借りますか？",
+					components: [new MessageActionRow().addComponents(buttonyes, buttonno)],
+					ephemeral: true
+				})
+			} else {
+				interaction.reply({
+					content: "現在[復刻]妖刀「白狐」は__貸し出されています__。返却をお待ちください。",
+					ephemeral: true
+				})
+			}
+			break;
+		case 'gokuen':
+			if (rental['gokuen'] < maxRental['gokuen']) {
+				lendSystemCurrent = 'gokuen';
+				lendSystemMode = 'rental';
+				interaction.reply({
+					content: "思念の獄炎は貸し出しされていません。借りますか？",
+					components: [new MessageActionRow().addComponents(buttonyes, buttonno)],
+					ephemeral: true
+				})
+			} else {
+				interaction.reply({
+					content: "現在思念の獄炎は__貸し出されています__。返却をお待ちください。",
+					ephemeral: true
+				})
+			}
+			break;
+		case 'requiem':
+			if (rental['requiem'] < maxRental['requiem']) {
+				lendSystemCurrent = 'requiem';
+				lendSystemMode = 'rental';
+				interaction.reply({
+					content: "壊世錫杖レクイエムは貸し出しされていません。借りますか？",
+					components: [new MessageActionRow().addComponents(buttonyes, buttonno)],
+					ephemeral: true
+				})
+			} else {
+				interaction.reply({
+					content: "現在壊世錫杖レクイエムは__貸し出されています__。返却をお待ちください。",
+					ephemeral: true
+				})
+			}
+			break;
+		case 'ffggr':
+			if (rental['ffggr'] < maxRental['ffggr']) {
+				lendSystemCurrent = 'ffggr';
+				lendSystemMode = 'rental';
+				interaction.reply({
+					content: "FFGGRロッド Rank4は貸し出しされていません。借りますか？",
+					components: [new MessageActionRow().addComponents(buttonyes, buttonno)],
+					ephemeral: true
+				})
+			} else {
+				interaction.reply({
+					content: "現在FFGGRロッド Rank4は__貸し出されています__。返却をお待ちください。",
+					ephemeral: true
+				})
+			}
+			break;
+		case '枯れた心':
+			if (rental['枯れた心'] < maxRental['枯れた心']) {
+				lendSystemCurrent = '枯れた心';
+				lendSystemMode = 'rental';
+				interaction.reply({
+					content: "枯れた心は貸し出しされていません。借りますか？",
+					components: [new MessageActionRow().addComponents(buttonyes, buttonno)],
+					ephemeral: true
+				})
+			} else {
+				interaction.reply({
+					content: "現在枯れた心は__貸し出されています__。返却をお待ちください。",
+					ephemeral: true
+				})
+			}
+			break;
+		case 'envenom':
+			if (rental['envenom'] < maxRental['envenom']) {
+				lendSystemCurrent = 'envenom';
+				lendSystemMode = 'rental';
+				interaction.reply({
+					content: "Envenom Mergeは貸し出しされていません。借りますか？",
+					components: [new MessageActionRow().addComponents(buttonyes, buttonno)],
+					ephemeral: true
+				})
+			} else {
+				interaction.reply({
+					content: "現在Envenom Mergeは__貸し出されています__。返却をお待ちください。",
+					ephemeral: true
+				})
+			}
+			break;
+		case 'AZI':
+			if (rental['AZI'] < maxRental['AZI']) {
+				lendSystemCurrent = 'AZI';
+				lendSystemMode = 'rental';
+				interaction.reply({
+					content: "【AZI SAVIOR】は貸し出しされていません。借りますか？",
+					components: [new MessageActionRow().addComponents(buttonyes, buttonno)],
+					ephemeral: true
+				})
+			} else {
+				interaction.reply({
+					content: "現在【AZI SAVIOR】は__貸し出されています__。返却をお待ちください。",
+					ephemeral: true
+				})
+			}
+			break;
+		case 'sac':
+			if (rental['sac'] < maxRental['sac']) {
+				lendSystemCurrent = 'sac';
+				lendSystemMode = 'rental';
+				interaction.reply({
+					content: "昇土龍拳サックは貸し出しされていません。借りますか？",
+					components: [new MessageActionRow().addComponents(buttonyes, buttonno)],
+					ephemeral: true
+				})
+			} else {
+				interaction.reply({
+					content: "現在昇土龍拳サックは__貸し出されています__。返却をお待ちください。",
+					ephemeral: true
+				})
+			}
+			break;
+		case 'vega':
+			if (rental['vega'] < maxRental['vega']) {
+				lendSystemCurrent = 'vega';
+				lendSystemMode = 'rental';
+				interaction.reply({
+					content: "星龍の弓_Vega_は貸し出しされていません。借りますか？",
+					components: [new MessageActionRow().addComponents(buttonyes, buttonno)],
+					ephemeral: true
+				})
+			} else {
+				interaction.reply({
+					content: "現在星龍の弓_Vega_は__貸し出されています__。返却をお待ちください。",
+					ephemeral: true
+				})
+			}
+			break;
+		case 'fulldora':
+			if (rental['fulldora'] < maxRental['fulldora']) {
+				lendSystemCurrent = 'fulldora';
+				lendSystemMode = 'rental';
+				interaction.reply({
+					content: "フルドラゴンアーマーチェストプレートは貸し出しされていません。借りますか？",
+					components: [new MessageActionRow().addComponents(buttonyes, buttonno)],
+					ephemeral: true
+				})
+			} else {
+				interaction.reply({
+					content: "現在フルドラゴンアーマーチェストプレートは__貸し出されています__。返却をお待ちください。",
+					ephemeral: true
+				})
+			}
+			break;
+		case '炎廃業':
+			if (rental['炎廃業'] < maxRental['炎廃業']) {
+				lendSystemCurrent = '炎廃業';
+				lendSystemMode = 'rental';
+				interaction.reply({
+					content: "炎廃業は貸し出しされていません。借りますか？",
+					components: [new MessageActionRow().addComponents(buttonyes, buttonno)],
+					ephemeral: true
+				})
+			} else {
+				interaction.reply({
+					content: "現在炎廃業は__貸し出されています__。返却をお待ちください。",
+					ephemeral: true
+				})
+			}
+			break;
 		default:
 			break;
         }

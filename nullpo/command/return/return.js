@@ -278,6 +278,231 @@ function return_command(interaction){
 				ephemeral: true
 			})
 		}
+		break;
+	case 'GR':
+		if (rental['GR'] >= 1) {
+			lendSystemCurrent = 'GR';
+			lendSystemMode = 'return';
+			interaction.reply({
+				content: "GOLD RUSH装備を返却しますか？",
+				components: [new MessageActionRow().addComponents(buttonyes, buttonno)],
+				ephemeral: true
+			})
+		} else {
+			interaction.reply({
+				content: "現在GOLD RUSH装備は貸し出されていません。借りる場合は/rentalを使用してください。",
+				ephemeral: true
+			})
+		}
+		break;
+	case 'origin':
+		if (rental['origin'] >= 1) {
+			lendSystemCurrent = 'origin';
+			lendSystemMode = 'return';
+			interaction.reply({
+				content: "原初装備を返却しますか？",
+				components: [new MessageActionRow().addComponents(buttonyes, buttonno)],
+				ephemeral: true
+			})
+		} else {
+			interaction.reply({
+				content: "現在原初装備は貸し出されていません。借りる場合は/rentalを使用してください。",
+				ephemeral: true
+			})
+		}
+		break;
+	case 'orichal':
+		if (rental['orichal'] >= 1) {
+			lendSystemCurrent = 'orichal';
+			lendSystemMode = 'return';
+			interaction.reply({
+				content: "ΟριχαρόνIngot(オリハルコン)装備を返却しますか？",
+				components: [new MessageActionRow().addComponents(buttonyes, buttonno)],
+				ephemeral: true
+			})
+		} else {
+			interaction.reply({
+				content: "現在ΟριχαρόνIngot(オリハルコン)装備は貸し出されていません。借りる場合は/rentalを使用してください。",
+				ephemeral: true
+			})
+		}
+		break;
+	case 'youtou':
+		if (rental['youtou'] >= 1) {
+			lendSystemCurrent = 'youtou';
+			lendSystemMode = 'return';
+			interaction.reply({
+				content: "[復刻]妖刀「白狐」を返却しますか？",
+				components: [new MessageActionRow().addComponents(buttonyes, buttonno)],
+				ephemeral: true
+			})
+		} else {
+			interaction.reply({
+				content: "現在[復刻]妖刀「白狐」は貸し出されていません。借りる場合は/rentalを使用してください。",
+				ephemeral: true
+			})
+		}
+		break;
+	case 'gokuen':
+		if (rental['gokuen'] >= 1) {
+			lendSystemCurrent = 'gokuen';
+			lendSystemMode = 'return';
+			interaction.reply({
+				content: "思念の獄炎を返却しますか？",
+				components: [new MessageActionRow().addComponents(buttonyes, buttonno)],
+				ephemeral: true
+			})
+		} else {
+			interaction.reply({
+				content: "現在思念の獄炎は貸し出されていません。借りる場合は/rentalを使用してください。",
+				ephemeral: true
+			})
+		}
+		break;
+	case 'requiem':
+		if (rental['requiem'] >= 1) {
+			lendSystemCurrent = 'requiem';
+			lendSystemMode = 'return';
+			interaction.reply({
+				content: "壊世錫杖レクイエムを返却しますか？",
+				components: [new MessageActionRow().addComponents(buttonyes, buttonno)],
+				ephemeral: true
+			})
+		} else {
+			interaction.reply({
+				content: "現在壊世錫杖レクイエムは貸し出されていません。借りる場合は/rentalを使用してください。",
+				ephemeral: true
+			})
+		}
+		break;
+	case 'ffggr':
+		if (rental['ffggr'] >= 1) {
+			lendSystemCurrent = 'ffggr';
+			lendSystemMode = 'return';
+			interaction.reply({
+				content: "FFGGRロッド Rank4を返却しますか？",
+				components: [new MessageActionRow().addComponents(buttonyes, buttonno)],
+				ephemeral: true
+			})
+		} else {
+			interaction.reply({
+				content: "現在FFGGRロッド Rank4は貸し出されていません。借りる場合は/rentalを使用してください。",
+				ephemeral: true
+			})
+		}
+		break;
+	case '枯れた心':
+		if (rental['枯れた心'] >= 1) {
+			lendSystemCurrent = '枯れた心';
+			lendSystemMode = 'return';
+			interaction.reply({
+				content: "枯れた心を返却しますか？",
+				components: [new MessageActionRow().addComponents(buttonyes, buttonno)],
+				ephemeral: true
+			})
+		} else {
+			interaction.reply({
+				content: "現在枯れた心は貸し出されていません。借りる場合は/rentalを使用してください。",
+				ephemeral: true
+			})
+		}
+		break;
+	case 'envenom':
+		if (rental['envenom'] >= 1) {
+			lendSystemCurrent = 'envenom';
+			lendSystemMode = 'return';
+			interaction.reply({
+				content: "Envenom Mergeを返却しますか？",
+				components: [new MessageActionRow().addComponents(buttonyes, buttonno)],
+				ephemeral: true
+			})
+		} else {
+			interaction.reply({
+				content: "現在Envenom Mergeは貸し出されていません。借りる場合は/rentalを使用してください。",
+				ephemeral: true
+			})
+		}
+		break;
+	case 'AZI':
+		if (rental['AZI'] >= 1) {
+			lendSystemCurrent = 'AZI';
+			lendSystemMode = 'return';
+			interaction.reply({
+				content: "【AZI SAVIOR】を返却しますか？",
+				components: [new MessageActionRow().addComponents(buttonyes, buttonno)],
+				ephemeral: true
+			})
+		} else {
+			interaction.reply({
+				content: "現在【AZI SAVIOR】は貸し出されていません。借りる場合は/rentalを使用してください。",
+				ephemeral: true
+			})
+		}
+		break;
+	case 'sac':
+		if (rental['sac'] >= 1) {
+			lendSystemCurrent = 'sac';
+			lendSystemMode = 'return';
+			interaction.reply({
+				content: "昇土龍拳サックを返却しますか？",
+				components: [new MessageActionRow().addComponents(buttonyes, buttonno)],
+				ephemeral: true
+			})
+		} else {
+			interaction.reply({
+				content: "現在昇土龍拳サックは貸し出されていません。借りる場合は/rentalを使用してください。",
+				ephemeral: true
+			})
+		}
+		break;
+	case 'vega':
+		if (rental['vega'] >= 1) {
+			lendSystemCurrent = 'vega';
+			lendSystemMode = 'return';
+			interaction.reply({
+				content: "星龍の弓_Vega_を返却しますか？",
+				components: [new MessageActionRow().addComponents(buttonyes, buttonno)],
+				ephemeral: true
+			})
+		} else {
+			interaction.reply({
+				content: "現在星龍の弓_Vega_は貸し出されていません。借りる場合は/rentalを使用してください。",
+				ephemeral: true
+			})
+		}
+		break;
+	case 'fulldora':
+		if (rental['fulldora'] >= 1) {
+			lendSystemCurrent = 'fulldora';
+			lendSystemMode = 'return';
+			interaction.reply({
+				content: "フルドラゴンアーマーチェストプレートを返却しますか？",
+				components: [new MessageActionRow().addComponents(buttonyes, buttonno)],
+				ephemeral: true
+			})
+		} else {
+			interaction.reply({
+				content: "現在フルドラゴンアーマーチェストプレートは貸し出されていません。借りる場合は/rentalを使用してください。",
+				ephemeral: true
+			})
+		}
+		break;
+	case '炎廃業':
+		if (rental['炎廃業'] >= 1) {
+			lendSystemCurrent = '炎廃業';
+			lendSystemMode = 'return';
+			interaction.reply({
+				content: "炎廃業を返却しますか？",
+				components: [new MessageActionRow().addComponents(buttonyes, buttonno)],
+				ephemeral: true
+			})
+		} else {
+			interaction.reply({
+				content: "現在炎廃業は貸し出されていません。借りる場合は/rentalを使用してください。",
+				ephemeral: true
+			})
+		}
+		break;
 	}
 }
 

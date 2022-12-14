@@ -55,8 +55,8 @@ dbclient.connect()
 	console.log(update_from_db('load','all'));
 	dbclient.end();
 }
-rental = { mjc_pic: 0, mjc_swo: 0, mjc_sho: 0, star_guide: 0,ravan: 0,beer: 0,mrz_iron: 0,mrz_gold: 0,mrz_dia: 0,mrz_eme:0,soul_protection: 0,vortex: 0,haruspe: 0,re_haruspe: 0,moriDoll: 0,MGF: 0,MTF: 0,all_pic: 0};
-maxRental = { mjc_pic: 1, mjc_swo: 1, mjc_sho: 1, star_guide: 1,ravan: 1,beer: 2,mrz_iron: 1,mrz_gold: 1,mrz_dia: 1,mrz_eme:1,soul_protection: 1,vortex: 1,haruspe: 3,re_haruspe: 0,moriDoll: 3,MGF: 1,MTF: 2,all_pic: 2};
+rental = { mjc_pic: 0, mjc_swo: 0, mjc_sho: 0, star_guide: 0,ravan: 0,beer: 0,mrz_iron: 0,mrz_gold: 0,mrz_dia: 0,mrz_eme:0,soul_protection: 0,vortex: 0,haruspe: 0,moriDoll: 0,MGF: 0,MTF: 0,all_pic: 0, GR: 0,origin: 0,orichal: 0,youtou: 0,gokuen: 0,requiem: 0,ffggr: 0,枯れた心: 0,envenom: 0,AZI: 0,sac: 0,vega: 0,fulldora: 0,炎廃業: 0};
+maxRental = { mjc_pic: 1, mjc_swo: 1, mjc_sho: 1, star_guide: 1,ravan: 1,beer: 2,mrz_iron: 1,mrz_gold: 1,mrz_dia: 1,mrz_eme:1,soul_protection: 1,vortex: 1,haruspe: 3,moriDoll: 3,MGF: 1,MTF: 2,all_pic: 2,GR: 1,origin: 1,orichal: 1,youtou: 1,gokuen: 1,requiem: 1,ffggr: 1,枯れた心: 1,envenom: 1,AZI: 1,sac: 1,vega: 1,fulldora: 1,炎廃業: 1};
 lendSystemCurrent = '';
 lendSystemMode = '';
 
@@ -251,6 +251,20 @@ client.once("ready", async () => {//コマンド定義
 				{name:"[復刻]Springスペランカーソード", value:"re_haruspe"},
 				{name:"運上昇Lv5", value:"luck"},
 				{name:"資源成長型ピッケルX AllCustom", value:"all_pic"},
+				{name:"GOLD RUSH装備", value:"GR"},
+				{name:"原初装備", value:"origin"},
+				{name:"ΟριχαρόνIngot(オリハルコン)装備", value:"orichal"},
+				{name:"[復刻]妖刀「白狐」", value:"youtou"},
+				{name:"思念の獄炎", value:"gokuen"},
+				{name:"壊世錫杖レクイエム", value:"requiem"},
+				{name:"ffggrロッド Rank4", value:"ffggr"},
+				{name:"枯れた心", value:"枯れた心"},
+				{name:"Envenom Merge", value:"envenom"},
+				{name:"【AZI SAVIOR】", value:"AZI"},
+				{name:"昇土龍拳サック", value:"sac"},
+				{name:"星龍の弓_Vega_", value:"vega"},
+				{name:"フルドラゴンアーマーチェストプレート", value:"fulldora"},
+				{name:"炎廃業", value:"炎廃業"}
 				]
 			}]
 	},
@@ -278,6 +292,20 @@ client.once("ready", async () => {//コマンド定義
 				{name:"Springスペランカーソード", value:"haruspe"},
 				{name:"運上昇Lv5", value:"moriDoll"},
 				{name:"資源成長型ピッケルX AllCustom", value:"all_pic"},
+				{name:"GOLD RUSH装備", value:"GR"},//ここから
+				{name:"原初装備", value:"origin"},
+				{name:"ΟριχαρόνIngot(オリハルコン)装備", value:"orichal"},
+				{name:"[復刻]妖刀「白狐」", value:"youtou"},
+				{name:"思念の獄炎", value:"gokuen"},
+				{name:"壊世錫杖レクイエム", value:"requiem"},
+				{name:"ffggrロッド Rank4", value:"ffggr"},
+				{name:"枯れた心", value:"枯れた心"},
+				{name:"Envenom Merge", value:"envenom"},
+				{name:"【AZI SAVIOR】", value:"AZI"},
+				{name:"昇土龍拳サック", value:"sac"},
+				{name:"星龍の弓_Vega_", value:"vega"},
+				{name:"フルドラゴンアーマーチェストプレート", value:"fulldora"},
+				{name:"炎廃業", value:"炎廃業"}
 				]
 			}]
 	},
