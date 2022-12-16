@@ -248,7 +248,6 @@ client.once("ready", async () => {//コマンド定義
 				{name:"精霊の加護", value:"soul_protection"},
 				{name:"Vortex Hurricane", value:"vortex"},
 				{name:"Springスペランカーソード", value:"haruspe"},
-				{name:"[復刻]Springスペランカーソード", value:"re_haruspe"},
 				{name:"運上昇Lv5", value:"luck"},
 				{name:"資源成長型ピッケルX AllCustom", value:"all_pic"},
 				{name:"GOLD RUSH装備", value:"GR"},
