@@ -259,12 +259,12 @@ client.once("ready", async () => {//コマンド定義
 				{name:"壊世錫杖レクイエム", value:"requiem"},
 				{name:"ffggrロッド Rank4", value:"ffggr"},
 				{name:"枯れた心", value:"枯れた心"},
-				{name:"Envenom Merge", value:"envenom"},
+				/*{name:"Envenom Merge", value:"envenom"},
 				{name:"【AZI SAVIOR】", value:"AZI"},
 				{name:"昇土龍拳サック", value:"sac"},
 				{name:"星龍の弓_Vega_", value:"vega"},
 				{name:"フルドラゴンアーマーチェストプレート", value:"fulldora"},
-				{name:"炎廃業", value:"炎廃業"}
+				{name:"炎廃業", value:"炎廃業"}*/
 				]
 			}]
 	},
@@ -292,7 +292,7 @@ client.once("ready", async () => {//コマンド定義
 				{name:"Springスペランカーソード", value:"haruspe"},
 				{name:"運上昇Lv5", value:"moriDoll"},
 				{name:"資源成長型ピッケルX AllCustom", value:"all_pic"},
-				{name:"GOLD RUSH装備", value:"GR"},//ここから
+				{name:"GOLD RUSH装備", value:"GR"},
 				{name:"原初装備", value:"origin"},
 				{name:"ΟριχαρόνIngot(オリハルコン)装備", value:"orichal"},
 				{name:"[復刻]妖刀「白狐」", value:"youtou"},
@@ -300,12 +300,12 @@ client.once("ready", async () => {//コマンド定義
 				{name:"壊世錫杖レクイエム", value:"requiem"},
 				{name:"ffggrロッド Rank4", value:"ffggr"},
 				{name:"枯れた心", value:"枯れた心"},
-				{name:"Envenom Merge", value:"envenom"},
+				/*{name:"Envenom Merge", value:"envenom"},
 				{name:"【AZI SAVIOR】", value:"AZI"},
 				{name:"昇土龍拳サック", value:"sac"},
 				{name:"星龍の弓_Vega_", value:"vega"},
 				{name:"フルドラゴンアーマーチェストプレート", value:"fulldora"},
-				{name:"炎廃業", value:"炎廃業"}
+				{name:"炎廃業", value:"炎廃業"}*/
 				]
 			}]
 	},
