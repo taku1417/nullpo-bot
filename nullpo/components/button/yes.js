@@ -2,6 +2,7 @@
 //const client = new Client({intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_MESSAGES]});
 
 function yes_button(interaction) {
+	console.log(lendSystemCurrent + "||" + lendSystemMode);//test用
 	switch (lendSystemCurrent,lendSystemMode) {
 		case 'mjc_pic','rental':		
 			rental['mjc_pic']++;
