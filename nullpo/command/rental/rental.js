@@ -7,6 +7,7 @@ function rental_command(interaction) {
 	//update_from_db("rental");
 	const buttonyes = new MessageButton().setCustomId('yes').setStyle("SUCCESS").setLabel('はい');
 	const buttonno = new MessageButton().setCustomId('no').setStyle("DANGER").setLabel('いいえ');
+	console.log(interaction.options.getString('item_name'));
 	switch (interaction.options.getString('item_name')) {
 		case 'mjc_pic':
 			if (rental['mjc_pic'] < maxRental['mjc_pic']) {
