@@ -7,6 +7,7 @@ itemSearch = item_name => {
 }
 
 function rental_command(interaction) {
+	const id = interaction.options.getString('item_name');
         logger("command");
 	//update_from_db("rental");
 	const buttonyes = new MessageButton().setCustomId('yes').setStyle("SUCCESS").setLabel('はい');
@@ -512,17 +513,17 @@ function rental_command(interaction) {
 		default:
 			break;
         }*/
-	if (rental[item_name] < maxRental[item_name]) {
-		lendSystemCurrent = item_name;
+	if (rental[id] < maxRental[id]) {
+		lendSystemCurrent = id;
 		lendSystemMode = 'rental';
 		interaction.reply({
-			content: itemSearch(item_name) + "は貸し出しされていません。借りますか？",
+			content: itemSearch(id) + "は貸し出しされていません。借りますか？",
 			components: [new MessageActionRow().addComponents(buttonyes, buttonno)],
 			ephemeral: true
 		})	
 	} else {
 		interaction.reply({
-			content: "現在" + itemSearch(item_name) + "は__貸し出されています__。返却をお待ちください。",
+			content: "現在" + itemSearch(id) + "は__貸し出されています__。返却をお待ちください。",
 			ephemeral: true
 		})
 	}
