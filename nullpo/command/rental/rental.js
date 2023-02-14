@@ -1,6 +1,10 @@
 const logger = require('../../log/logger.js');
 const { Client, MessageActionRow, MessageButton, Intents } = require('discord.js');
 const client = new Client({intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS]});
+itemSearch = item_name => {
+	const itemName = ItemList.find(item => item.id === item_name).name;
+	return itemName;
+}
 
 function rental_command(interaction) {
         logger("command");
@@ -8,7 +12,7 @@ function rental_command(interaction) {
 	const buttonyes = new MessageButton().setCustomId('yes').setStyle("SUCCESS").setLabel('はい');
 	const buttonno = new MessageButton().setCustomId('no').setStyle("DANGER").setLabel('いいえ');
 	//console.log(interaction.options.getString('item_name'));
-	switch (interaction.options.getString('item_name')) {
+	/*switch (interaction.options.getString('item_name')) {
 		case 'mjc_pic':
 			if (rental['mjc_pic'] < maxRental['mjc_pic']) {
 				lendSystemCurrent = 'mjc_pic';
@@ -507,7 +511,21 @@ function rental_command(interaction) {
 			break;
 		default:
 			break;
-        }
+        }*/
+	if (rental[item_name] < maxRental[item_name]) {
+		lendSystemCurrent = item_name;
+		lendSystemMode = 'rental';
+		interaction.reply({
+			content: itemSearch(item_name) + "は貸し出しされていません。借りますか？",
+			components: [new MessageActionRow().addComponents(buttonyes, buttonno)],
+			ephemeral: true
+		})	
+	} else {
+		interaction.reply({
+			content: "現在" + itemSearch(item_name) + "は__貸し出されています__。返却をお待ちください。",
+			ephemeral: true
+		})
+	}
 }
 
 module.exports = rental_command;

@@ -59,6 +59,40 @@ rental = { mjc_pic: 0, mjc_swo: 0, mjc_sho: 0, star_guide: 0,ravan: 0,beer: 0,mr
 maxRental = { mjc_pic: 1, mjc_swo: 1, mjc_sho: 1, star_guide: 1,ravan: 1,beer: 2,mrz_iron: 1,mrz_gold: 1,mrz_dia: 1,mrz_eme:1,soul_protection: 1,vortex: 1,haruspe: 3,moriDoll: 3,MGF: 1,MTF: 2,all_pic: 2,GR: 1,origin: 1,orichal: 1,youtou: 1,gokuen: 1,requiem: 1,ffggr: 1,枯れた心: 1,envenom: 1,AZI: 1,sac: 1,vega: 1,fulldora: 1,炎廃業: 1};
 lendSystemCurrent = '';
 lendSystemMode = '';
+ItemList = [
+	{ id: 'mjc_pic', name: 'マジカトロンピッケル'},
+	{ id: 'mjc_sho', name: 'マジカトロンシャベル'},
+	{ id: 'mjc_swo', name: 'マジカトロンソード'},
+	{ id: 'star_guide', name: '星の導き'},
+	{ id: 'ravan', name: '赫灼大斧ラヴァン'},
+	{ id: 'beer', name: 'ビール装備'},
+	{ id: 'MGF', name: 'Master of Gold Fishing装備'},
+	{ id: 'MTF', name: 'Master of Treasure Fishing装備'},
+	{ id: 'mrz_iron', name: 'マスターロッドZアイアンカスタム'},
+	{ id: 'mrz_gold', name: 'マスターロッドZゴールドカスタム'},
+	{ id: 'mrz_dia', name: 'マスターロッドZダイヤカスタム'},
+	{ id: 'mrz_eme', name: 'マスターロッドZエメラルドカスタム'},
+	{ id: 'soul_protection', name: '精霊の加護'},
+	{ id: 'vortex', name: 'Vortex Harricane'},
+	{ id: 'haruspe', name: 'Springスペランカーソード'},
+	{ id: 'moriDoll', name: '幸運森ドール([復刻]BirthdayDoll~Mori01231~)'},
+	{ id: 'all_pic', name: '資源成長型ピッケルX AllCustom'},
+	{ id: 'GR', name: 'GOLD RUSH装備'},
+	{ id: 'origin', name: '原初装備'},
+	{ id: 'orichal', name: 'ΟριχαρόνIngot(オリハルコン)装備'},
+	{ id: 'youtou', name: '[復刻]妖刀「白狐」'},
+	{ id: 'gokuen', name: '思念の獄炎'},
+	{ id: 'requiem', name: '壊世錫杖レクイエム'},
+	{ id: 'ffggr', name: 'ffggrロッド Rank4'},
+	{ id: '枯れた心', name: '枯れた心'},
+	{ id: 'envenom', name: 'Envenom Merge'},
+	{ id: 'AZI', name: '【AZI SAVIOR】'},
+	{ id: 'sac', name: '昇土龍拳サック'},
+	{ id: 'vega', name: '星龍の弓_Vega_'},
+	{ id: 'fulldora', name: 'フルドラゴンアーマーチェストプレート'},
+	{ id: '炎廃業', name: '炎廃業'},
+	//{ id: '', name: ''},
+]
 
 /*ステメメモ
 
