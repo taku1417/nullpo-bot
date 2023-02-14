@@ -233,9 +233,9 @@ client.once("ready", async () => {//コマンド定義
 			description: "貸し出したいアイテムの名前を選択してください。",
 			required: true,
 			choices:[
-				{name:"マジカトロンピッケル", value:"mjc_pickaxe"},
-				{name:"マジカトロンシャベル", value:"mjc_shovel"},
-				{name:"マジカトロンソード", value:"mjc_sword"},
+				{name:"マジカトロンピッケル", value:"mjc_pic"},
+				{name:"マジカトロンシャベル", value:"mjc_sho"},
+				{name:"マジカトロンソード", value:"mjc_swo"},
 				{name:"星の導き", value:"star_guide"},
 				{name:"赫灼大斧ラヴァン", value:"ravan"},
 				{name:"ビール装備", value:"beer"},
