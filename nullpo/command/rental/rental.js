@@ -29,6 +29,7 @@ function rental_command(interaction) {
 					}
 				]
 			}],
+			components: [new MessageActionRow().addComponents(buttonyes, buttonno)],
 			ephemeral : true,
 		})	
 	} else {
