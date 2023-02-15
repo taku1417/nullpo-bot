@@ -17,7 +17,7 @@ function yes_button(interaction) {
 			lendSystemMode = '';
 			break;
 		case 'return':
-			rental[lendSystemCurrent]++;
+			rental[lendSystemCurrent]--;
 			interaction.reply({
 				content: itemSearch(lendSystemCurrent) + "を返却しました。あった場所に戻してください。",
 				ephemeral: true,
