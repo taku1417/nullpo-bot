@@ -17,9 +17,19 @@ function rental_command(interaction) {
 		lendSystemCurrent = id;
 		lendSystemMode = 'rental';
 		interaction.reply({
-			content: itemSearch(id) + "は貸し出しされていません。借りますか？",
-			components: [new MessageActionRow().addComponents(buttonyes, buttonno)],
-			ephemeral: true
+			embeds: [{
+				title: "貸出確認",
+				description: itemSearch(id) + "を借りますか？",
+				color: 0x00ff00,
+				timestamp: new Date(),
+				fields: [
+					{
+						name: "貸し出し可能数",
+						value: (maxRental[id]-rental[id]) + "/" + maxRental[id],
+					}
+				]
+			}],
+			ephemeral : true,
 		})	
 	} else {
 		interaction.reply({
@@ -30,3 +40,10 @@ function rental_command(interaction) {
 }
 
 module.exports = rental_command;
+/*
+{
+			content: itemSearch(id) + "は貸し出しされていません。借りますか？",
+			components: [new MessageActionRow().addComponents(buttonyes, buttonno)],
+			ephemeral: true
+		}
+*/
