@@ -21,7 +21,6 @@ function rental_command(interaction) {
 				title: "貸出確認",
 				description: itemSearch(id) + "を借りますか？",
 				color: 0x00ff00,
-				timestamp: new Date(),
 				fields: [
 					{
 						name: "貸し出し可能数",
