@@ -451,42 +451,7 @@ if (interaction.commandName === 'mori') {
 	if (interaction.customId === 'no') no_button(interaction);
 });
 client.on('messageDelete',async message => {
-	//delete_logger(message);
-	/*const Month = new Date().getMonth()+1,Day = new Date().getDate(),Hour = new Date().getHours(),Min = new Date().getMinutes(),Sec = new Date().getSeconds(),MilliSec = new Date().getMilliseconds(),Hour0 = ('0' + Hour).slice(-2),Min0 = ('0' + Min).slice(-2),Sec0 = ('0' + Sec).slice(-2),MilliSec0 = ('00' + MilliSec).slice(-3);
-        client.channels.cache.get(nullpo_admin_log).send('[delete_logger]実行されています。');
-        const embed = new MessageEmbed()
-        .setTitle('メッセージ削除')
-        .setColor(0xff0000)
-        .setDescription('削除されたメッセージです。')
-        .addField('メッセージ内容', message.content)
-        .addField('チャンネル', message.channel)
-        .setFooter('削除者: ' + message.author.tag + ' | ' + Month + '/' + Day + ' ' + Hour0 + ':' + Min0 + ':' + Sec0 + '.' + MilliSec0)
-        switch(message.guild.id) {
-                case nullpo_server_id:
-                        client.channels.cache.get(nullpo_admin_log).send({embeds: [embed]});
-                        break;
-                case nullpo_casino_server_id:
-                        client.channels.cache.get(nullpo_casino_admin_log).send({embeds: [embed]});
-                        break;
-                default:
-                        break;
-        }*/
-	if (!message.guild) return // メッセージが送信された場所がサーバーでなければ処理しない。
- 
-   	// サーバーの監査ログからメッセージが削除されたものだけを取得。
-  	 const logs = await message.guild.fetchAuditLogs({ type: 'MESSAGE_DELETE' })
- 
-   	const log = logs.entries.find(entry => {
-    	 const targetId = entry.target?.id
-     	if (!targetId || targetId !== message.id) return
-    		const channelId = entry.target?.channelId ?? entry.target?.channel_id
-     		return channelId && channelId === message.channelId
-   	})
- 
-   	const executor = log?.executor ?? message.author // メッセージを削除したユーザーのオブジェクト
- 
-   	// 削除されたメッセージがあったチャンネルにメッセージを削除したユーザーのタグとメッセージを送ったユーザのタグを送信
-   	return message.channel.send(`${executor.tag}が${message.author.tag}のメッセージを削除しました。`)
+	delete_logger(message);
 });
 client.once('ready', () => {
 	client.channels.cache.get(tex_dblog).send('ぬるぽbotが起動しました。');//デバッグ鯖のログに流れる
