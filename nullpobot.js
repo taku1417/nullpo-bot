@@ -450,7 +450,7 @@ if (interaction.commandName === 'mori') {
 	if (interaction.customId === 'yes') yes_button(interaction);
 	if (interaction.customId === 'no') no_button(interaction);
 });
-client.on('messageDelete',async message => {
+client.on('messageDelete', message => {
 	delete_logger(message);
 });
 client.once('ready', () => {
