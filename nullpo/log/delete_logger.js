@@ -5,14 +5,22 @@ const nullpo_admin_log = '997341001809133588',nullpo_casino_admin_log = '1042484
 
 function delete_logger(message) {
         const Month = new Date().getMonth()+1,Day = new Date().getDate(),Hour = new Date().getHours(),Min = new Date().getMinutes(),Sec = new Date().getSeconds(),MilliSec = new Date().getMilliseconds(),Hour0 = ('0' + Hour).slice(-2),Min0 = ('0' + Min).slice(-2),Sec0 = ('0' + Sec).slice(-2),MilliSec0 = ('00' + MilliSec).slice(-3);
-        //client.channels.cache.get(nullpo_admin_log).send('[delete_logger]実行されています。');
-        const embed = new MessageEmbed()
-        .setTitle('メッセージ削除')
-        .setColor(0xff0000)
-        .setDescription('削除されたメッセージです。')
-        .addField('メッセージ内容', message.content)
-        .addField('チャンネル', message.channel)
-        .setFooter('削除者: ' + message.author.tag + ' | ' + Month + '/' + Day + ' ' + Hour0 + ':' + Min0 + ':' + Sec0 + '.' + MilliSec0)
+        //client.channels.cache.get(nullpo_admin_log).send(`[delete_logger]実行されています。`);
+        const embed = {
+                title: 'メッセージ削除',
+                color: 0xff0000,
+                description: '削除されたメッセージです。',
+                fields: [{
+                        name: 'メッセージ内容',
+                        value: message.content,
+                },{
+                        name: 'チャンネル',
+                        value: (message.channel != null ? message.channel : 不明),
+                }],
+                footer: {
+                        text: '削除者: ' + message.author.tag + ' | ' + Month + '/' + Day + ' ' + Hour0 + ':' + Min0 + ':' + Sec0 + '.' + MilliSec0,
+                },
+        };
         switch(message.guild.id) {
                 case nullpo_server_id:
                         client.channels.cache.get(nullpo_admin_log).send({embeds: [embed]});
