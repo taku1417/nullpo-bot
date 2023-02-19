@@ -1,4 +1,4 @@
-const { Client, Intents, Role, MessageEmbed } = require('discord.js');
+const { Client, Intents, Role, MessageEmbed, MessageManager } = require('discord.js');
 const logger = require('./nullpo/log/logger.js');
 const delete_logger = require('./nullpo/log/delete_logger.js');
 all_log = 0,join_log = 0,move_log = 0,leave_log = 0,clock_log = 0,restart_log = 0,command_log = 0,unknown_log = 0;
@@ -13,7 +13,7 @@ const no_button = require('./nullpo/components/button/no.js');
 const nullpo_server_id = '966674976956645407',nullpo_casino_server_id = '1015585928779137105';
 const nullpo_admin_log = '997341001809133588',nullpo_casino_admin_log = '1042484015720042546';
 
-const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_VOICE_STATES, Intents.FLAGS.MESSAGE_CONTENT] });
+const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_VOICE_STATES, Intents.FLAGS.MESSAGE_CONTENT, Intents.FLAGS.GUILD_MESSAGES] });
 client.once('ready', () => {	
 	client.user.setPresence({
 		activities: [{
