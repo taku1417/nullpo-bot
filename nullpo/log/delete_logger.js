@@ -23,10 +23,10 @@ function delete_logger(message) {
         };
         switch(message.guild.id) {
                 case nullpo_server_id:
-                        client.channels.cache.get(nullpo_admin_log).send({embeds: [embed]});
+                        client.guilds.cache.get(nullpo_server_id).channels.cache.get(nullpo_admin_log).send({embeds: [embed]});
                         break;
                 case nullpo_casino_server_id:
-                        client.channels.cache.get(nullpo_casino_admin_log).send({embeds: [embed]});
+                        client.guilds.cache.get(nullpo_casino_server_id).channels.cache.get(nullpo_casino_admin_log).send({embeds: [embed]});
                         break;
                 default:
                         break;
