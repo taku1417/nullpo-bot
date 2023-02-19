@@ -2,6 +2,8 @@ const { Client,Intents,MessageEmbed } = require('discord.js');
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES]});
 const nullpo_server_id = '966674976956645407',nullpo_casino_server_id = '1015585928779137105';
 const nullpo_admin_log = '997341001809133588',nullpo_casino_admin_log = '1042484015720042546';
+const nullpo = client.channels.fetch(nullpo_admin_log).then(channel => console.log(channel.name));
+const nullpocasino = client.channels.fetch(nullpo_casino_admin_log).then(channel => console.log(channel.name));
 
 function delete_logger(message) {
         const Month = new Date().getMonth()+1,Day = new Date().getDate(),Hour = new Date().getHours(),Min = new Date().getMinutes(),Sec = new Date().getSeconds(),MilliSec = new Date().getMilliseconds(),Hour0 = ('0' + Hour).slice(-2),Min0 = ('0' + Min).slice(-2),Sec0 = ('0' + Sec).slice(-2),MilliSec0 = ('00' + MilliSec).slice(-3);
@@ -26,7 +28,7 @@ function delete_logger(message) {
                         client.guilds.cache.get(nullpo_server_id).channels.cache.get(nullpo_admin_log).send({embeds: [embed]});
                         break;
                 case nullpo_casino_server_id:
-                        client.guilds.cache.get(nullpo_casino_server_id).channels.cache.get(nullpo_casino_admin_log).send({embeds: [embed]});
+                        client.guilds.cache.get(nullpo_casino_server_id).channels.cache.get(nullpocasino).send({embeds: [embed]});
                         break;
                 default:
                         break;
