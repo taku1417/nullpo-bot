@@ -247,7 +247,7 @@ client.on('ready', () => {
 client.once("ready", async () => {//コマンド定義
 	const data = [
 		{name: "wiki", description: "公式、非公式アジ鯖wikiページを表示します。"},
-		{name: "test", description: "テスト用コマンドです。bot管理者のみ使用できます。",
+	{name: "test", description: "テスト用コマンドです。bot管理者のみ使用できます。",
 		options: [{
 			type: "SUB_COMMAND",
 			name: "tips",
@@ -259,8 +259,7 @@ client.once("ready", async () => {//コマンド定義
 				required: true
 			}]
 		}]
-	},
-		{name: "rental", description: "共用品の貸借記録をします。",
+	},{name: "rental", description: "共用品の貸借記録をします。",
 		options: [{
 			type: "STRING",
 			name: "item_name",
@@ -300,8 +299,7 @@ client.once("ready", async () => {//コマンド定義
 				{name:"炎廃業", value:"炎廃業"}*/
 				]
 			}]
-	},
-		{name: "return", description: "共用品の返却記録をします。",
+	},{name: "return", description: "共用品の返却記録をします。",
 		options: [{
 			type: "STRING",
 			name: "item_name",
@@ -339,8 +337,8 @@ client.once("ready", async () => {//コマンド定義
 				{name:"星龍の弓_Vega_", value:"vega"},
 				{name:"フルドラゴンアーマーチェストプレート", value:"fulldora"},
 				{name:"炎廃業", value:"炎廃業"}*/
-				]
-			}]
+			]
+		}]
 	},
 /*		{name: "mori", description: "森レイドの時間を指定します。",
 		options: [{
@@ -384,8 +382,7 @@ client.once("ready", async () => {//コマンド定義
 			name: "nofi",
 			description: "nofi test"
 		}]
-	},
-		{name: "recipe", description: "lifeのレシピを参照します。",
+	},{name: "recipe", description: "lifeのレシピを参照します。",
 		options: [{
 			type: "STRING",
 			name: "item_name",
@@ -412,9 +409,9 @@ client.once("ready", async () => {//コマンド定義
 				{name:"アイスソード(極含む)", value:"ice_sword"},
 				{name:"キュアステッキ", value:"cure_stick"},
 				{name:"Godlyマナロッド", value:"godly_mana_rod"}, 
-				]
-			}]
-	},];
+			]
+		}]
+	}];
 	await client.application.commands.set(data, svid);
 	await client.application.commands.set(data2);
 });
@@ -453,9 +450,9 @@ if (interaction.commandName === 'mori') {
 	if (interaction.customId === 'yes') yes_button(interaction);
 	if (interaction.customId === 'no') no_button(interaction);
 });
-client.on('messageDelete', message => {
+client.on('messageDelete',async message => {
 	//delete_logger(message);
-	const Month = new Date().getMonth()+1,Day = new Date().getDate(),Hour = new Date().getHours(),Min = new Date().getMinutes(),Sec = new Date().getSeconds(),MilliSec = new Date().getMilliseconds(),Hour0 = ('0' + Hour).slice(-2),Min0 = ('0' + Min).slice(-2),Sec0 = ('0' + Sec).slice(-2),MilliSec0 = ('00' + MilliSec).slice(-3);
+	/*const Month = new Date().getMonth()+1,Day = new Date().getDate(),Hour = new Date().getHours(),Min = new Date().getMinutes(),Sec = new Date().getSeconds(),MilliSec = new Date().getMilliseconds(),Hour0 = ('0' + Hour).slice(-2),Min0 = ('0' + Min).slice(-2),Sec0 = ('0' + Sec).slice(-2),MilliSec0 = ('00' + MilliSec).slice(-3);
         client.channels.cache.get(nullpo_admin_log).send('[delete_logger]実行されています。');
         const embed = new MessageEmbed()
         .setTitle('メッセージ削除')
@@ -473,7 +470,23 @@ client.on('messageDelete', message => {
                         break;
                 default:
                         break;
-        }
+        }*/
+	if (!message.guild) return // メッセージが送信された場所がサーバーでなければ処理しない。
+ 
+   	// サーバーの監査ログからメッセージが削除されたものだけを取得。
+  	 const logs = await message.guild.fetchAuditLogs({ type: 'MESSAGE_DELETE' })
+ 
+   	const log = logs.entries.find(entry => {
+    	 const targetId = entry.target?.id
+     	if (!targetId || targetId !== message.id) return
+    		const channelId = entry.target?.channelId ?? entry.target?.channel_id
+     		return channelId && channelId === message.channelId
+   	})
+ 
+   	const executor = log?.executor ?? message.author // メッセージを削除したユーザーのオブジェクト
+ 
+   	// 削除されたメッセージがあったチャンネルにメッセージを削除したユーザーのタグとメッセージを送ったユーザのタグを送信
+   	return message.channel.send(`${executor.tag}が${message.author.tag}のメッセージを削除しました。`)
 });
 client.once('ready', () => {
 	client.channels.cache.get(tex_dblog).send('ぬるぽbotが起動しました。');//デバッグ鯖のログに流れる
