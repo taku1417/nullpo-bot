@@ -455,8 +455,9 @@ client.on('messageDelete', message => {
         //client.channels.cache.get(nullpo_admin_log).send(`[delete_logger]実行されています。`);
 	const channelinput = (message.channel != null ? String(message.channel) : '不明');
         const embed = {
+		author: String(message.author),
                 title: 'メッセージ削除',
-                color: 0xff0000,
+                color: 0xCC0000,
                 description: '削除されたメッセージです。',
                 fields: [{
                         name: 'メッセージ内容',
