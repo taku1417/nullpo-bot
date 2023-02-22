@@ -454,6 +454,7 @@ client.on('messageDelete', message => {
 	logger("delete");
 	const Month = new Date().getMonth()+1,Day = new Date().getDate(),Hour = new Date().getHours(),Min = new Date().getMinutes(),Sec = new Date().getSeconds(),Hour0 = ('0' + Hour).slice(-2),Min0 = ('0' + Min).slice(-2),Sec0 = ('0' + Sec).slice(-2),Year = new Date().getFullYear();
 	const author_with_nick = (message.member.nickname != null ? (message.author.tag + ' (' + message.member.nickname + ')') : message.author.tag);
+	const has_content = (message.attachments.first().contentType?.startsWith("image" || "movie") ? true : false);
 	//const channelInput = (message.channel != null ? String(message.channel) : '不明なチャンネル');
         const embed = {
                 color: 0xCC0000,
@@ -483,6 +484,17 @@ client.on('messageDelete', message => {
                         break;
                 case nullpo_debug_server_id:
                         client.guilds.cache.get(nullpo_debug_server_id).channels.cache.get(nullpo_debug_test).send({embeds: [embed]});
+			if(has_content == true) {
+				client.guilds.cache.get(nullpo_debug_server_id).channels.cache.get(nullpo_debug_test).send({
+				embeds: [{
+					content: {
+						files: [{
+							attachment: message.attachments.first().url
+						}]
+					}
+				}]});
+			}
+			break;
                 default:
                         break;
         }
