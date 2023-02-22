@@ -453,7 +453,7 @@ if (interaction.commandName === 'mori') {
 client.on('messageDelete', message => {
 	const Month = new Date().getMonth()+1,Day = new Date().getDate(),Hour = new Date().getHours(),Min = new Date().getMinutes(),Sec = new Date().getSeconds(),MilliSec = new Date().getMilliseconds(),Hour0 = ('0' + Hour).slice(-2),Min0 = ('0' + Min).slice(-2),Sec0 = ('0' + Sec).slice(-2),MilliSec0 = ('00' + MilliSec).slice(-3);
         //client.channels.cache.get(nullpo_admin_log).send(`[delete_logger]実行されています。`);
-	const channelinput = (message.channel != null ? message.channel : 不明);
+	const channelinput = (message.channel != null ? message.channel : '不明');
         const embed = {
                 title: 'メッセージ削除',
                 color: 0xff0000,
