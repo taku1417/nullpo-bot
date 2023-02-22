@@ -454,7 +454,6 @@ client.on('messageDelete', message => {
 	const Month = new Date().getMonth()+1,Day = new Date().getDate(),Hour = new Date().getHours(),Min = new Date().getMinutes(),Sec = new Date().getSeconds(),Hour0 = ('0' + Hour).slice(-2),Min0 = ('0' + Min).slice(-2),Sec0 = ('0' + Sec).slice(-2),Year = new Date().getFullYear();
 	//const channelInput = (message.channel != null ? String(message.channel) : '不明なチャンネル');
         const embed = {
-                title: 'メッセージ削除',
                 color: 0xCC0000,
                 description: String(message.channel) + 'にてメッセージが削除されました。',
                 author: {
