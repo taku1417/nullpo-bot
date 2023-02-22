@@ -451,6 +451,7 @@ if (interaction.commandName === 'mori') {
 	if (interaction.customId === 'no') no_button(interaction);
 });
 client.on('messageDelete', message => {
+	logger("delete");
 	const Month = new Date().getMonth()+1,Day = new Date().getDate(),Hour = new Date().getHours(),Min = new Date().getMinutes(),Sec = new Date().getSeconds(),Hour0 = ('0' + Hour).slice(-2),Min0 = ('0' + Min).slice(-2),Sec0 = ('0' + Sec).slice(-2),Year = new Date().getFullYear();
 	const author_with_nick = (message.member.nickname != null ? (message.author.tag + ' (' + message.member.nickname + ')') : message.author.tag);
 	//const channelInput = (message.channel != null ? String(message.channel) : '不明なチャンネル');
