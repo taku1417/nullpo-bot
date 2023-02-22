@@ -453,22 +453,22 @@ if (interaction.commandName === 'mori') {
 client.on('messageDelete', message => {
 	const Month = new Date().getMonth()+1,Day = new Date().getDate(),Hour = new Date().getHours(),Min = new Date().getMinutes(),Sec = new Date().getSeconds(),MilliSec = new Date().getMilliseconds(),Hour0 = ('0' + Hour).slice(-2),Min0 = ('0' + Min).slice(-2),Sec0 = ('0' + Sec).slice(-2),MilliSec0 = ('00' + MilliSec).slice(-3);
         //client.channels.cache.get(nullpo_admin_log).send(`[delete_logger]実行されています。`);
-	const channelinput = (message.channel != null ? String(message.channel) : '不明');
+	const channelInput = (message.channel != null ? String(message.channel) : '不明');
         const embed = {
-		author: String(message.author),
-                title: 'メッセージ削除',
+                title: String(message.author.tag),
                 color: 0xCC0000,
-                description: '削除されたメッセージです。',
+                description: channelInput + 'にてメッセージが削除されました。',
                 fields: [{
                         name: 'メッセージ内容',
                         value: message.content,
                 },{
-                        name: 'チャンネル',
-                        value: channelinput,
-                }],
-                footer: {
-                        text: '削除者: ' + message.author.tag + ' | ' + Month + '/' + Day + ' ' + Hour0 + ':' + Min0 + ':' + Sec0 + '.' + MilliSec0,
-                },
+			name: '日付',
+			value: Month + '/' + Day + ' ' + Hour0 + ':' + Min0 + ':' + Sec0 + '(JST)',
+		},{
+			name: 'メッセージID',
+			value: message.id,
+		}],
+                timestamp: new Date(),
         };
         switch(message.guild.id) {
                 case nullpo_server_id:
