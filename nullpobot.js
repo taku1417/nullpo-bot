@@ -483,15 +483,11 @@ client.on('messageDelete', message => {
                         client.guilds.cache.get(nullpo_casino_server_id).channels.cache.get(nullpo_casino_admin_log).send({embeds: [embed]});
                         break;
                 case nullpo_debug_server_id:
-                        client.guilds.cache.get(nullpo_debug_server_id).channels.cache.get(nullpo_debug_test).send({embeds: [embed]});
+                        var msgembed = client.guilds.cache.get(nullpo_debug_server_id).channels.cache.get(nullpo_debug_test).send({embeds: [embed]});
 			if(has_content == true) {
-				client.guilds.cache.get(nullpo_debug_server_id).channels.cache.get(nullpo_debug_test).send({
+				msgembed.edit({
 				embeds: [{
-					content: {
-						files: [{
-							attachment: message.attachments.first().url
-						}]
-					}
+					image: message.attachments.first().url
 				}]});
 			}
 			break;
