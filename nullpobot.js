@@ -10,8 +10,8 @@ const rental_command = require('./nullpo/command/rental/rental.js');
 const return_command = require('./nullpo/command/return/return.js');
 const yes_button = require('./nullpo/components/button/yes.js');
 const no_button = require('./nullpo/components/button/no.js');
-const nullpo_server_id = '966674976956645407',nullpo_casino_server_id = '1015585928779137105';
-const nullpo_admin_log = '997341001809133588',nullpo_casino_admin_log = '1042484015720042546';
+const nullpo_server_id = '966674976956645407',nullpo_casino_server_id = '1015585928779137105',nullpo_debug_server_id = '979084665958834216';
+const nullpo_admin_log = '997341001809133588',nullpo_casino_admin_log = '1042484015720042546',nullpo_debug_test = '986475538770194432';
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_VOICE_STATES, Intents.FLAGS.MESSAGE_CONTENT, Intents.FLAGS.GUILD_MESSAGES] });
 client.once('ready', () => {	
@@ -451,13 +451,16 @@ if (interaction.commandName === 'mori') {
 	if (interaction.customId === 'no') no_button(interaction);
 });
 client.on('messageDelete', message => {
-	/* const Month = new Date().getMonth()+1,Day = new Date().getDate(),Hour = new Date().getHours(),Min = new Date().getMinutes(),Sec = new Date().getSeconds(),Hour0 = ('0' + Hour).slice(-2),Min0 = ('0' + Min).slice(-2),Sec0 = ('0' + Sec).slice(-2),Year = new Date().getFullYear();
-        //client.channels.cache.get(nullpo_admin_log).send(`[delete_logger]実行されています。`);
-	const channelInput = (message.channel != null ? String(message.channel) : '不明');
+	const Month = new Date().getMonth()+1,Day = new Date().getDate(),Hour = new Date().getHours(),Min = new Date().getMinutes(),Sec = new Date().getSeconds(),Hour0 = ('0' + Hour).slice(-2),Min0 = ('0' + Min).slice(-2),Sec0 = ('0' + Sec).slice(-2),Year = new Date().getFullYear();
+	//const channelInput = (message.channel != null ? String(message.channel) : '不明なチャンネル');
         const embed = {
-                title: String(message.author.tag),
+                title: 'メッセージ削除',
                 color: 0xCC0000,
-                description: channelInput + 'にてメッセージが削除されました。',
+                description: String(message.channel) + 'にてメッセージが削除されました。',
+                author: {
+                        name: message.author.tag,
+                        icon_url: message.author.avatarURL(),
+                },
                 fields: [{
                         name: 'メッセージ内容',
                         value: message.content,
@@ -477,10 +480,12 @@ client.on('messageDelete', message => {
                 case nullpo_casino_server_id:
                         client.guilds.cache.get(nullpo_casino_server_id).channels.cache.get(nullpo_casino_admin_log).send({embeds: [embed]});
                         break;
+                case nullpo_debug_server_id:
+                        client.guilds.cache.get(nullpo_debug_server_id).channels.cache.get(nullpo_debug_test).send({embeds: [embed]});
                 default:
                         break;
-        }*/
-	delete_logger(message);
+        }
+	//delete_logger(message);
 });
 client.once('ready', () => {
 	client.channels.cache.get(tex_dblog).send('ぬるぽbotが起動しました。');//デバッグ鯖のログに流れる
