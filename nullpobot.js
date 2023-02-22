@@ -452,12 +452,13 @@ if (interaction.commandName === 'mori') {
 });
 client.on('messageDelete', message => {
 	const Month = new Date().getMonth()+1,Day = new Date().getDate(),Hour = new Date().getHours(),Min = new Date().getMinutes(),Sec = new Date().getSeconds(),Hour0 = ('0' + Hour).slice(-2),Min0 = ('0' + Min).slice(-2),Sec0 = ('0' + Sec).slice(-2),Year = new Date().getFullYear();
+	const author_with_nick = (message.member.nickname != null ? (message.author.tag + ' (' + message.member.nickname + ')') : message.author.tag);
 	//const channelInput = (message.channel != null ? String(message.channel) : '不明なチャンネル');
         const embed = {
                 color: 0xCC0000,
                 description: String(message.channel) + 'にてメッセージが削除されました。',
                 author: {
-                        name: message.author.tag,
+                        name: author_with_nick,
                         icon_url: message.author.avatarURL(),
                 },
                 fields: [{
