@@ -1,7 +1,7 @@
 const { Client, Intents, Role, MessageEmbed, MessageManager } = require('discord.js');
 const logger = require('./nullpo/log/logger.js');
 const delete_logger = require('./nullpo/log/delete_logger.js');
-all_log = 0,join_log = 0,move_log = 0,leave_log = 0,clock_log = 0,restart_log = 0,command_log = 0,unknown_log = 0;
+all_log = 0,join_log = 0,move_log = 0,leave_log = 0,clock_log = 0,restart_log = 0,command_log = 0,delete_log = 0,unknown_log = 0;
 const dice = require('./nullpo/command/dice/dice.js');
 const update_from_db = require('./nullpo/components/update_from_db.js');
 const print = require('./nullpo/command/recipe/print.js');
