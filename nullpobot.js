@@ -459,7 +459,7 @@ client.on('messageDelete', message => {
                 .setColor('#ff0000')
                 .setDescription('削除されたメッセージです。')
                 .addField('メッセージ内容',message.content)
-		.addField('チャンネル',channelinput)
+		//.addField('チャンネル',channelinput)
                 .setFooter('削除者: ' + message.author.tag + ' | ' + Month + '/' + Day + ' ' + Hour0 + ':' + Min0 + ':' + Sec0 + '.' + MilliSec0, message.author.displayAvatarURL());
         switch(message.guild.id) {
                 case nullpo_server_id:
