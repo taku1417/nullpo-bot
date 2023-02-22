@@ -487,6 +487,7 @@ client.on('messageDelete', message => {
 				if(has_content == true) {
 					msg.edit({
 					embeds: [{
+						description: String(message.channel) + 'にてメッセージが削除されました。',
 						image: message.attachments.first().url
 					}]})
 				}
