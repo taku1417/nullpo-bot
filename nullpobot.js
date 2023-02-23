@@ -1,4 +1,8 @@
 const { Client, Intents, Role, MessageEmbed, MessageManager } = require('discord.js');
+if(process.env.NODE_ENV !== 'heroku') {
+	process.env.NODE_ENV === 'default';
+} 
+const config = require('config');
 const logger = require('./nullpo/log/logger.js');
 const delete_logger = require('./nullpo/log/delete_logger.js');
 all_log = 0,join_log = 0,move_log = 0,leave_log = 0,clock_log = 0,restart_log = 0,command_log = 0,delete_log = 0,unknown_log = 0;
@@ -538,10 +542,20 @@ const tryLogin = function(){
 }
 setInterval(tryLogin,15000);//15秒ごとにtryLoginを実行
 */
-try {
-	client.login();//ログイン
-	console.log('Discordサービスへの接続に成功しました。');
-} catch (error) {
-	console.error('Discordサービスへの接続に失敗。プロセスを終了します。',error);
-	process.exit(1);
+if(process.env.NODE_ENV === 'heroku'){
+	try {
+		client.login();//ログイン
+		console.log('Discordサービスへの接続に成功しました。');
+	} catch (error) {
+		console.error('Discordサービスへの接続に失敗。プロセスを終了します。',error);
+		process.exit(1);
+	}	
+} else {
+	try {
+		client.login(config.get('DISCORD_TOKEN'));//ログイン
+		console.log('Discordサービスへの接続に成功しました。');
+	} catch (error) {
+		console.error('Discordサービスへの接続に失敗。プロセスを終了します。',error);
+		process.exit(1);
+	}	
 }

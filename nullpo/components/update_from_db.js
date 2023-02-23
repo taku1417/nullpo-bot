@@ -1,12 +1,25 @@
 const dbClient = require('pg/lib/client');
-const dbclient = new dbClient({
-	user: process.env.DATABASE_USER,
-	password: process.env.DATABASE_PASS,
-	host: process.env.DATABASE_HOST,
-	port: 5432,
-	database: process.env.DATABASE,
-	ssl: true
-});
+const config = require('config');
+let dbclient;
+if(process.env.NODE_ENV === "heroku"){
+        dbclient = new dbClient({
+	        user: process.env.DATABASE_USER,
+	        password: process.env.DATABASE_PASS,
+	        host: process.env.DATABASE_HOST,
+	        port: 5432,
+	        database: process.env.DATABASE,
+	        ssl: true
+        });
+} else {
+        dbclient = new dbClient({
+                user: config.get('DATABASE_USER'),
+                password: config.get('DATABASE_PASS'),
+                host: config.get('DATABASE_HOST'),
+                port: 5432,
+                database: config.get('DATABASE'),
+                ssl: true
+        });
+}
 
 function update_from_db(mode,type){
         var query = "SELECT * FROM rental;";

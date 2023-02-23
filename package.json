@@ -7,5 +7,8 @@
     "pg": "^8.7.3",
     "pify": "^6.0.0",
     "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "config": "^3.3.9"
   }
 }

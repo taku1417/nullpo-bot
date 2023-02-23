@@ -6,3 +6,4 @@ nullpo.exe.lnk
 config.json
 debug/
 .vscode/settings.json
+config/
