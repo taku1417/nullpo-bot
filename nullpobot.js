@@ -518,7 +518,24 @@ client.on('ready', () => {
 			}],
 			status: "online"
 			});
-		}, 3000)
+		setTimeout(() => {
+			if(process.env.NODE_ENV === 'heroku'){
+				client.user.setPresence({
+					activities: [{
+						name: `nullpo bot | herokuで動作中`,
+						}],
+					status: "online"
+				});
+			} else {
+				client.user.setPresence({
+					activities: [{
+						name: `nullpo bot | ローカルで動作中`,
+						}],
+					status: "online"
+				});
+			}
+		}, 15000);
+	}, 20000)
 });
 /*
 const tryLogin = function(){
