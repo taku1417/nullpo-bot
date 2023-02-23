@@ -495,12 +495,17 @@ client.on('messageDelete', message => {
                         client.guilds.cache.get(nullpo_debug_server_id).channels.cache.get(nullpo_debug_test).send({embeds: [embed]}).then(msg => {
 				if(has_content == true) {
 					msg.edit({
-					embeds: [{
-						description: String(message.channel) + 'にてメッセージが削除されました。',
-						image: message.attachments.first().url
-					}]})
+						embeds: [{
+							description: String(message.channel) + 'にてメッセージが削除されました。',
+							files: [
+								//Array.from(message.attachments.values())
+							],
+						}]
+					})
 				}
 			});
+			const atta = message.attachments;
+			console.log(Array.from(atta.values()));
 			break;
                 default:
                         break;
