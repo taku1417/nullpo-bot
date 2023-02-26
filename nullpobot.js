@@ -1,4 +1,6 @@
-const { Client, Intents, Role, MessageEmbed, MessageManager } = require('discord.js');
+const { Client, Intents, Role, MessageEmbed, MessageManager, } = require('discord.js');
+const { ApplicationCommandTypes } = require('discord.js/src/util/Constants');
+const { ContextMenuCommandBuilder } = require('@discordjs/builders');
 if(process.env.NODE_ENV !== 'heroku') {
 	process.env.NODE_ENV === 'default';
 } 
@@ -251,7 +253,7 @@ client.on('ready', () => {
 client.once("ready", async () => {//コマンド定義
 	const data = [
 		{name: "wiki", description: "公式、非公式アジ鯖wikiページを表示します。"},
-	{name: "test", description: "テスト用コマンドです。bot管理者のみ使用できます。",
+		{name: "test", description: "テスト用コマンドです。bot管理者のみ使用できます。",
 		options: [{
 			type: "SUB_COMMAND",
 			name: "tips",
@@ -263,87 +265,87 @@ client.once("ready", async () => {//コマンド定義
 				required: true
 			}]
 		}]
-	},{name: "rental", description: "共用品の貸借記録をします。",
-		options: [{
-			type: "STRING",
-			name: "item_name",
-			description: "貸し出したいアイテムの名前を選択してください。",
-			required: true,
-			choices:[
-				{name:"マジカトロンピッケル", value:"mjc_pic"},
-				{name:"マジカトロンシャベル", value:"mjc_sho"},
-				{name:"マジカトロンソード", value:"mjc_swo"},
-				{name:"星の導き", value:"star_guide"},
-				{name:"赫灼大斧ラヴァン", value:"ravan"},
-				{name:"ビール装備", value:"beer"},
-				{name:"Master of Gold Fishing装備", value:"MGF"},
-				{name:"Master of Treasure Fishing装備", value:"MTF"},
-				{name:"マスターロッドZアイアンカスタム", value:"mrz_iron"},
-				{name:"マスターロッドZゴールドカスタム", value:"mrz_gold"},
-				{name:"マスターロッドZダイヤカスタム", value:"mrz_dia"},
-				{name:"マスターロッドZエメラルドカスタム", value:"mrz_eme"},
-				{name:"精霊の加護", value:"soul_protection"},
-				{name:"Vortex Hurricane", value:"vortex"},
-				{name:"Springスペランカーソード", value:"haruspe"},
-				{name:"運上昇Lv5", value:"luck"},
-				{name:"資源成長型ピッケルX AllCustom", value:"all_pic"},
-				{name:"GOLD RUSH装備", value:"GR"},
-				{name:"原初装備", value:"origin"},
-				{name:"ΟριχαρόνIngot(オリハルコン)装備", value:"orichal"},
-				{name:"[復刻]妖刀「白狐」", value:"youtou"},
-				{name:"思念の獄炎", value:"gokuen"},
-				{name:"壊世錫杖レクイエム", value:"requiem"},
-				{name:"ffggrロッド Rank4", value:"ffggr"},
-				{name:"枯れた心", value:"枯れた心"},
-				/*{name:"Envenom Merge", value:"envenom"},
-				{name:"【AZI SAVIOR】", value:"AZI"},
-				{name:"昇土龍拳サック", value:"sac"},
-				{name:"星龍の弓_Vega_", value:"vega"},
-				{name:"フルドラゴンアーマーチェストプレート", value:"fulldora"},
-				{name:"炎廃業", value:"炎廃業"}*/
+		},{name: "rental", description: "共用品の貸借記録をします。",
+			options: [{
+				type: "STRING",
+				name: "item_name",
+				description: "貸し出したいアイテムの名前を選択してください。",
+				required: true,
+				choices:[
+					{name:"マジカトロンピッケル", value:"mjc_pic"},
+					{name:"マジカトロンシャベル", value:"mjc_sho"},
+					{name:"マジカトロンソード", value:"mjc_swo"},
+					{name:"星の導き", value:"star_guide"},
+					{name:"赫灼大斧ラヴァン", value:"ravan"},
+					{name:"ビール装備", value:"beer"},
+					{name:"Master of Gold Fishing装備", value:"MGF"},
+					{name:"Master of Treasure Fishing装備", value:"MTF"},
+					{name:"マスターロッドZアイアンカスタム", value:"mrz_iron"},
+					{name:"マスターロッドZゴールドカスタム", value:"mrz_gold"},
+					{name:"マスターロッドZダイヤカスタム", value:"mrz_dia"},
+					{name:"マスターロッドZエメラルドカスタム", value:"mrz_eme"},
+					{name:"精霊の加護", value:"soul_protection"},
+					{name:"Vortex Hurricane", value:"vortex"},
+					{name:"Springスペランカーソード", value:"haruspe"},
+					{name:"運上昇Lv5", value:"luck"},
+					{name:"資源成長型ピッケルX AllCustom", value:"all_pic"},
+					{name:"GOLD RUSH装備", value:"GR"},
+					{name:"原初装備", value:"origin"},
+					{name:"ΟριχαρόνIngot(オリハルコン)装備", value:"orichal"},
+					{name:"[復刻]妖刀「白狐」", value:"youtou"},
+					{name:"思念の獄炎", value:"gokuen"},
+					{name:"壊世錫杖レクイエム", value:"requiem"},
+					{name:"ffggrロッド Rank4", value:"ffggr"},
+					{name:"枯れた心", value:"枯れた心"},
+					/*{name:"Envenom Merge", value:"envenom"},
+					{name:"【AZI SAVIOR】", value:"AZI"},
+					{name:"昇土龍拳サック", value:"sac"},
+					{name:"星龍の弓_Vega_", value:"vega"},
+					{name:"フルドラゴンアーマーチェストプレート", value:"fulldora"},
+					{name:"炎廃業", value:"炎廃業"}*/
 				]
 			}]
-	},{name: "return", description: "共用品の返却記録をします。",
-		options: [{
-			type: "STRING",
-			name: "item_name",
-			description: "返却したいアイテムの名前を選択してください。",
-			required: true,
-			choices:[
-				{name:"マジカトロンピッケル", value:"mjc_pic"},
-				{name:"マジカトロンシャベル", value:"mjc_sho"},
-				{name:"マジカトロンソード", value:"mjc_swo"},
-				{name:"星の導き", value:"star_guide"},
-				{name:"赫灼大斧ラヴァン", value:"ravan"},
-				{name:"ビール装備", value:"beer"},
-				{name:"Master of Gold Fishing装備", value:"MGF"},
-				{name:"Master of Treasure Fishing装備", value:"MTF"},
-				{name:"マスターロッドZアイアンカスタム", value:"mrz_iron"},
-				{name:"マスターロッドZゴールドカスタム", value:"mrz_gold"},
-				{name:"マスターロッドZダイヤカスタム", value:"mrz_dia"},
-				{name:"マスターロッドZエメラルドカスタム", value:"mrz_eme"},
-				{name:"精霊の加護", value:"soul_protection"},
-				{name:"Vortex Hurricane", value:"vortex"},
-				{name:"Springスペランカーソード", value:"haruspe"},
-				{name:"運上昇Lv5", value:"moriDoll"},
-				{name:"資源成長型ピッケルX AllCustom", value:"all_pic"},
-				{name:"GOLD RUSH装備", value:"GR"},
-				{name:"原初装備", value:"origin"},
-				{name:"ΟριχαρόνIngot(オリハルコン)装備", value:"orichal"},
-				{name:"[復刻]妖刀「白狐」", value:"youtou"},
-				{name:"思念の獄炎", value:"gokuen"},
-				{name:"壊世錫杖レクイエム", value:"requiem"},
-				{name:"ffggrロッド Rank4", value:"ffggr"},
-				{name:"枯れた心", value:"枯れた心"},
-				/*{name:"Envenom Merge", value:"envenom"},
-				{name:"【AZI SAVIOR】", value:"AZI"},
-				{name:"昇土龍拳サック", value:"sac"},
-				{name:"星龍の弓_Vega_", value:"vega"},
-				{name:"フルドラゴンアーマーチェストプレート", value:"fulldora"},
-				{name:"炎廃業", value:"炎廃業"}*/
-			]
-		}]
-	},
+		},{name: "return", description: "共用品の返却記録をします。",
+			options: [{
+				type: "STRING",
+				name: "item_name",
+				description: "返却したいアイテムの名前を選択してください。",
+				required: true,
+				choices:[
+					{name:"マジカトロンピッケル", value:"mjc_pic"},
+					{name:"マジカトロンシャベル", value:"mjc_sho"},
+					{name:"マジカトロンソード", value:"mjc_swo"},
+					{name:"星の導き", value:"star_guide"},
+					{name:"赫灼大斧ラヴァン", value:"ravan"},
+					{name:"ビール装備", value:"beer"},
+					{name:"Master of Gold Fishing装備", value:"MGF"},
+					{name:"Master of Treasure Fishing装備", value:"MTF"},
+					{name:"マスターロッドZアイアンカスタム", value:"mrz_iron"},
+					{name:"マスターロッドZゴールドカスタム", value:"mrz_gold"},
+					{name:"マスターロッドZダイヤカスタム", value:"mrz_dia"},
+					{name:"マスターロッドZエメラルドカスタム", value:"mrz_eme"},
+					{name:"精霊の加護", value:"soul_protection"},
+					{name:"Vortex Hurricane", value:"vortex"},
+					{name:"Springスペランカーソード", value:"haruspe"},
+					{name:"運上昇Lv5", value:"moriDoll"},
+					{name:"資源成長型ピッケルX AllCustom", value:"all_pic"},
+					{name:"GOLD RUSH装備", value:"GR"},
+					{name:"原初装備", value:"origin"},
+					{name:"ΟριχαρόνIngot(オリハルコン)装備", value:"orichal"},
+					{name:"[復刻]妖刀「白狐」", value:"youtou"},
+					{name:"思念の獄炎", value:"gokuen"},
+					{name:"壊世錫杖レクイエム", value:"requiem"},
+					{name:"ffggrロッド Rank4", value:"ffggr"},
+					{name:"枯れた心", value:"枯れた心"},
+					/*{name:"Envenom Merge", value:"envenom"},
+					{name:"【AZI SAVIOR】", value:"AZI"},
+					{name:"昇土龍拳サック", value:"sac"},
+					{name:"星龍の弓_Vega_", value:"vega"},
+					{name:"フルドラゴンアーマーチェストプレート", value:"fulldora"},
+					{name:"炎廃業", value:"炎廃業"}*/
+				]
+			}]
+		},
 /*		{name: "mori", description: "森レイドの時間を指定します。",
 		options: [{
 			type: "INTEGER",
@@ -351,35 +353,35 @@ client.once("ready", async () => {//コマンド定義
 			description: "レイドが終了した時間を分で指定してください。",
 			required: true
 		}]
-	},
+		},
 */
 		{name: "dice",description: "ダイスを振ります。",
-		options: [{
-			type: "SUB_COMMAND",
-			name: "tintiro",
-			description: "チンチロリンの形式でダイスを振ります。",
-		},{
-			type: "SUB_COMMAND",
-			name: "100",
-			description: "100式ダイスを振ります。",
-		},{
-			type: "SUB_COMMAND",
-			name: "custom",
-			description: "カスタムするダイスを振ります。",
 			options: [{
-				type: "INTEGER",
-				name: "個数",
-				description: "振るダイスの個数を指定してください。",
-				required: true
+				type: "SUB_COMMAND",
+				name: "tintiro",
+				description: "チンチロリンの形式でダイスを振ります。",
 			},{
-				type: "INTEGER",
-				name: "最大値",
-				description: "振るダイスの最大値を指定してください。",
-				required: true
+				type: "SUB_COMMAND",
+				name: "100",
+				description: "100式ダイスを振ります。",
+			},{
+				type: "SUB_COMMAND",
+				name: "custom",
+				description: "カスタムするダイスを振ります。",
+				options: [{
+					type: "INTEGER",
+					name: "個数",
+					description: "振るダイスの個数を指定してください。",
+					required: true
+				},{
+					type: "INTEGER",
+					name: "最大値",
+					description: "振るダイスの最大値を指定してください。",
+					required: true
 				}]
-		}]
-	}
-];
+			}]
+		}
+	];
 	const data2 = [{name: "test", description: "テスト用コマンドです。bot管理者のみ使用できます。",
 		options: [{
 			type: "SUB_COMMAND",
@@ -416,15 +418,19 @@ client.once("ready", async () => {//コマンド定義
 			]
 		}]
 	}];
+	const contextdata = new ContextMenuCommandBuilder()
+		.setName("ピン留めする")
+		.setType(ApplicationCommandTypes.MESSAGE);
 	await client.application.commands.set(data, svid);
 	await client.application.commands.set(data2);
+	await client.application.commands.set(contextdata, nullpo_casino_server_id);
 });
 client.on('interactionCreate', async (interaction) => {//コマンド・ボタン処理
 	const tex_rental = '981371600203046964';
 	channelrental = client.channels.cache.get(tex_rental);
 	if (!interaction.isCommand()) {//コマンド、ボタンでないものをはじく
 		if(!interaction.isButton()) {
-			return;
+			if(!interaction.isMessageContextMenu()) return;
 		}
 	}
 	if (interaction.commandName === 'wiki') {
@@ -453,6 +459,19 @@ if (interaction.commandName === 'mori') {
 	if (interaction.commandName === 'dice') dice(interaction);
 	if (interaction.customId === 'yes') yes_button(interaction);
 	if (interaction.customId === 'no') no_button(interaction);
+	if (interaction.isMessageContextMenuCommand()){
+		const message = interaction.options.getMessage("message");
+   		if (!message.system) return interaction.reply({ content: "システムメッセージはピン留めできません", ephemeral: true });
+  		if (message.pinned) {
+    			message.unpin()
+       			.then(() => interaction.reply("ピン止めを解除しました"))
+       			.catch(console.error)
+    		} else {
+      			message.pin()
+        		.then(() => interaction.reply("ピン止めしました"))
+        		.catch(console.error)
+    		}
+	}
 });
 client.on('messageDelete', message => {
 	logger("delete");
@@ -460,7 +479,7 @@ client.on('messageDelete', message => {
 	const author_with_nick = (message.member.nickname != null ? (message.author.tag + ' (' + message.member.nickname + ')') : message.author.tag);
 	let has_content;
 	if(message.attachments.first() != null) {
-	has_content = (message.attachments.first().contentType?.startsWith("image" || "movie") ? true : false);
+		has_content = (message.attachments.first().contentType?.startsWith("image" || "movie") ? true : false);
 	} else {
 		has_content = false;
 	}
@@ -498,7 +517,7 @@ client.on('messageDelete', message => {
 						embeds: [{
 							description: String(message.channel) + 'にてメッセージが削除されました。',
 							files: [
-								//Array.from(message.attachments.values())
+								Array.from(message.attachments.values())
 							],
 						}]
 					})

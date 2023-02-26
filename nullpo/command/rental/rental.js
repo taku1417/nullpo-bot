@@ -38,10 +38,3 @@ function rental_command(interaction) {
 }
 
 module.exports = rental_command;
-/*
-{
-			content: itemSearch(id) + "は貸し出しされていません。借りますか？",
-			components: [new MessageActionRow().addComponents(buttonyes, buttonno)],
-			ephemeral: true
-		}
-*/
