@@ -519,7 +519,7 @@ client.on('ready', () => {
 	setInterval(() => {
 		client.user.setPresence({
 			activities: [{
-			name: `nullpo bot | ${client.ws.ping}ms`,
+			name: `${client.ws.ping}ms | nullpo bot`,
 			}],
 			status: "online"
 			});
@@ -527,14 +527,14 @@ client.on('ready', () => {
 			if(process.env.NODE_ENV === 'heroku'){
 				client.user.setPresence({
 					activities: [{
-						name: `nullpo bot | herokuで動作中`,
+						name: `herokuで動作中 | nullpo bot`,
 						}],
 					status: "online"
 				});
 			} else {
 				client.user.setPresence({
 					activities: [{
-						name: `nullpo bot | ローカルで動作中`,
+						name: `ローカルで動作中 | nullpo bot`,
 						}],
 					status: "online"
 				});
