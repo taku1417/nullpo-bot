@@ -1,6 +1,6 @@
 const logger = require('../../log/logger.js');
-const { Client, MessageActionRow, MessageButton, Intents } = require('discord.js');
-const client = new Client({intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS]});
+const { Client, MessageActionRow, MessageButton, GatewayIntentBits } = require('discord.js');
+const client = new Client({intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers]});
 itemSearch = item_name => {
 	const itemName = ItemList.find(item => item.id === item_name).name;
 	return itemName;
