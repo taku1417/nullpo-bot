@@ -1,23 +1,25 @@
-const { Client, Intents, Role, MessageEmbed, MessageManager } = require('discord.js');
+const { Client, GatewayIntentBits, Collection } = require('discord.js');
+const config = require('config');
+const fs = require('node:fs');
+const path = require('node:path');
 if(process.env.NODE_ENV !== 'heroku') {
 	process.env.NODE_ENV === 'default';
 } 
-const config = require('config');
+const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildVoiceStates, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMessages] });
+module.exports = client;
+//require('./nullpo/')(client);
 const logger = require('./nullpo/log/logger.js');
-const delete_logger = require('./nullpo/log/delete_logger.js');
+//const delete_logger = require('./nullpo/log/delete_logger.js');
 all_log = 0,join_log = 0,move_log = 0,leave_log = 0,clock_log = 0,restart_log = 0,command_log = 0,delete_log = 0,unknown_log = 0;
-const dice = require('./nullpo/command/dice/dice.js');
 const update_from_db = require('./nullpo/components/update_from_db.js');
-const print = require('./nullpo/command/recipe/print.js');
-const test = require('./nullpo/command/test/test.js');
-const rental_command = require('./nullpo/command/rental/rental.js');
-const return_command = require('./nullpo/command/return/return.js');
 const yes_button = require('./nullpo/components/button/yes.js');
 const no_button = require('./nullpo/components/button/no.js');
 const nullpo_server_id = '966674976956645407',nullpo_casino_server_id = '1015585928779137105',nullpo_debug_server_id = '979084665958834216';
 const nullpo_admin_log = '997341001809133588',nullpo_casino_admin_log = '1042484015720042546',nullpo_debug_test = '986475538770194432';
+client.commands = new Collection();
+client.slashCommands = new Collection();
 
-const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_VOICE_STATES, Intents.FLAGS.MESSAGE_CONTENT, Intents.FLAGS.GUILD_MESSAGES] });
+
 client.once('ready', () => {	
 	client.user.setPresence({
 		activities: [{
@@ -41,14 +43,26 @@ mori.minute = 0;
 //});
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 const dbClient = require('pg/lib/client');
-const dbclient = new dbClient({
-	user: process.env.DATABASE_USER,
-	password: process.env.DATABASE_PASS,
-	host: process.env.DATABASE_HOST,
-	port: 5432,
-	database: process.env.DATABASE,
-	ssl: true
-});
+let dbclient;
+if(process.env.NODE_ENV === 'heroku') {
+	dbclient = new dbClient({
+		user: process.env.DATABASE_USER,
+		password: process.env.DATABASE_PASS,
+		host: process.env.DATABASE_HOST,
+		port: 5432,
+		database: process.env.DATABASE,
+		ssl: true
+	});
+} else {
+	dbclient = new dbClient({
+		user: config.get('DATABASE_USER'),
+		password: config.get('DATABASE_PASS'),
+		host: config.get('DATABASE_HOST'),
+		port: 5432,
+		database: config.get('DATABASE'),
+		ssl: true
+	});
+}
 try {
 dbclient.connect()
 } catch (err) {
@@ -250,100 +264,6 @@ client.on('ready', () => {
 });
 client.once("ready", async () => {//コマンド定義
 	const data = [
-		{name: "wiki", description: "公式、非公式アジ鯖wikiページを表示します。"},
-	{name: "test", description: "テスト用コマンドです。bot管理者のみ使用できます。",
-		options: [{
-			type: "SUB_COMMAND",
-			name: "tips",
-			description: "テスト用tipsを表示します。",
-			options: [{
-				type: "INTEGER",
-				name: "number",
-				description: "表示するtipsを指定します。",
-				required: true
-			}]
-		}]
-	},{name: "rental", description: "共用品の貸借記録をします。",
-		options: [{
-			type: "STRING",
-			name: "item_name",
-			description: "貸し出したいアイテムの名前を選択してください。",
-			required: true,
-			choices:[
-				{name:"マジカトロンピッケル", value:"mjc_pic"},
-				{name:"マジカトロンシャベル", value:"mjc_sho"},
-				{name:"マジカトロンソード", value:"mjc_swo"},
-				{name:"星の導き", value:"star_guide"},
-				{name:"赫灼大斧ラヴァン", value:"ravan"},
-				{name:"ビール装備", value:"beer"},
-				{name:"Master of Gold Fishing装備", value:"MGF"},
-				{name:"Master of Treasure Fishing装備", value:"MTF"},
-				{name:"マスターロッドZアイアンカスタム", value:"mrz_iron"},
-				{name:"マスターロッドZゴールドカスタム", value:"mrz_gold"},
-				{name:"マスターロッドZダイヤカスタム", value:"mrz_dia"},
-				{name:"マスターロッドZエメラルドカスタム", value:"mrz_eme"},
-				{name:"精霊の加護", value:"soul_protection"},
-				{name:"Vortex Hurricane", value:"vortex"},
-				{name:"Springスペランカーソード", value:"haruspe"},
-				{name:"運上昇Lv5", value:"luck"},
-				{name:"資源成長型ピッケルX AllCustom", value:"all_pic"},
-				{name:"GOLD RUSH装備", value:"GR"},
-				{name:"原初装備", value:"origin"},
-				{name:"ΟριχαρόνIngot(オリハルコン)装備", value:"orichal"},
-				{name:"[復刻]妖刀「白狐」", value:"youtou"},
-				{name:"思念の獄炎", value:"gokuen"},
-				{name:"壊世錫杖レクイエム", value:"requiem"},
-				{name:"ffggrロッド Rank4", value:"ffggr"},
-				{name:"枯れた心", value:"枯れた心"},
-				/*{name:"Envenom Merge", value:"envenom"},
-				{name:"【AZI SAVIOR】", value:"AZI"},
-				{name:"昇土龍拳サック", value:"sac"},
-				{name:"星龍の弓_Vega_", value:"vega"},
-				{name:"フルドラゴンアーマーチェストプレート", value:"fulldora"},
-				{name:"炎廃業", value:"炎廃業"}*/
-				]
-			}]
-	},{name: "return", description: "共用品の返却記録をします。",
-		options: [{
-			type: "STRING",
-			name: "item_name",
-			description: "返却したいアイテムの名前を選択してください。",
-			required: true,
-			choices:[
-				{name:"マジカトロンピッケル", value:"mjc_pic"},
-				{name:"マジカトロンシャベル", value:"mjc_sho"},
-				{name:"マジカトロンソード", value:"mjc_swo"},
-				{name:"星の導き", value:"star_guide"},
-				{name:"赫灼大斧ラヴァン", value:"ravan"},
-				{name:"ビール装備", value:"beer"},
-				{name:"Master of Gold Fishing装備", value:"MGF"},
-				{name:"Master of Treasure Fishing装備", value:"MTF"},
-				{name:"マスターロッドZアイアンカスタム", value:"mrz_iron"},
-				{name:"マスターロッドZゴールドカスタム", value:"mrz_gold"},
-				{name:"マスターロッドZダイヤカスタム", value:"mrz_dia"},
-				{name:"マスターロッドZエメラルドカスタム", value:"mrz_eme"},
-				{name:"精霊の加護", value:"soul_protection"},
-				{name:"Vortex Hurricane", value:"vortex"},
-				{name:"Springスペランカーソード", value:"haruspe"},
-				{name:"運上昇Lv5", value:"moriDoll"},
-				{name:"資源成長型ピッケルX AllCustom", value:"all_pic"},
-				{name:"GOLD RUSH装備", value:"GR"},
-				{name:"原初装備", value:"origin"},
-				{name:"ΟριχαρόνIngot(オリハルコン)装備", value:"orichal"},
-				{name:"[復刻]妖刀「白狐」", value:"youtou"},
-				{name:"思念の獄炎", value:"gokuen"},
-				{name:"壊世錫杖レクイエム", value:"requiem"},
-				{name:"ffggrロッド Rank4", value:"ffggr"},
-				{name:"枯れた心", value:"枯れた心"},
-				/*{name:"Envenom Merge", value:"envenom"},
-				{name:"【AZI SAVIOR】", value:"AZI"},
-				{name:"昇土龍拳サック", value:"sac"},
-				{name:"星龍の弓_Vega_", value:"vega"},
-				{name:"フルドラゴンアーマーチェストプレート", value:"fulldora"},
-				{name:"炎廃業", value:"炎廃業"}*/
-			]
-		}]
-	},
 /*		{name: "mori", description: "森レイドの時間を指定します。",
 		options: [{
 			type: "INTEGER",
@@ -353,88 +273,39 @@ client.once("ready", async () => {//コマンド定義
 		}]
 	},
 */
-		{name: "dice",description: "ダイスを振ります。",
-		options: [{
-			type: "SUB_COMMAND",
-			name: "tintiro",
-			description: "チンチロリンの形式でダイスを振ります。",
-		},{
-			type: "SUB_COMMAND",
-			name: "100",
-			description: "100式ダイスを振ります。",
-		},{
-			type: "SUB_COMMAND",
-			name: "custom",
-			description: "カスタムするダイスを振ります。",
-			options: [{
-				type: "INTEGER",
-				name: "個数",
-				description: "振るダイスの個数を指定してください。",
-				required: true
-			},{
-				type: "INTEGER",
-				name: "最大値",
-				description: "振るダイスの最大値を指定してください。",
-				required: true
-				}]
-		}]
-	}
-];
-	const data2 = [{name: "test", description: "テスト用コマンドです。bot管理者のみ使用できます。",
-		options: [{
-			type: "SUB_COMMAND",
-			name: "nofi",
-			description: "nofi test"
-		}]
-	},{name: "recipe", description: "lifeのレシピを参照します。",
-		options: [{
-			type: "STRING",
-			name: "item_name",
-			description: "レシピを参照したいアイテムの名前を選択してください。",
-			required: true,
-			choices:[
-				{name:"ミスリルインゴット", value:"mithril"},
-				{name:"鋼鉄インゴット", value:"steel"},
-				{name:"強化黒曜石", value:"reinforced_obsidian"},
-				{name:"$成金ブロック$", value:"narikin"},
-				{name:"複合鉱石の塊", value:"complex_ore"},
-				{name:"― 赤熟した複合鉱石の塊 ―", value:"ripe_red_complex_ore"},
-				{name:"超強力冷却剤", value:"super_strong_coolant"},
-				{name:"ΟριχαρόνIngot(オリハルコン)", value:"orichalcum"},
-				{name:"青き魔力の源", value:"blue_magical_power"},
-				{name:"赤き燃力の源", value:"red_burning_power"},
-				{name:"マジカトロン結晶", value:"majicatron_crystal"},
-				{name:"水バケツ圧縮チケット", value:"water_ticket"},
-				{name:"海洋の心", value:"ocean_heart"},
-				{name:"スポンジ", value:"sponge"},
-				{name:"超合金ドリルクァーリー", value:"super_duranium_drill"},
-				{name:"超合金ドリルクァーリー(強化)", value:"super_duranium_drill_upgrade"},
-				{name:"ヘルメスの斧", value:"axe_of_helmes"},
-				{name:"アイスソード(極含む)", value:"ice_sword"},
-				{name:"キュアステッキ", value:"cure_stick"},
-				{name:"Godlyマナロッド", value:"godly_mana_rod"}, 
-			]
-		}]
-	}];
-	await client.application.commands.set(data, svid);
-	await client.application.commands.set(data2);
+	];
 });
+const commandsPath = path.join(__dirname, '/nullpo/SlashCommand');
+const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
+
+for (const file of commandFiles) {
+	const filePath = path.join(commandsPath, file);
+	const command = require(filePath);
+	// Set a new item in the Collection with the key as the command name and the value as the exported module
+	if ('data' in command && 'execute' in command) {
+		client.commands.set(command.data.name, command);
+	} else {
+		console.log(`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`);
+	}
+}
+
 client.on('interactionCreate', async (interaction) => {//コマンド・ボタン処理
-	const tex_rental = '981371600203046964';
-	channelrental = client.channels.cache.get(tex_rental);
-	if (!interaction.isCommand()) {//コマンド、ボタンでないものをはじく
-		if(!interaction.isButton()) {
+		if (!interaction.isChatInputCommand() && !interaction.isButton()) return;
+	
+		const command = interaction.client.commands.get(interaction.commandName);
+	
+		if (!command) {
+			console.error(`No command matching ${interaction.commandName} was found.`);
+			interaction.reply({ content: '指定したコマンドが見つかりませんでした。このメッセージが何度も出てくる場合は、下記のエラーコード、実行したコマンド名とともにtaku1417#3456まで問い合わせてください。\nエラーコード: 1404  実行されたコマンド名: ' + interaction.commandName, ephemeral: true })
 			return;
 		}
-	}
-	if (interaction.commandName === 'wiki') {
-			logger("command");
-			await interaction.reply({ content: "公式wikiトップページ : https://tinyurl.com/2lj858o9 \nアイテムリスト : https://tinyurl.com/2a9hlk89 \npet : https://azisabaofficial.playing.wiki/d/MyPet \n非公式wikiトップページ : https://azisaba-hikousiki-life.memo.wiki/ \nFF map : https://tinyurl.com/24a7gz34 \npve ドロップ早見表 : https://tinyurl.com/24tayden \n圧倒的ネタバレ : https://tinyurl.com/2btvntcn \n一部短縮URLです。悪質なサイトにはいきません。\nページは随時追加予定。追加の要望はDMにお願いします。", ephemeral: true});
-	}
-	if (interaction.commandName === 'recipe') print(interaction);
-	if (interaction.commandName === 'rental') rental_command(interaction);
-	if (interaction.commandName === 'return') return_command(interaction);
-	if (interaction.commandName === 'test') test(interaction);
+	
+		try {
+			await command.execute(interaction);
+		} catch (error) {
+			console.error(`Error executing ${interaction.commandName}`);
+			console.error(error);
+		}
 /*	
 if (interaction.commandName === 'mori') {
 		var minute = interaction.options.getInteger('minute');
@@ -450,7 +321,6 @@ if (interaction.commandName === 'mori') {
 		}
 	}
 */
-	if (interaction.commandName === 'dice') dice(interaction);
 	if (interaction.customId === 'yes') yes_button(interaction);
 	if (interaction.customId === 'no') no_button(interaction);
 });

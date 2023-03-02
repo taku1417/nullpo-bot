@@ -1,12 +1,15 @@
 {
   "dependencies": {
-    "discord.js": "^13.8.1",
-    "dotenv": "^16.0.1",
-    "node-cron": "^3.0.1",
-    "node-schedule": "^2.1.0",
-    "pg": "^8.7.3",
-    "pify": "^6.0.0",
-    "uuid": "^8.3.2"
+    "discord.js": "^14.7.1",
+    "dotenv": "^16.0.3",
+    "glob": "^9.1.2",
+    "mongoose": "^7.0.0",
+    "node-cron": "^3.0.2",
+    "node-schedule": "^2.1.1",
+    "pg": "^8.9.0",
+    "pify": "^6.1.0",
+    "promisify": "^0.0.3",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "config": "^3.3.9"
