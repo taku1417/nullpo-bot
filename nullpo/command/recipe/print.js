@@ -1,6 +1,6 @@
 const logger = require("../../log/logger");
-const { Client, Intents } = require("discord.js");
-const client = new Client({ intents: [Intents.FLAGS.GUILDS]});
+const { Client, GatewayIntentBits } = require("discord.js");
+const client = new Client({ intents: [GatewayIntentBits.Guilds]});
 const admin_command_notification = client.channels.cache.get('1038810354853085245');
 
 function recipe_print(interaction){

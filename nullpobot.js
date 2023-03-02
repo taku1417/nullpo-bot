@@ -1,12 +1,10 @@
-const { Client, Intents, Role, MessageEmbed, MessageManager, } = require('discord.js');
-const { ApplicationCommandTypes } = require('discord.js/src/util/Constants');
-const { ContextMenuCommandBuilder } = require('@discordjs/builders');
+const { Client, GatewayIntentBits, Role, MessageEmbed, MessageManager } = require('discord.js');
 if(process.env.NODE_ENV !== 'heroku') {
 	process.env.NODE_ENV === 'default';
 } 
 const config = require('config');
 const logger = require('./nullpo/log/logger.js');
-const delete_logger = require('./nullpo/log/delete_logger.js');
+//const delete_logger = require('./nullpo/log/delete_logger.js');
 all_log = 0,join_log = 0,move_log = 0,leave_log = 0,clock_log = 0,restart_log = 0,command_log = 0,delete_log = 0,unknown_log = 0;
 const dice = require('./nullpo/command/dice/dice.js');
 const update_from_db = require('./nullpo/components/update_from_db.js');
@@ -19,7 +17,7 @@ const no_button = require('./nullpo/components/button/no.js');
 const nullpo_server_id = '966674976956645407',nullpo_casino_server_id = '1015585928779137105',nullpo_debug_server_id = '979084665958834216';
 const nullpo_admin_log = '997341001809133588',nullpo_casino_admin_log = '1042484015720042546',nullpo_debug_test = '986475538770194432';
 
-const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_VOICE_STATES, Intents.FLAGS.MESSAGE_CONTENT, Intents.FLAGS.GUILD_MESSAGES] });
+const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildVoiceStates, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMessages] });
 client.once('ready', () => {	
 	client.user.setPresence({
 		activities: [{
