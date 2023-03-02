@@ -5,7 +5,7 @@ herokuのAutomatic Deployはmainに設定されています。
 超環境依存してるので自鯖で立てても機能しません。コミュニティbotであるため修正予定もありませんのでご了承ください。  
   
 English↓  
-Source code of bot for family discord server. Running on heroku. The language is javascript. Using node.js.  
+Source code of bot for private discord server. Running on heroku. The language is javascript. Using node.js.  
 Heroku's Automatic Deploy is set to main.  
 Because it is very dependent on the environment, it will not work even if it is set up on its own server. Please note that this is a community bot and there are no plans to fix it.  
   
