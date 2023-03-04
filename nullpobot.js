@@ -120,33 +120,33 @@ client.on('voiceStateUpdate', (oldState, newState) =>	{
 	if (oldState.channelId === null && newState.channelId === vc_atumare) {
 		logger("join");
 		channelatumare.send(`__**参加** ${oldState.member.displayName} さんが入室しました。__`);
-		Ochanneljihou.send(`**参加** 🌸あつまれVCに${oldState.member.displayName} さんが入室しました。`);
-		return channeljllog.send(`**参加** 🌸あつまれVCに${oldState.member.displayName} さんが入室しました。`);
+		Ochanneljihou.send(`**参加** 🌸あつまれVCに ${oldState.member.displayName} さんが入室しました。`);
+		return channeljllog.send(`**参加** 🌸あつまれVCに ${oldState.member.displayName} さんが入室しました。`);
 	}
 	else if (oldState.channelId === null && newState.channelId === vc_pjsekai) {
 		logger("join");
 		channelpjsekai.send(`__**参加** ${oldState.member.displayName} さんが入室しました。__`);
 		channelvcpjsekai.send(`__**参加🎼** ${oldState.member.displayName} さんが入室しました。__`);
 		//Ochanneljihou.send(`**参加🎼** プロセカルームに${oldState.member.displayName} さんが入室しました。`);
-		return channeljllog.send(`**参加🎼** プロセカルームに${oldState.member.displayName} さんが入室しました。`);
+		return channeljllog.send(`**参加🎼** プロセカルームに ${oldState.member.displayName} さんが入室しました。`);
 	}
 	else if (oldState.channelId === null && newState.channelId === vc_spla) {
 		logger("join");
 		channelspla.send(`__**参加** ${oldState.member.displayName} さんが入室しました。__`);
-		Ochanneljihou.send(`**参加🦑** スプラキッズに${oldState.member.displayName} さんが入室しました。`);
-		return channeljllog.send(`**参加🦑** スプラキッズに${oldState.member.displayName} さんが入室しました。`);
+		Ochanneljihou.send(`**参加🦑** スプラキッズに ${oldState.member.displayName} さんが入室しました。`);
+		return channeljllog.send(`**参加🦑** スプラキッズに ${oldState.member.displayName} さんが入室しました。`);
 	}
 	else if (oldState.channelId === null && newState.channelId === vc_apex) {
 		logger("join");
 		channelapex.send(`__**参加💥** ${oldState.member.displayName} さんが入室しました。__`);
-		Ochanneljihou.send(`**参加💥** APEXルームに${oldState.member.displayName} さんが入室しました。`);
-		return channeljllog.send(`**参加💥** APEXルームに${oldState.member.displayName} さんが入室しました。`);
+		Ochanneljihou.send(`**参加💥** APEXルームに ${oldState.member.displayName} さんが入室しました。`);
+		return channeljllog.send(`**参加💥** APEXルームに ${oldState.member.displayName} さんが入室しました。`);
 	}
 	else if (oldState.channelId === null && newState.channelId === vc_music) {
 		logger("join");
 		channelmusic.send(`__**参加♪** ${oldState.member.displayName} さんが入室しました。__`);
-		Ochanneljihou.send(`**参加♪** 音楽鑑賞に${oldState.member.displayName} さんが入室しました。`);
-		return channeljllog.send(`**参加♪** 音楽鑑賞に${oldState.member.displayName} さんが入室しました。`);
+		Ochanneljihou.send(`**参加♪** 音楽鑑賞に ${oldState.member.displayName} さんが入室しました。`);
+		return channeljllog.send(`**参加♪** 音楽鑑賞に ${oldState.member.displayName} さんが入室しました。`);
 	}
 	else if (oldState.channelId === (vc_pjsekai || vc_spla || vc_apex || vc_music) && newState.channelId === vc_atumare) {
 		logger("move");
