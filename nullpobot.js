@@ -1,4 +1,4 @@
-const { Client, GatewayIntentBits, Collection } = require('discord.js');
+const { Client, GatewayIntentBits, Collection, REST, Routes } = require('discord.js');
 const config = require('config');
 const fs = require('node:fs');
 const path = require('node:path');
@@ -16,7 +16,9 @@ const yes_button = require('./nullpo/components/button/yes.js');
 const no_button = require('./nullpo/components/button/no.js');
 const nullpo_server_id = '966674976956645407',nullpo_casino_server_id = '1015585928779137105',nullpo_debug_server_id = '979084665958834216';
 const nullpo_admin_log = '997341001809133588',nullpo_casino_admin_log = '1042484015720042546',nullpo_debug_test = '986475538770194432';
-client.commands = new Collection();
+const botID = '978923316557537280';
+client.Commands = new Collection();
+commands_rest = [];
 client.slashCommands = new Collection();
 
 
@@ -275,37 +277,65 @@ client.once("ready", async () => {//コマンド定義
 */
 	];
 });
-const commandsPath = path.join(__dirname, '/nullpo/SlashCommand');
-const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
+const slashCommandsPath = path.join(__dirname, '/nullpo/SlashCommand');
+const slashCommandFiles = fs.readdirSync(slashCommandsPath).filter(file => file.endsWith('.js'));
 
-for (const file of commandFiles) {
-	const filePath = path.join(commandsPath, file);
+for (const file of slashCommandFiles) {
+	const filePath = path.join(slashCommandsPath, file);
 	const command = require(filePath);
-	// Set a new item in the Collection with the key as the command name and the value as the exported module
 	if ('data' in command && 'execute' in command) {
-		client.commands.set(command.data.name, command);
+		client.slashCommands.set(command.data.name, command);
 	} else {
 		console.log(`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`);
 	}
 }
 
+const CommandsPath = path.join(__dirname, '/nullpo/components/appCommand');
+const CommandFiles = fs.readdirSync(CommandsPath).filter(file => file.endsWith('.js'));
+
+for (const file of CommandFiles) {
+	const command = require(`./nullpo/components/appCommand/${file}`);
+	commands_rest.push(command.data.toJSON());
+	if('data' in command && 'execute' in command) {
+		client.Commands.set(command.data.name, command);
+	}
+}
+
+let rest;
+if(process.env.NODE_ENV === 'heroku') {
+rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
+} else {
+rest = new REST({ version: '10' }).setToken(config.get('DISCORD_TOKEN'));
+}
+
+(async () => {
+	try {
+		console.log('アプリケーションコマンドの登録開始');
+		await rest.put(
+			Routes.applicationGuildCommands(botID, nullpo_server_id),
+			{ body: commands_rest },
+		);
+		console.log('アプリケーションコマンドの登録完了');
+	} catch (error) {
+		console.error(error);
+	}
+})();
+
 client.on('interactionCreate', async (interaction) => {//コマンド・ボタン処理
-		if (!interaction.isChatInputCommand() && !interaction.isButton()) return;
-	
-		const command = interaction.client.commands.get(interaction.commandName);
-	
+	if (interaction.isChatInputCommand()){
+		const command = interaction.client.slashCommands.get(interaction.commandName);
 		if (!command) {
 			console.error(`No command matching ${interaction.commandName} was found.`);
-			interaction.reply({ content: '指定したコマンドが見つかりませんでした。このメッセージが何度も出てくる場合は、下記のエラーコード、実行したコマンド名とともにtaku1417#3456まで問い合わせてください。\nエラーコード: 1404  実行されたコマンド名: ' + interaction.commandName, ephemeral: true })
+			interaction.reply({ content: '指定したコマンドが見つかりませんでした。このメッセージが何度も出てくる場合は、下記のエラーコード、実行したコマンド名ともにtaku1417#3456まで問い合わせてください。\nエラーコード: 1404  実行されたコマンド名: ' + interaction.commandName, ephemeral: true })
 			return;
 		}
-	
 		try {
 			await command.execute(interaction);
 		} catch (error) {
 			console.error(`Error executing ${interaction.commandName}`);
 			console.error(error);
 		}
+	}
 /*	
 if (interaction.commandName === 'mori') {
 		var minute = interaction.options.getInteger('minute');
@@ -321,20 +351,24 @@ if (interaction.commandName === 'mori') {
 		}
 	}
 */
-	if (interaction.customId === 'yes') yes_button(interaction);
-	if (interaction.customId === 'no') no_button(interaction);
+	if(interaction.isButton()){
+		if (interaction.customId === 'yes') yes_button(interaction);
+		if (interaction.customId === 'no') no_button(interaction);
+	}
 	if (interaction.isMessageContextMenuCommand()){
-		const message = interaction.options.getMessage("message");
-   		if (!message.system) return interaction.reply({ content: "システムメッセージはピン留めできません", ephemeral: true });
-  		if (message.pinned) {
-    			message.unpin()
-       			.then(() => interaction.reply("ピン止めを解除しました"))
-       			.catch(console.error)
-    		} else {
-      			message.pin()
-        		.then(() => interaction.reply("ピン止めしました"))
-        		.catch(console.error)
-    		}
+		const command = interaction.client.Commands.get(interaction.commandName);
+		if (!command) {
+			console.error(`No command matching ${interaction.commandName} was found.`);
+			interaction.reply({ content: '指定したコマンドが見つかりませんでした。このメッセージが何度も出てくる場合は、下記のエラーコード、実行したコマンド名ともにtaku1417#3456まで問い合わせてください。\nエラーコード: 1404  実行されたコマンド名: ' + interaction.commandName, ephemeral: true })
+			return;
+		}
+		try {
+			await command.execute(interaction);
+		} catch (error) {
+			console.error(`Error executing ${interaction.commandName}`);
+			console.error(error);
+		}
+		
 	}
 });
 client.on('messageDelete', message => {
