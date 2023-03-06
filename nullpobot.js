@@ -312,7 +312,7 @@ rest = new REST({ version: '10' }).setToken(config.get('DISCORD_TOKEN'));
 	try {
 		console.log('アプリケーションコマンドの登録開始');
 		await rest.put(
-			Routes.applicationGuildCommands(botID, nullpo_server_id),
+			Routes.applicationCommands(botID),
 			{ body: commands_rest },
 		);
 		console.log('アプリケーションコマンドの登録完了');
