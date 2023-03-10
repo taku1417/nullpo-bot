@@ -1,4 +1,4 @@
-const { Client, GatewayIntentBits, Collection } = require('discord.js');
+const { Client, GatewayIntentBits, Collection, REST, Routes } = require('discord.js');
 const config = require('config');
 const fs = require('node:fs');
 const path = require('node:path');
@@ -16,8 +16,11 @@ const yes_button = require('./nullpo/components/button/yes.js');
 const no_button = require('./nullpo/components/button/no.js');
 const nullpo_server_id = '966674976956645407',nullpo_casino_server_id = '1015585928779137105',nullpo_debug_server_id = '979084665958834216';
 const nullpo_admin_log = '997341001809133588',nullpo_casino_admin_log = '1042484015720042546',nullpo_debug_test = '986475538770194432';
-client.commands = new Collection();
+const botID = '978923316557537280';
+client.Commands = new Collection();
+commands_rest = [];
 client.slashCommands = new Collection();
+slashCommands_rest = [];
 
 
 client.once('ready', () => {	
@@ -210,7 +213,7 @@ client.on('voiceStateUpdate', (oldState, newState) =>	{
 	}
 });
 client.on('ready', () => {
-	const tips = ["Ebiflyは/fly [分数]で飛ぶ分数の指定が出来ます","life本鯖の再起動は5時、16時です","どうでもいいTipsです。追加希望はtaku1417のDMまで。",/*"コマンドはキーボードの↑キーで一つ前の自分が打ったコマンドを入力省略できるが、しかしこれでは種などの購入と圧縮を繰り返す作業には不向きである、そこで二度↑キーを押すと2つ前の自分が打ったコマンドに戻れる。これで/shopと/rguiを簡単に交互に実行することができる",*/"きりんとねこの身長が180cmなのは嘘である。本当は270cmである","パンに生ハムを乗せると美味しい","薄皮一枚無いスキンをもとに戻したい場合はF3+H","このbotはHerokuというサービス上で稼働しています","あおいんは逆転ものも好き","しまりんはそこまで地上絵が好きじゃない","Monocraftは0時、JMSは9時に投票が可能になります","実はあもさんは下ネタが嫌い","うおみーの言うことは全て嘘","でも実は本当","って言ってるのも嘘かもしれない","でも実は嘘","初めましてronpenです 初めてすぐに10m獲得しました() まだまだ分からないことしかないので色々教えてくれたら嬉しいです","ぬるぽ語録集はVCで生まれた名(迷)言をまとめたものです","この鯖には実に60個ものロールが存在します","畑では植え直しを忘れずに。","木こりは稼げません、マジで。","lifeには統合版でもアクセスできます","釣りをしていると出てくる心の闇は、どこかに座っていると攻撃を大体回避できます","/wikiと打つと主要なwikiページを見ることが出来ます","/recipeと打つとlife独自レシピを見ることが出来ます。レシピは随時追加。","/rentalと打つと貸出記録をbotがやってくれます","/returnと打つと返却記録をbotがやってくれます","真のSはMの天才だし、真のMはSの天才である。それが僕の持論ですね。~LingThai~","しまりんかわいいね","堅あげポテトで口内炎ができるやつ落ち着きがない","命を知ろう〜バイシクル川崎の生体について〜\n一日に生まれるバイシクル川崎のうち約9割がバイク川崎になれないと言われています。\nそしてバイク川崎になれなかったバイシクル川崎の過半数は自然淘汰に対抗するためにコックカワサキへと姿を変えるのです","美味しいヤミー❗️✨🤟😁👍感謝❗️🙌✨感謝❗️🙌✨またいっぱい食べたいな❗️🍖😋🍴✨デリシャッ‼️🙏✨ｼｬ‼️🙏✨ ｼｬ‼️🙏✨ ｼｬ‼️🙏✨ ｼｬ‼️🙏✨ ｼｬ‼️🙏✨ ｼｬｯｯ‼ハッピー🌟スマイル❗️👉😁👈","食前の合掌、いただきます。","本鯖以外のlife系列サーバーは、重くなると再起動されます。"];
+	const tips = ["Ebiflyは/fly [分数]で飛ぶ分数の指定が出来ます","life本鯖の再起動は5時、16時です","どうでもいいTipsです。追加希望はtaku1417のDMまで。",/*"コマンドはキーボードの↑キーで一つ前の自分が打ったコマンドを入力省略できるが、しかしこれでは種などの購入と圧縮を繰り返す作業には不向きである、そこで二度↑キーを押すと2つ前の自分が打ったコマンドに戻れる。これで/shopと/rguiを簡単に交互に実行することができる",*/"きりんとねこの身長が180cmなのは嘘である。本当は270cmである","パンに生ハムを乗せると美味しい","薄皮一枚無いスキンをもとに戻したい場合はF3+H","このbotはHerokuというサービス上で稼働しています","あおいんは逆転ものも好き","しまりんはそこまで地上絵が好きじゃない","Monocraftは0時、JMSは9時に投票が可能になります","実はあもさんは下ネタが嫌い","うおみーの言うことは全て嘘","でも実は本当","って言ってるのも嘘かもしれない","でも実は嘘","初めましてronpenです 初めてすぐに10m獲得しました() まだまだ分からないことしかないので色々教えてくれたら嬉しいです","ぬるぽ語録集はVCで生まれた名(迷)言をまとめたものです","この鯖には実に60個ものロールが存在します","畑では植え直しを忘れずに。","木こりは稼げません、マジで。","lifeには統合版でもアクセスできます","釣りをしていると出てくる心の闇は、どこかに座っていると攻撃を大体回避できます","/wikiと打つと主要なwikiページを見ることが出来ます","/recipeと打つとlife独自レシピを見ることが出来ます。レシピは随時追加。","/rentalと打つと貸出記録をbotがやってくれます","/returnと打つと返却記録をbotがやってくれます","真のSはMの天才だし、真のMはSの天才である。それが僕の持論ですね。~LingThai~","しまりんかわいいね","堅あげポテトで口内炎ができるやつ落ち着きがない","命を知ろう〜バイシクル川崎の生体について〜\n一日に生まれるバイシクル川崎のうち約9割がバイク川崎になれないと言われています。\nそしてバイク川崎になれなかったバイシクル川崎の過半数は自然淘汰に対抗するためにコックカワサキへと姿を変えるのです","美味しいヤミー❗️✨🤟😁👍感謝❗️🙌✨感謝❗️🙌✨またいっぱい食べたいな❗️🍖😋🍴✨デリシャッ‼️🙏✨ｼｬ‼️🙏✨ ｼｬ‼️🙏✨ ｼｬ‼️🙏✨ ｼｬ‼️🙏✨ ｼｬ‼️🙏✨ ｼｬｯｯ‼ハッピー🌟スマイル❗️👉😁👈","食前の合掌、いただきます。","本鯖以外のlife系列サーバーは、重くなると再起動されます。","男装男子の定義：女のように見える男が女が男装するときに着る服を着て最終的にギャップだらけになるおとこ"];
 
 	const channeljihou = client.channels.cache.get(tex_jihou);
 	const channelncnofi = client.channels.cache.get(tex_nlpcs_nofi);
@@ -271,41 +274,74 @@ client.once("ready", async () => {//コマンド定義
 			description: "レイドが終了した時間を分で指定してください。",
 			required: true
 		}]
-	},
+		},
 */
 	];
 });
-const commandsPath = path.join(__dirname, '/nullpo/SlashCommand');
-const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
+const slashCommandsPath = path.join(__dirname, '/nullpo/SlashCommand');
+const slashCommandFiles = fs.readdirSync(slashCommandsPath).filter(file => file.endsWith('.js'));
 
-for (const file of commandFiles) {
-	const filePath = path.join(commandsPath, file);
+for (const file of slashCommandFiles) {
+	const filePath = path.join(slashCommandsPath, file);
 	const command = require(filePath);
-	// Set a new item in the Collection with the key as the command name and the value as the exported module
+	slashCommands_rest.push(command.data.toJSON());
 	if ('data' in command && 'execute' in command) {
-		client.commands.set(command.data.name, command);
+		client.slashCommands.set(command.data.name, command);
 	} else {
 		console.log(`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`);
 	}
 }
 
+const CommandsPath = path.join(__dirname, '/nullpo/components/appCommand');
+const CommandFiles = fs.readdirSync(CommandsPath).filter(file => file.endsWith('.js'));
+
+for (const file of CommandFiles) {
+	const command = require(`./nullpo/components/appCommand/${file}`);
+	commands_rest.push(command.data.toJSON());
+	if('data' in command && 'execute' in command) {
+		client.Commands.set(command.data.name, command);
+	}
+}
+
+let rest;
+if(process.env.NODE_ENV === 'heroku') {
+rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
+} else {
+rest = new REST({ version: '10' }).setToken(config.get('DISCORD_TOKEN'));
+}
+
+(async () => {
+	try {
+		console.log('アプリケーションコマンドの登録開始');
+		await rest.put(
+			Routes.applicationCommands(botID),
+			{ body: commands_rest },
+		);
+		await rest.put(
+			Routes.applicationCommands(botID),
+			{ body: slashCommands_rest },
+		);
+		console.log('アプリケーションコマンドの登録完了');
+	} catch (error) {
+		console.error(error);
+	}
+})();
+
 client.on('interactionCreate', async (interaction) => {//コマンド・ボタン処理
-		if (!interaction.isChatInputCommand() && !interaction.isButton()) return;
-	
-		const command = interaction.client.commands.get(interaction.commandName);
-	
+	if (interaction.isChatInputCommand()){
+		const command = interaction.client.slashCommands.get(interaction.commandName);
 		if (!command) {
 			console.error(`No command matching ${interaction.commandName} was found.`);
-			interaction.reply({ content: '指定したコマンドが見つかりませんでした。このメッセージが何度も出てくる場合は、下記のエラーコード、実行したコマンド名とともにtaku1417#3456まで問い合わせてください。\nエラーコード: 1404  実行されたコマンド名: ' + interaction.commandName, ephemeral: true })
+			interaction.reply({ content: '指定したコマンドが見つかりませんでした。このメッセージが何度も出てくる場合は、下記のエラーコード、実行したコマンド名ともにtaku1417#3456まで問い合わせてください。\nエラーコード: 1404  実行されたコマンド名: ' + interaction.commandName, ephemeral: true })
 			return;
 		}
-	
 		try {
 			await command.execute(interaction);
 		} catch (error) {
 			console.error(`Error executing ${interaction.commandName}`);
 			console.error(error);
 		}
+	}
 /*	
 if (interaction.commandName === 'mori') {
 		var minute = interaction.options.getInteger('minute');
@@ -321,8 +357,25 @@ if (interaction.commandName === 'mori') {
 		}
 	}
 */
-	if (interaction.customId === 'yes') yes_button(interaction);
-	if (interaction.customId === 'no') no_button(interaction);
+	if(interaction.isButton()){
+		if (interaction.customId === 'yes') yes_button(interaction);
+		if (interaction.customId === 'no') no_button(interaction);
+	}
+	if (interaction.isMessageContextMenuCommand()){
+		const command = interaction.client.Commands.get(interaction.commandName);
+		if (!command) {
+			console.error(`No command matching ${interaction.commandName} was found.`);
+			interaction.reply({ content: '指定したコマンドが見つかりませんでした。このメッセージが何度も出てくる場合は、下記のエラーコード、実行したコマンド名ともにtaku1417#3456まで問い合わせてください。\nエラーコード: 1404  実行されたコマンド名: ' + interaction.commandName, ephemeral: true })
+			return;
+		}
+		try {
+			await command.execute(interaction);
+		} catch (error) {
+			console.error(`Error executing ${interaction.commandName}`);
+			console.error(error);
+		}
+		
+	}
 });
 client.on('messageDelete', message => {
 	logger("delete");
@@ -330,7 +383,7 @@ client.on('messageDelete', message => {
 	const author_with_nick = (message.member.nickname != null ? (message.author.tag + ' (' + message.member.nickname + ')') : message.author.tag);
 	let has_content;
 	if(message.attachments.first() != null) {
-	has_content = (message.attachments.first().contentType?.startsWith("image" || "movie") ? true : false);
+		has_content = (message.attachments.first().contentType?.startsWith("image" || "movie") ? true : false);
 	} else {
 		has_content = false;
 	}
@@ -368,7 +421,7 @@ client.on('messageDelete', message => {
 						embeds: [{
 							description: String(message.channel) + 'にてメッセージが削除されました。',
 							files: [
-								//Array.from(message.attachments.values())
+								Array.from(message.attachments.values())
 							],
 						}]
 					})
