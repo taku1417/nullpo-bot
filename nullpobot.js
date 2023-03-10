@@ -20,6 +20,7 @@ const botID = '978923316557537280';
 client.Commands = new Collection();
 commands_rest = [];
 client.slashCommands = new Collection();
+slashCommands_rest = [];
 
 
 client.once('ready', () => {	
@@ -283,6 +284,7 @@ const slashCommandFiles = fs.readdirSync(slashCommandsPath).filter(file => file.
 for (const file of slashCommandFiles) {
 	const filePath = path.join(slashCommandsPath, file);
 	const command = require(filePath);
+	slashCommands_rest.push(command.data.toJSON());
 	if ('data' in command && 'execute' in command) {
 		client.slashCommands.set(command.data.name, command);
 	} else {
@@ -314,6 +316,10 @@ rest = new REST({ version: '10' }).setToken(config.get('DISCORD_TOKEN'));
 		await rest.put(
 			Routes.applicationCommands(botID),
 			{ body: commands_rest },
+		);
+		await rest.put(
+			Routes.applicationCommands(botID),
+			{ body: slashCommands_rest },
 		);
 		console.log('アプリケーションコマンドの登録完了');
 	} catch (error) {
