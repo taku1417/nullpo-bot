@@ -7,7 +7,6 @@ if(process.env.NODE_ENV !== 'heroku') {
 } 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildVoiceStates, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMessages] });
 module.exports = client;
-//require('./nullpo/')(client);
 const logger = require('./nullpo/log/logger.js');
 //const delete_logger = require('./nullpo/log/delete_logger.js');
 all_log = 0,join_log = 0,move_log = 0,leave_log = 0,clock_log = 0,restart_log = 0,command_log = 0,delete_log = 0,unknown_log = 0;
@@ -35,7 +34,7 @@ const cron = require('node-cron');
 const schedule = require('node-schedule');
 errorCount = 0,SuccessLogin = 0;
 const tex_dblog = '979084899703218186',tex_jihou = '997274370122731611',tex_nlpcs_nofi = '1015852168810606592',tex_jllog = '978962695418155019',tex_pjsekai = '999675995936280717';
-const vc_atumare = '997274624045879407',vc_pjsekai = '981173824294879322',vc_apex = '992161885862502400',vc_music = '982523943309180978',vc_spla = '1017431011442819142';
+const vc_atumare = '997274624045879407',vc_pjsekai = '981173824294879322',vc_apex = '992161885862502400',vc_music = '982523943309180978',vc_spla = '1017431011442819142',vc_granblue = '1083006425791463494';
 const svid = '966674976956645407',ncsvid = '1015585928779137105';
 const mori = new schedule.RecurrenceRule();
 mori.minute = 0;
@@ -119,77 +118,89 @@ ItemList = [
 
 */
 client.on('voiceStateUpdate', (oldState, newState) =>	{ 
-	const channeljllog = client.channels.cache.get(tex_jllog), channelatumare = oldState.member.guild.channels.cache.get(vc_atumare), channelvcpjsekai = oldState.member.guild.channels.cache.get(vc_pjsekai), channelapex = oldState.member.guild.channels.cache.get(vc_apex),channelmusic = oldState.member.guild.channels.cache.get(vc_music),Ochanneljihou = oldState.member.guild.channels.cache.get(tex_jihou),channelpjsekai = oldState.member.guild.channels.cache.get(tex_pjsekai),channelspla = oldState.member.guild.channels.cache.get(vc_spla);
+	const channeljllog = client.channels.cache.get(tex_jllog), channelatumare = oldState.member.guild.channels.cache.get(vc_atumare), channelvcpjsekai = oldState.member.guild.channels.cache.get(vc_pjsekai), channelapex = oldState.member.guild.channels.cache.get(vc_apex),channelmusic = oldState.member.guild.channels.cache.get(vc_music),Ochanneljihou = oldState.member.guild.channels.cache.get(tex_jihou),channelpjsekai = oldState.member.guild.channels.cache.get(tex_pjsekai),channelspla = oldState.member.guild.channels.cache.get(vc_spla),channelgranblue = oldState.member.guild.channels.cache.get(vc_granblue);
 	if (oldState.channelId === null && newState.channelId === vc_atumare) {
 		logger("join");
-		channelatumare.send(`__**参加** ${oldState.member.displayName} さんが入室しました。__`);
-		Ochanneljihou.send(`**参加** 🌸あつまれVCに${oldState.member.displayName} さんが入室しました。`);
-		return channeljllog.send(`**参加** 🌸あつまれVCに${oldState.member.displayName} さんが入室しました。`);
+		channelatumare.send(`__**入室** ${oldState.member.displayName} さんが入室しました。__`);
+		Ochanneljihou.send(`**入室** 🌸あつまれVCに ${oldState.member.displayName} さんが入室しました。`);
+		return channeljllog.send(`**入室** 🌸あつまれVCに ${oldState.member.displayName} さんが入室しました。`);
 	}
 	else if (oldState.channelId === null && newState.channelId === vc_pjsekai) {
 		logger("join");
-		channelpjsekai.send(`__**参加** ${oldState.member.displayName} さんが入室しました。__`);
-		channelvcpjsekai.send(`__**参加🎼** ${oldState.member.displayName} さんが入室しました。__`);
-		//Ochanneljihou.send(`**参加🎼** プロセカルームに${oldState.member.displayName} さんが入室しました。`);
-		return channeljllog.send(`**参加🎼** プロセカルームに${oldState.member.displayName} さんが入室しました。`);
+		channelpjsekai.send(`__**入室** ${oldState.member.displayName} さんが入室しました。__`);
+		channelvcpjsekai.send(`__**入室** ${oldState.member.displayName} さんが入室しました。__`);
+		//Ochanneljihou.send(`**入室** 🎼プロセカルームに${oldState.member.displayName} さんが入室しました。`);
+		return channeljllog.send(`**入室** 🎼プロセカルームに ${oldState.member.displayName} さんが入室しました。`);
 	}
 	else if (oldState.channelId === null && newState.channelId === vc_spla) {
 		logger("join");
-		channelspla.send(`__**参加** ${oldState.member.displayName} さんが入室しました。__`);
-		Ochanneljihou.send(`**参加🦑** スプラキッズに${oldState.member.displayName} さんが入室しました。`);
-		return channeljllog.send(`**参加🦑** スプラキッズに${oldState.member.displayName} さんが入室しました。`);
+		channelspla.send(`__**入室** ${oldState.member.displayName} さんが入室しました。__`);
+		Ochanneljihou.send(`**入室** 🦑スプラキッズに ${oldState.member.displayName} さんが入室しました。`);
+		return channeljllog.send(`**入室** 🦑スプラキッズに ${oldState.member.displayName} さんが入室しました。`);
 	}
 	else if (oldState.channelId === null && newState.channelId === vc_apex) {
 		logger("join");
-		channelapex.send(`__**参加💥** ${oldState.member.displayName} さんが入室しました。__`);
-		Ochanneljihou.send(`**参加💥** APEXルームに${oldState.member.displayName} さんが入室しました。`);
-		return channeljllog.send(`**参加💥** APEXルームに${oldState.member.displayName} さんが入室しました。`);
+		channelapex.send(`__**入室** ${oldState.member.displayName} さんが入室しました。__`);
+		Ochanneljihou.send(`**入室** 💥APEXルームに ${oldState.member.displayName} さんが入室しました。`);
+		return channeljllog.send(`**入室** 💥APEXルームに ${oldState.member.displayName} さんが入室しました。`);
+	}
+	else if (oldState.channelId === null && newState.channelId === vc_granblue) {
+		logger("join");
+		channelgranblue.send(`__**入室** ${oldState.member.displayName} さんが入室しました。__`);
+		Ochanneljihou.send(`**入室** 🐲グラブルルームに ${oldState.member.displayName} さんが入室しました。`);
+		return channeljllog.send(`**入室** 🐲グラブルルームに ${oldState.member.displayName} さんが入室しました。`);
 	}
 	else if (oldState.channelId === null && newState.channelId === vc_music) {
 		logger("join");
-		channelmusic.send(`__**参加♪** ${oldState.member.displayName} さんが入室しました。__`);
-		Ochanneljihou.send(`**参加♪** 音楽鑑賞に${oldState.member.displayName} さんが入室しました。`);
-		return channeljllog.send(`**参加♪** 音楽鑑賞に${oldState.member.displayName} さんが入室しました。`);
+		channelmusic.send(`__**入室** ${oldState.member.displayName} さんが入室しました。__`);
+		Ochanneljihou.send(`**入室** 🎧音楽鑑賞に ${oldState.member.displayName} さんが入室しました。`);
+		return channeljllog.send(`**入室** 🎧音楽鑑賞に ${oldState.member.displayName} さんが入室しました。`);
 	}
-	else if (oldState.channelId === (vc_pjsekai || vc_spla || vc_apex || vc_music) && newState.channelId === vc_atumare) {
+	else if (oldState.channelId === (vc_pjsekai || vc_spla || vc_apex || vc_music || vc_granblue) && newState.channelId === vc_atumare) {
 		logger("move");
-		channelatumare.send(`__**移動🌸** ${oldState.member.displayName} さんが🌸あつまれVCに移動しました。__`);
-		Ochanneljihou.send(`**移動🌸** ${oldState.member.displayName} さんが🌸あつまれVCに移動しました。`);
-		return channeljllog.send(`**移動🌸** ${oldState.member.displayName} さんが🌸あつまれVCに移動しました。`);
+		channelatumare.send(`__**移動** 🌸あつまれVCに ${oldState.member.displayName} さんが移動しました。__`);
+		Ochanneljihou.send(`**移動** 🌸あつまれVCに ${oldState.member.displayName} さんが移動しました。`);
+		return channeljllog.send(`**移動** 🌸あつまれVCに ${oldState.member.displayName} さんが移動しました。`);
 	}
-	else if (oldState.channelId === (vc_atumare || vc_spla || vc_apex || vc_music) && newState.channelId === vc_pjsekai) {
+	else if (oldState.channelId === (vc_atumare || vc_spla || vc_apex || vc_music || vc_granblue) && newState.channelId === vc_pjsekai) {
 		logger("move");
-		channelpjsekai.send(`__**移動🎼** ${oldState.member.displayName} さんがプロセカルームに移動しました。__`);
-		channelvcpjsekai.send(`__**移動🎼** ${oldState.member.displayName} さんがプロセカルームに移動しました。__`);
-		Ochanneljihou.send(`**移動🎼** ${oldState.member.displayName} さんがプロセカルームに移動しました。`);
-		return channeljllog.send(`**移動🎼** ${oldState.member.displayName} さんがプロセカルームに移動しました。`);
+		channelpjsekai.send(`__**移動** プロセカルームに ${oldState.member.displayName} さんが移動しました。__`);
+		channelvcpjsekai.send(`__**移動** プロセカルームに ${oldState.member.displayName} さんが移動しました。__`);
+		//Ochanneljihou.send(`**移動** 🎼プロセカルームに ${oldState.member.displayName} さんが移動しました。`);
+		return channeljllog.send(`**移動** 🎼プロセカルームに ${oldState.member.displayName} さんが移動しました。`);
 	}
-	else if (oldState.channelId === (vc_atumare || vc_pjsekai || vc_apex || vc_music) && newState.channelId === vc_spla) {
+	else if (oldState.channelId === (vc_atumare || vc_pjsekai || vc_apex || vc_music || vc_granblue) && newState.channelId === vc_spla) {
 		logger("move");
-		channelspla.send(`__**移動🦑** ${oldState.member.displayName} さんがスプラキッズに移動しました。__`);
-		Ochanneljihou.send(`**移動🦑** ${oldState.member.displayName} さんがスプラキッズに移動しました。`);
-		return channeljllog.send(`**移動🦑** ${oldState.member.displayName} さんがスプラキッズに移動しました。`);
+		channelspla.send(`__**移動** ${oldState.member.displayName} さんが移動しました。__`);
+		Ochanneljihou.send(`**移動** 🦑スプラキッズに ${oldState.member.displayName} さんが移動しました。`);
+		return channeljllog.send(`**移動** 🦑スプラキッズに ${oldState.member.displayName} さんが移動しました。`);
 	}
-	else if (oldState.channelId === (vc_atumare || vc_pjsekai || vc_spla || vc_music) && newState.channelId === vc_apex) {
+	else if (oldState.channelId === (vc_atumare || vc_pjsekai || vc_spla || vc_music || vc_granblue) && newState.channelId === vc_apex) {
 		logger("move");
-		channelapex.send(`__**移動💥** ${oldState.member.displayName} さんがAPEXルームに移動しました。__`);
-		Ochanneljihou.send(`**移動💥** ${oldState.member.displayName} さんがAPEXルームに移動しました。`);
-		return channeljllog.send(`**移動💥** ${oldState.member.displayName} さんがAPEXルームに移動しました。`);
+		channelapex.send(`__**移動** ${oldState.member.displayName} さんが移動しました。__`);
+		Ochanneljihou.send(`**移動** 💥APEXルームに ${oldState.member.displayName} さんが移動しました。`);
+		return channeljllog.send(`**移動** 💥APEXルームに ${oldState.member.displayName} さんが移動しました。`);
 	}
-	else if (oldState.channelId === (vc_atumare || vc_pjsekai || vc_spla || vc_apex) && newState.channelId === vc_music) {
+	else if (oldState.channelId === (vc_atumare || vc_pjsekai || vc_spla || vc_apex || vc_music) && newState.channelId === vc_granblue) {
 		logger("move");
-		channelmusic.send(`__**移動♪** ${oldState.member.displayName} さんが音楽鑑賞に移動しました。__`);
-		Ochanneljihou.send(`**移動♪** ${oldState.member.displayName} さんが音楽鑑賞に移動しました。`);
-		return channeljllog.send(`**移動♪** ${oldState.member.displayName} さんが音楽鑑賞に移動しました。`);
+		channelgranblue.send(`__**移動** ${oldState.member.displayName} さんが移動しました。__`);
+		Ochanneljihou.send(`**移動** 🐲グラブルルームに ${oldState.member.displayName} さんが移動しました。`);
+		return channeljllog.send(`**移動** 🐲グラブルルームに ${oldState.member.displayName} さんが移動しました。`);
 	}
-	else if (oldState.channelId === (vc_atumare || vc_pjsekai || vc_spla || vc_apex || vc_music) && newState.channelId === null) {
+	else if (oldState.channelId === (vc_atumare || vc_pjsekai || vc_spla || vc_apex || vc_granblue) && newState.channelId === vc_music) {
+		logger("move");
+		channelmusic.send(`__**移動** ${oldState.member.displayName} さんが移動しました。__`);
+		Ochanneljihou.send(`**移動** 🎧音楽鑑賞に ${oldState.member.displayName} さんが移動しました。`);
+		return channeljllog.send(`**移動** 🎧音楽鑑賞に ${oldState.member.displayName} さんが移動しました。`);
+	}
+	else if (oldState.channelId === (vc_atumare || vc_pjsekai || vc_spla || vc_apex || vc_music || vc_granblue) && newState.channelId === null) {
 		logger("leave");
 		channeljllog.send(`**退出:x:**  ${newState.member.displayName} さんが退出しました。`);
 		//Ochanneljihou.send(`**退出:x:**  ${newState.member.displayName} さんが退出しました。`);
 		switch (oldState.channelId) {
 			case vc_atumare:
 				channelatumare.send(`__**退出:x:** ${newState.member.displayName} さんが退出しました。__`);
-				Ochanneljihou.send(`**退出:x:**  ${newState.member.displayName} さんが🌸あつまれVCから退出しました。`);
+				Ochanneljihou.send(`**退出:x:**  🌸あつまれVCから ${newState.member.displayName} さんが退出しました。`);
 				break;
 			case vc_pjsekai:
 				channelvcpjsekai.send(`__**退出:x:** ${newState.member.displayName} さんが退出しました。__`);
@@ -197,15 +208,19 @@ client.on('voiceStateUpdate', (oldState, newState) =>	{
 				break;
 			case vc_spla:
 				channelspla.send(`__**退出:x:** ${newState.member.displayName} さんが退出しました。__`);
-				Ochanneljihou.send(`**退出:x:**  ${newState.member.displayName} さんがスプラキッズから退出しました。`);
+				Ochanneljihou.send(`**退出:x:**  🦑スプラキッズから ${newState.member.displayName} さんが退出しました。`);
 				break;
 			case vc_apex:
 				channelapex.send(`__**退出:x:** ${newState.member.displayName} さんが退出しました。__`);
-				Ochanneljihou.send(`**退出:x:**  ${newState.member.displayName} さんがAPEXルームから退出しました。`);
+				Ochanneljihou.send(`**退出:x:**  💥APEXルームから ${newState.member.displayName} さんが退出しました。`);
+				break;
+			case vc_granblue:
+				channelgranblue.send(`__**退出:x:** ${newState.member.displayName} さんが退出しました。__`);
+				Ochanneljihou.send(`**退出:x:**  🐲グラブルルームから ${newState.member.displayName} さんが退出しました。`);
 				break;
 			case vc_music:
 				channelmusic.send(`__**退出:x:** ${newState.member.displayName} さんが退出しました。__`);
-				Ochanneljihou.send(`**退出:x:**  ${newState.member.displayName} さんが音楽鑑賞から退出しました。`);
+				Ochanneljihou.send(`**退出:x:**  🎧音楽鑑賞から ${newState.member.displayName} さんが退出しました。`);
 				break;
 			default:
 				break;
@@ -278,19 +293,6 @@ client.once("ready", async () => {//コマンド定義
 */
 	];
 });
-const slashCommandsPath = path.join(__dirname, '/nullpo/SlashCommand');
-const slashCommandFiles = fs.readdirSync(slashCommandsPath).filter(file => file.endsWith('.js'));
-
-for (const file of slashCommandFiles) {
-	const filePath = path.join(slashCommandsPath, file);
-	const command = require(filePath);
-	slashCommands_rest.push(command.data.toJSON());
-	if ('data' in command && 'execute' in command) {
-		client.slashCommands.set(command.data.name, command);
-	} else {
-		console.log(`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`);
-	}
-}
 
 const CommandsPath = path.join(__dirname, '/nullpo/components/appCommand');
 const CommandFiles = fs.readdirSync(CommandsPath).filter(file => file.endsWith('.js'));
@@ -300,6 +302,18 @@ for (const file of CommandFiles) {
 	commands_rest.push(command.data.toJSON());
 	if('data' in command && 'execute' in command) {
 		client.Commands.set(command.data.name, command);
+	}
+}
+
+const slashCommandsPath = path.join(__dirname, '/nullpo/SlashCommand');
+const slashCommandFiles = fs.readdirSync(slashCommandsPath).filter(file => file.endsWith('.js'));
+
+for (const file of slashCommandFiles) {
+	const filePath = path.join(slashCommandsPath, file);
+	const command = require(filePath);
+	slashCommands_rest.push(command.data.toJSON());
+	if ('data' in command && 'execute' in command) {
+		client.slashCommands.set(command.data.name, command);
 	}
 }
 
