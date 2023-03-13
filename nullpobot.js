@@ -332,10 +332,10 @@ rest = new REST({ version: '10' }).setToken(config.get('DISCORD_TOKEN'));
 			Routes.applicationCommands(botID),
 			{ body: commands_rest },
 		);
-		/*await rest.put(
+		await rest.put(
 			Routes.applicationCommands(botID),
 			{ body: slashCommands_rest },
-		);*/
+		);
 		await rest.put(
 			Routes.applicationGuildCommands(botID, nullpo_debug_server_id),
 			{ body: slashCommands_rest_NullpoDebug },
