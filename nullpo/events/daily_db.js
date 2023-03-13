@@ -2,7 +2,9 @@ const { Client, GatewayIntentBits } = require('discord.js');
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers]});
 const config = require('config');
 const dbClient = require('pg/lib/client');
-const dbclient = ((process.env.NODE_ENV === 'heroku') ? new dbClient(process.env.DATABASE_URL, {ssl:{rejectUnauthorized: false}}) : new dbClient(config.get('DATABASE_URL'), {ssl: {rejectUnauthorized: false}}));
+const dbclient = ((process.env.NODE_ENV === 'heroku') 
+? new dbClient({connectionString: process.env.DATABASE_URL, ssl: {rejectUnauthorized: false}}) 
+: new dbClient({connectionString: config.get('DATABASE_URL'), ssl:{rejectUnauthorized: false}}));
 
 
 function daily_db(interaction){
