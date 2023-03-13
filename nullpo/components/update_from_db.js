@@ -23,12 +23,6 @@ if(process.env.NODE_ENV === "heroku"){
 
 function update_from_db(mode,type){
         var query = "SELECT * FROM rental;";
-        dbclient.connect(function(err) {
-                if (err) {
-                        console.error("[update_from_db] error", err);
-                        process.exit(1);
-                }
-        });
         if(mode === "load"){
                 if(type === "rental" || type === "all"){
                         var query = "SELECT * FROM rental;";

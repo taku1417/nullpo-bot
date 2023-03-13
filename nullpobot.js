@@ -6,13 +6,13 @@ if(process.env.NODE_ENV !== 'heroku') {
 	process.env.NODE_ENV === 'default';
 } 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildVoiceStates, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMessages] });
-module.exports = client;
 const logger = require('./nullpo/log/logger.js');
 //const delete_logger = require('./nullpo/log/delete_logger.js');
 all_log = 0,join_log = 0,move_log = 0,leave_log = 0,clock_log = 0,restart_log = 0,command_log = 0,delete_log = 0,unknown_log = 0;
 const update_from_db = require('./nullpo/components/update_from_db.js');
 const yes_button = require('./nullpo/components/button/yes.js');
 const no_button = require('./nullpo/components/button/no.js');
+const cronjob = require('./nullpo/events/cron.js');
 const nullpo_server_id = '966674976956645407',nullpo_casino_server_id = '1015585928779137105',nullpo_debug_server_id = '979084665958834216';
 const nullpo_admin_log = '997341001809133588',nullpo_casino_admin_log = '1042484015720042546',nullpo_debug_test = '986475538770194432';
 const botID = '978923316557537280';
@@ -20,6 +20,8 @@ client.Commands = new Collection();
 commands_rest = [];
 client.slashCommands = new Collection();
 slashCommands_rest = [];
+client.slashCommands_NullpoDebug = new Collection();
+slashCommands_rest_NullpoDebug = [];
 
 
 client.once('ready', () => {	
@@ -45,36 +47,22 @@ mori.minute = 0;
 //});
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 const dbClient = require('pg/lib/client');
-let dbclient;
-if(process.env.NODE_ENV === 'heroku') {
-	dbclient = new dbClient({
-		user: process.env.DATABASE_USER,
-		password: process.env.DATABASE_PASS,
-		host: process.env.DATABASE_HOST,
-		port: 5432,
-		database: process.env.DATABASE,
-		ssl: true
-	});
-} else {
-	dbclient = new dbClient({
-		user: config.get('DATABASE_USER'),
-		password: config.get('DATABASE_PASS'),
-		host: config.get('DATABASE_HOST'),
-		port: 5432,
-		database: config.get('DATABASE'),
-		ssl: true
-	});
-}
-try {
-dbclient.connect()
-} catch (err) {
-	console.error('[postgreSQL] 接続に失敗しました。', err);
-	process.exit(1);
-} finally {
-	console.log('[postgreSQL] 接続に成功しました。');
-	console.log(update_from_db('load','all'));
-	dbclient.end();
-}
+const dbclient = ((process.env.NODE_ENV === 'heroku') ? new dbClient({
+	user: process.env.DATABASE_USER,
+	password: process.env.DATABASE_PASS,
+	host: process.env.DATABASE_HOST,
+	port: 5432,
+	database: process.env.DATABASE,
+	ssl: true
+}) : new dbClient({
+	user: config.get('DATABASE_USER'),
+	password: config.get('DATABASE_PASS'),
+	host: config.get('DATABASE_HOST'),
+	port: 5432,
+	database: config.get('DATABASE'),
+	ssl: true
+}));
+
 rental = { mjc_pic: 0, mjc_swo: 0, mjc_sho: 0, star_guide: 0,ravan: 0,beer: 0,mrz_iron: 0,mrz_gold: 0,mrz_dia: 0,mrz_eme:0,soul_protection: 0,vortex: 0,haruspe: 0,moriDoll: 0,MGF: 0,MTF: 0,all_pic: 0, GR: 0,origin: 0,orichal: 0,youtou: 0,gokuen: 0,requiem: 0,ffggr: 0,枯れた心: 0,envenom: 0,AZI: 0,sac: 0,vega: 0,fulldora: 0,炎廃業: 0};
 maxRental = { mjc_pic: 1, mjc_swo: 1, mjc_sho: 1, star_guide: 1,ravan: 1,beer: 2,mrz_iron: 1,mrz_gold: 1,mrz_dia: 1,mrz_eme:1,soul_protection: 1,vortex: 1,haruspe: 3,moriDoll: 3,MGF: 1,MTF: 2,all_pic: 2,GR: 1,origin: 1,orichal: 1,youtou: 1,gokuen: 1,requiem: 1,ffggr: 1,枯れた心: 1,envenom: 1,AZI: 1,sac: 1,vega: 1,fulldora: 1,炎廃業: 1};
 lendSystemCurrent = '';
@@ -228,6 +216,7 @@ client.on('voiceStateUpdate', (oldState, newState) =>	{
 	}
 });
 client.on('ready', () => {
+	cronjob;
 	const tips = ["Ebiflyは/fly [分数]で飛ぶ分数の指定が出来ます","life本鯖の再起動は5時、16時です","どうでもいいTipsです。追加希望はtaku1417のDMまで。",/*"コマンドはキーボードの↑キーで一つ前の自分が打ったコマンドを入力省略できるが、しかしこれでは種などの購入と圧縮を繰り返す作業には不向きである、そこで二度↑キーを押すと2つ前の自分が打ったコマンドに戻れる。これで/shopと/rguiを簡単に交互に実行することができる",*/"きりんとねこの身長が180cmなのは嘘である。本当は270cmである","パンに生ハムを乗せると美味しい","薄皮一枚無いスキンをもとに戻したい場合はF3+H","このbotはHerokuというサービス上で稼働しています","あおいんは逆転ものも好き","しまりんはそこまで地上絵が好きじゃない","Monocraftは0時、JMSは9時に投票が可能になります","実はあもさんは下ネタが嫌い","うおみーの言うことは全て嘘","でも実は本当","って言ってるのも嘘かもしれない","でも実は嘘","初めましてronpenです 初めてすぐに10m獲得しました() まだまだ分からないことしかないので色々教えてくれたら嬉しいです","ぬるぽ語録集はVCで生まれた名(迷)言をまとめたものです","この鯖には実に60個ものロールが存在します","畑では植え直しを忘れずに。","木こりは稼げません、マジで。","lifeには統合版でもアクセスできます","釣りをしていると出てくる心の闇は、どこかに座っていると攻撃を大体回避できます","/wikiと打つと主要なwikiページを見ることが出来ます","/recipeと打つとlife独自レシピを見ることが出来ます。レシピは随時追加。","/rentalと打つと貸出記録をbotがやってくれます","/returnと打つと返却記録をbotがやってくれます","真のSはMの天才だし、真のMはSの天才である。それが僕の持論ですね。~LingThai~","しまりんかわいいね","堅あげポテトで口内炎ができるやつ落ち着きがない","命を知ろう〜バイシクル川崎の生体について〜\n一日に生まれるバイシクル川崎のうち約9割がバイク川崎になれないと言われています。\nそしてバイク川崎になれなかったバイシクル川崎の過半数は自然淘汰に対抗するためにコックカワサキへと姿を変えるのです","美味しいヤミー❗️✨🤟😁👍感謝❗️🙌✨感謝❗️🙌✨またいっぱい食べたいな❗️🍖😋🍴✨デリシャッ‼️🙏✨ｼｬ‼️🙏✨ ｼｬ‼️🙏✨ ｼｬ‼️🙏✨ ｼｬ‼️🙏✨ ｼｬ‼️🙏✨ ｼｬｯｯ‼ハッピー🌟スマイル❗️👉😁👈","食前の合掌、いただきます。","本鯖以外のlife系列サーバーは、重くなると再起動されます。","男装男子の定義：女のように見える男が女が男装するときに着る服を着て最終的にギャップだらけになるおとこ"];
 
 	const channeljihou = client.channels.cache.get(tex_jihou);
@@ -317,6 +306,18 @@ for (const file of slashCommandFiles) {
 	}
 }
 
+const slashCommandsndPath = path.join(__dirname, '/nullpo/SlashCommand/nullpo_debug');
+const slashCommandndFiles = fs.readdirSync(slashCommandsndPath).filter(file => file.endsWith('.js'));
+
+for (const file of slashCommandndFiles) {
+	const filePath = path.join(slashCommandsndPath, file);
+	const command = require(filePath);
+	slashCommands_rest_NullpoDebug.push(command.data.toJSON());
+	if ('data' in command && 'execute' in command) {
+		client.slashCommands_NullpoDebug.set(command.data.name, command);
+	}
+}
+
 let rest;
 if(process.env.NODE_ENV === 'heroku') {
 rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
@@ -331,9 +332,13 @@ rest = new REST({ version: '10' }).setToken(config.get('DISCORD_TOKEN'));
 			Routes.applicationCommands(botID),
 			{ body: commands_rest },
 		);
-		await rest.put(
+		/*await rest.put(
 			Routes.applicationCommands(botID),
 			{ body: slashCommands_rest },
+		);*/
+		await rest.put(
+			Routes.applicationGuildCommands(botID, nullpo_debug_server_id),
+			{ body: slashCommands_rest_NullpoDebug },
 		);
 		console.log('アプリケーションコマンドの登録完了');
 	} catch (error) {
@@ -343,7 +348,7 @@ rest = new REST({ version: '10' }).setToken(config.get('DISCORD_TOKEN'));
 
 client.on('interactionCreate', async (interaction) => {//コマンド・ボタン処理
 	if (interaction.isChatInputCommand()){
-		const command = interaction.client.slashCommands.get(interaction.commandName);
+		const command = interaction.client.slashCommands.get(interaction.commandName) || interaction.client.slashCommands_NullpoDebug.get(interaction.commandName);
 		if (!command) {
 			console.error(`No command matching ${interaction.commandName} was found.`);
 			interaction.reply({ content: '指定したコマンドが見つかりませんでした。このメッセージが何度も出てくる場合は、下記のエラーコード、実行したコマンド名ともにtaku1417#3456まで問い合わせてください。\nエラーコード: 1404  実行されたコマンド名: ' + interaction.commandName, ephemeral: true })
@@ -518,3 +523,4 @@ if(process.env.NODE_ENV === 'heroku'){
 		process.exit(1);
 	}	
 }
+
