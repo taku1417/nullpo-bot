@@ -35,7 +35,6 @@ const schedule = require('node-schedule');
 errorCount = 0,SuccessLogin = 0;
 const tex_dblog = '979084899703218186',tex_jihou = '997274370122731611',tex_nlpcs_nofi = '1015852168810606592',tex_jllog = '978962695418155019',tex_pjsekai = '999675995936280717';
 const vc_atumare = '997274624045879407',vc_pjsekai = '981173824294879322',vc_apex = '992161885862502400',vc_music = '982523943309180978',vc_spla = '1017431011442819142',vc_granblue = '1083006425791463494';
-const svid = '966674976956645407',ncsvid = '1015585928779137105';
 const mori = new schedule.RecurrenceRule();
 mori.minute = 0;
 //const job = schedule.scheduleJob(mori, function(){//森レイドのやつ
@@ -345,14 +344,14 @@ client.on('interactionCreate', async (interaction) => {//コマンド・ボタ�
 	if (interaction.isChatInputCommand()){
 		const command = interaction.client.slashCommands.get(interaction.commandName);
 		if (!command) {
-			console.error(`No command matching ${interaction.commandName} was found.`);
-			interaction.reply({ content: '指定したコマンドが見つかりませんでした。このメッセージが何度も出てくる場合は、下記のエラーコード、実行したコマンド名ともにtaku1417#3456まで問い合わせてください。\nエラーコード: 1404  実行されたコマンド名: ' + interaction.commandName, ephemeral: true })
+			console.error(`${interaction.commandName} というコマンドが見つかりませんでした。`);
+			interaction.reply({ content: '指定したコマンドが見つかりませんでした。このメッセージが何度も出てくる場合は、下記のエラーコード、実行したコマンド名ともに taku1417#3456(<@270515939739566080>) まで問い合わせてください。\nエラーコード: 1404  実行されたコマンド名: ' + interaction.commandName, ephemeral: true })
 			return;
 		}
 		try {
 			await command.execute(interaction);
 		} catch (error) {
-			console.error(`Error executing ${interaction.commandName}`);
+			console.error(`${interaction.commandName}(slash command)を実行できませんでした。`);
 			console.error(error);
 		}
 	}
@@ -379,13 +378,13 @@ if (interaction.commandName === 'mori') {
 		const command = interaction.client.Commands.get(interaction.commandName);
 		if (!command) {
 			console.error(`No command matching ${interaction.commandName} was found.`);
-			interaction.reply({ content: '指定したコマンドが見つかりませんでした。このメッセージが何度も出てくる場合は、下記のエラーコード、実行したコマンド名ともにtaku1417#3456まで問い合わせてください。\nエラーコード: 1404  実行されたコマンド名: ' + interaction.commandName, ephemeral: true })
+			interaction.reply({ content: '指定したコマンドが見つかりませんでした。このメッセージが何度も出てくる場合は、下記のエラーコード、実行したコマンド名ともにtaku1417#3456まで問い合わせてください。\nエラーコード: 3404  実行されたコマンド名: ' + interaction.commandName, ephemeral: true })
 			return;
 		}
 		try {
 			await command.execute(interaction);
 		} catch (error) {
-			console.error(`Error executing ${interaction.commandName}`);
+			console.error(`${interaction.commandName}(Message context)を実行できませんでした。`);
 			console.error(error);
 		}
 		
