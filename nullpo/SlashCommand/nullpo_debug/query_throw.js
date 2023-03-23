@@ -17,7 +17,7 @@ module.exports = {
     async execute(interaction) {
         logger("command");
         await interaction.reply({
-            content: (query(interaction.options.getString('query')) !== undefined) ? query(interaction.options.getString('query')) : 'クエリが正常に実行されませんでした。',
+            content: (query(interaction.options.getString('query')) !== undefined) ? String(query(interaction.options.getString('query'))) : 'クエリが正常に実行されませんでした。',
             ephemeral: true
         });
     },
