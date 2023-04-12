@@ -264,10 +264,10 @@ client.on('ready', () => {
 		//channeljihou.send(`**只今より最大30分の__life全鯖__メンテナンスが行われます。**`)
 		//logger("clock");
 	//})//臨時
-	cron.schedule('0 18 10,25 * *', () => {
-		channeljihou.send(`**<@431843298588622858> Prince鯖にログインしましょう。**`)
-		logger("clock");
-	})//ナショさん用のリマインド(毎月10日と25日の18時)
+	//cron.schedule('0 18 10,25 * *', () => {
+		//channeljihou.send(`**<@431843298588622858> Prince鯖にログインしましょう。**`)
+		//logger("clock");
+	//})//ナショさん用のリマインド(毎月10日と25日の18時)
 });
 client.once("ready", async () => {//コマンド定義
 	const data = [
@@ -300,7 +300,7 @@ const slashCommandFiles = fs.readdirSync(slashCommandsPath).filter(file => file.
 for (const file of slashCommandFiles) {
 	const filePath = path.join(slashCommandsPath, file);
 	const command = require(filePath);
-	slashCommands_rest.push(command.data.toJSON());
+	commands_rest.push(command.data.toJSON());
 	if ('data' in command && 'execute' in command) {
 		client.slashCommands.set(command.data.name, command);
 	}
@@ -333,10 +333,6 @@ rest = new REST({ version: '10' }).setToken(config.get('DISCORD_TOKEN'));
 			{ body: commands_rest },
 		);
 		await rest.put(
-			Routes.applicationCommands(botID),
-			{ body: slashCommands_rest },
-		);
-		await rest.put(
 			Routes.applicationGuildCommands(botID, nullpo_debug_server_id),
 			{ body: slashCommands_rest_NullpoDebug },
 		);
@@ -351,7 +347,7 @@ client.on('interactionCreate', async (interaction) => {//コマンド・ボタ�
 		const command = interaction.client.slashCommands.get(interaction.commandName) || interaction.client.slashCommands_NullpoDebug.get(interaction.commandName);
 		if (!command) {
 			console.error(`No command matching ${interaction.commandName} was found.`);
-			interaction.reply({ content: '指定したコマンドが見つかりませんでした。このメッセージが何度も出てくる場合は、下記のエラーコード、実行したコマンド名ともにtaku1417#3456まで問い合わせてください。\nエラーコード: 1404  実行されたコマンド名: ' + interaction.commandName, ephemeral: true })
+			interaction.reply({ content: '指定したコマンドが見つかりませんでした。このメッセージが何度も出てくる場合は、下記のエラーコード、実行されたコマンド名ともにtaku1417#3456まで問い合わせてください。\nエラーコード: 1404  実行されたコマンド名: ' + interaction.commandName, ephemeral: true })
 			return;
 		}
 		try {
