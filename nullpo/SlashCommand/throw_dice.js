@@ -1,11 +1,11 @@
 const { SlashCommandBuilder } = require('discord.js');
-const tintiro = require('./dice/tintiro.js');
-const dice_custom = require('./dice/custom.js');
+const tintiro = require('./throw_dice/tintiro.js');
+const dice_custom = require('./throw_dice/custom.js');
 const logger = require('../log/logger.js');
 
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setName('dice')
+		.setName('throw_dice')
 		.setDescription('ダイスを振ります。')
 		.addSubcommand(subcommand =>
 			subcommand
@@ -39,11 +39,11 @@ module.exports = {
 		}
 		if(interaction.options.getSubcommand() === 'custom') {
 			const dice = [];//ダイスが複数になるため空配列
-			const amount =interaction.options.getInteger('個数');
-			const max =interaction.options.getInteger('最大値');
+			const amount = interaction.options.getInteger('個数');
+			const max = interaction.options.getInteger('最大値');
 			dice_custom(amount, max, dice);
 			if(amount < 1 || max < 1) {
-				await interaction.reply({ content: "個数または最大値が0以	下になっています。正の整数を指定してください。", ephemeral: true});
+				await interaction.reply({ content: "個数または最大値が0以下になっています。正の整数を指定してください。", ephemeral: true});
 			} else {
 				try {
 					await interaction.reply({ content: amount+"d"+max+"の結果\n"+dice+"\nが出ました。", ephemeral: false});
