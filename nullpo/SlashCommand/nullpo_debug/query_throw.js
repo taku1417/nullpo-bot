@@ -1,11 +1,6 @@
 const logger = require('../../log/logger.js');
-const { Client, GatewayIntentBits, SlashCommandBuilder } = require('discord.js');
-const client = new Client({ intents: [GatewayIntentBits.Guilds]});
-const config = require('config');
-const dbClient = require('pg/lib/client');
-const dbclient = ((process.env.NODE_ENV === 'heroku') 
-? new dbClient({connectionString: process.env.DATABASE_URL, ssl: {rejectUnauthorized: false}}) 
-: new dbClient({connectionString: config.get('DATABASE_URL'), port: 5432, ssl: true}));
+const { SlashCommandBuilder } = require('@discordjs/builders');
+const query_execute = require('../../events/database_connection.js');
 
 
 module.exports = {
@@ -16,14 +11,21 @@ module.exports = {
         .addStringOption(option => option.setName('query').setDescription('クエリを入力してください。').setRequired(true)),
     async execute(interaction) {
         logger("command");
+        var query_result;
+        try {
+            query_result = String(throw_query(interaction.options.getString('query')))
+        } catch (e) {
+                'クエリが正常に実行されませんでした。'
+                console.error(e);
+        }
         await interaction.reply({
-            content: (query(interaction.options.getString('query')) !== undefined) ? String(query(interaction.options.getString('query'))) : 'クエリが正常に実行されませんでした。',
+            content: query_result,
             ephemeral: true
         });
     },
 };
 
-async function query (query) {
+async function throw_query (query) {
     reply_message = '';
     await dbclient.connect().catch(err => {reply_message = err; console.error("\n\n[query] dbclient connect error", err);});
     await dbclient.query(query, (err, result) => {
@@ -34,7 +36,8 @@ async function query (query) {
             console.log(result);
 			reply_message = result;
         }
-    }).then(() => { dbclient.end(); });
+    });
     await setTimeout(() => {}, 3000);
+    await dbclient.release;
     return reply_message;
 }

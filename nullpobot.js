@@ -2,6 +2,10 @@ const { Client, GatewayIntentBits, Collection, REST, Routes } = require('discord
 const config = require('config');
 const fs = require('node:fs');
 const path = require('node:path');
+const express = require('express');
+const app = express();
+const sql_connect = require('./nullpo/events/database_connection.js');
+const query_execute = require('./nullpo/events/database_connection.js');
 if(process.env.NODE_ENV !== 'heroku') {
 	process.env.NODE_ENV === 'default';
 } 
@@ -23,6 +27,7 @@ slashCommands_rest = [];
 client.Commands_NullpoDebug = new Collection();
 Commands_rest_NullpoDebug = [];
 
+sql_connect();
 
 client.once('ready', () => {	
 	client.user.setPresence({
@@ -46,22 +51,6 @@ mori.minute = 0;
 	//console.log(`森レイド通知`);
 //});
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
-const dbClient = require('pg/lib/client');
-const dbclient = ((process.env.NODE_ENV === 'heroku') ? new dbClient({
-	user: process.env.DATABASE_USER,
-	password: process.env.DATABASE_PASS,
-	host: process.env.DATABASE_HOST,
-	port: 5432,
-	database: process.env.DATABASE,
-	ssl: true
-}) : new dbClient({
-	user: config.get('DATABASE_USER'),
-	password: config.get('DATABASE_PASS'),
-	host: config.get('DATABASE_HOST'),
-	port: 5432,
-	database: config.get('DATABASE'),
-	ssl: true
-}));
 
 rental = { mjc_pic: 0, mjc_swo: 0, mjc_sho: 0, star_guide: 0,ravan: 0,beer: 0,mrz_iron: 0,mrz_gold: 0,mrz_dia: 0,mrz_eme:0,soul_protection: 0,vortex: 0,haruspe: 0,moriDoll: 0,MGF: 0,MTF: 0,all_pic: 0, GR: 0,origin: 0,orichal: 0,youtou: 0,gokuen: 0,requiem: 0,ffggr: 0,枯れた心: 0,envenom: 0,AZI: 0,sac: 0,vega: 0,fulldora: 0,炎廃業: 0};
 maxRental = { mjc_pic: 1, mjc_swo: 1, mjc_sho: 1, star_guide: 1,ravan: 1,beer: 2,mrz_iron: 1,mrz_gold: 1,mrz_dia: 1,mrz_eme:1,soul_protection: 1,vortex: 1,haruspe: 3,moriDoll: 3,MGF: 1,MTF: 2,all_pic: 2,GR: 1,origin: 1,orichal: 1,youtou: 1,gokuen: 1,requiem: 1,ffggr: 1,枯れた心: 1,envenom: 1,AZI: 1,sac: 1,vega: 1,fulldora: 1,炎廃業: 1};
@@ -269,19 +258,6 @@ client.on('ready', () => {
 		//logger("clock");
 	//})//ナショさん用のリマインド(毎月10日と25日の18時)
 });
-client.once("ready", async () => {//コマンド定義
-	const data = [
-/*		{name: "mori", description: "森レイドの時間を指定します。",
-		options: [{
-			type: "INTEGER",
-			name: "minute",
-			description: "レイドが終了した時間を分で指定してください。",
-			required: true
-		}]
-		},
-*/
-	];
-});
 
 const CommandsPath = path.join(__dirname, '/nullpo/components/appCommand');
 const CommandFiles = fs.readdirSync(CommandsPath).filter(file => file.endsWith('.js'));
@@ -485,4 +461,41 @@ if(process.env.NODE_ENV === 'heroku'){
 		process.exit(1);
 	}	
 }
+
+app.get( '/', function( req, res ){
+	res.contentType( 'application/json; charset=utf-8' );
+	res.write( JSON.stringify( { status: true }, null, 2 ) );
+	res.write( "準備中...");
+	res.end();
+  });
+
+  app.get( '/ping', async function( req, res ){
+	res.contentType( 'application/json; charset=utf-8' );
+	var conn = null;
+	try{
+	  conn = await pg.connect();
+	  var sql = 'select 1';
+	  var query = { text: sql, values: [] };
+	  conn.query( query, function( err, result ){
+		if( err ){
+		  console.log( { err } );
+		  res.status( 400 );
+		  res.write( JSON.stringify( { status: false, error: err }, null, 2 ) );
+		  res.end();
+		}else{
+		  //console.log( { result } );
+		  res.write( JSON.stringify( { status: true, result: result }, null, 2 ) );
+		  res.end();
+		}
+	  });
+	}catch( e ){
+	  res.status( 400 );
+	  res.write( JSON.stringify( { status: false, error: e }, null, 2 ) );
+	  res.end();
+	}finally{
+	  if( conn ){
+		conn.release();
+	  }
+	}
+  });
 
