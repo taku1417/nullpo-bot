@@ -2,10 +2,6 @@ const { Client, GatewayIntentBits, Collection, REST, Routes } = require('discord
 const config = require('config');
 const fs = require('node:fs');
 const path = require('node:path');
-const express = require('express');
-const app = express();
-
-
 if(process.env.NODE_ENV !== 'heroku') {
 	process.env.NODE_ENV === 'default';
 } 
