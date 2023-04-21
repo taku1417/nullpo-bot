@@ -23,7 +23,6 @@ slashCommands_rest = [];
 client.Commands_NullpoDebug = new Collection();
 Commands_rest_NullpoDebug = [];
 
-sql_connect();
 
 client.once('ready', () => {	
 	client.user.setPresence({
