@@ -1,6 +1,6 @@
 const logger = require('../../log/logger.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const query_execute = require('../../events/database_connection.js');
+const query_execute = require('../../../nullpoweb.js');
 
 
 module.exports = {

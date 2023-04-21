@@ -1,2 +1,2 @@
-web: npm start
+web: node nullpoweb.js
 worker: node nullpobot.js

@@ -4,8 +4,8 @@ const fs = require('node:fs');
 const path = require('node:path');
 const express = require('express');
 const app = express();
-const sql_connect = require('./nullpo/events/database_connection.js');
-const query_execute = require('./nullpo/events/database_connection.js');
+
+
 if(process.env.NODE_ENV !== 'heroku') {
 	process.env.NODE_ENV === 'default';
 } 
@@ -461,41 +461,3 @@ if(process.env.NODE_ENV === 'heroku'){
 		process.exit(1);
 	}	
 }
-
-app.get( '/', function( req, res ){
-	res.contentType( 'application/json; charset=utf-8' );
-	res.write( JSON.stringify( { status: true }, null, 2 ) );
-	res.write( "準備中...");
-	res.end();
-  });
-
-  app.get( '/ping', async function( req, res ){
-	res.contentType( 'application/json; charset=utf-8' );
-	var conn = null;
-	try{
-	  conn = await pg.connect();
-	  var sql = 'select 1';
-	  var query = { text: sql, values: [] };
-	  conn.query( query, function( err, result ){
-		if( err ){
-		  console.log( { err } );
-		  res.status( 400 );
-		  res.write( JSON.stringify( { status: false, error: err }, null, 2 ) );
-		  res.end();
-		}else{
-		  //console.log( { result } );
-		  res.write( JSON.stringify( { status: true, result: result }, null, 2 ) );
-		  res.end();
-		}
-	  });
-	}catch( e ){
-	  res.status( 400 );
-	  res.write( JSON.stringify( { status: false, error: e }, null, 2 ) );
-	  res.end();
-	}finally{
-	  if( conn ){
-		conn.release();
-	  }
-	}
-  });
-
