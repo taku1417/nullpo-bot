@@ -13,7 +13,7 @@ module.exports = {
         logger("command");
         var query_result;
         try {
-            query_result = String(throw_query(interaction.options.getString('query')))
+            query_result = String(throw_query(interaction.options.getString('query')));
         } catch (e) {
                 'クエリが正常に実行されませんでした。'
                 console.error(e);
@@ -26,18 +26,16 @@ module.exports = {
 };
 
 async function throw_query (query) {
-    reply_message = '';
-    await dbclient.connect().catch(err => {reply_message = err; console.error("\n\n[query] dbclient connect error", err);});
-    await dbclient.query(query, (err, result) => {
-        if (err) {
+    var reply_message = '';
+    setTimeout(() => {
+        query_execute(query);
+        if (code >= 1) {
             console.error("\n\n[query] query error", err);
             reply_message = err;
         } else {
             console.log(result);
-			reply_message = result;
+		    reply_message = result;
         }
-    });
-    await setTimeout(() => {}, 3000);
-    await dbclient.release;
+    }, 3000);
     return reply_message;
 }
