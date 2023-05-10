@@ -374,9 +374,11 @@ client.on('messageDelete', message => {
         };
         switch(message.guild.id) {
                 case nullpo_server_id:
+					if(message.author.bot == true) return;
                         client.guilds.cache.get(nullpo_server_id).channels.cache.get(nullpo_admin_log).send({embeds: [embed]});
                         break;
                 case nullpo_casino_server_id:
+					if(message.author.bot == true) return;
                         client.guilds.cache.get(nullpo_casino_server_id).channels.cache.get(nullpo_casino_admin_log).send({embeds: [embed]});
                         break;
                 case nullpo_debug_server_id:
