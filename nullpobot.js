@@ -281,6 +281,7 @@ for (const file of slashCommandFiles) {
 	}
 }
 
+/*
 const CommandsNDPath = path.join(__dirname, '/nullpo/components/appCommand/nullpo_debug');
 const CommandNDFiles = fs.readdirSync(CommandsNDPath).filter(file => file.endsWith('.js'));
 
@@ -291,8 +292,8 @@ for (const file of CommandNDFiles) {
 		client.Commands_NullpoDebug.set(command.data.name, command);
 	}
 }
+*/
 
-/*
 const slashCommandsNDPath = path.join(__dirname, '/nullpo/SlashCommand/nullpo_debug');
 const slashCommandNDFiles = fs.readdirSync(slashCommandsNDPath).filter(file => file.endsWith('.js'));
 
@@ -304,7 +305,7 @@ for (const file of slashCommandNDFiles) {
 		client.SlashCommands_NullpoDebug.set(command.data.name, command);
 	}
 }
-*/
+
 let rest;
 if(process.env.NODE_ENV === 'heroku') {
 rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
