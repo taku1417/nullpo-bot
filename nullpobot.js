@@ -443,7 +443,7 @@ client.on('ready', () => {
 	}, 20000)//20秒ごとにpingを更新
 
 	setInterval(() => {
-		console.log('[VCC] チェックを開始します。');
+		console.log('[VCC] Start checking...');
 		const VCC_list = ['テスト','イベント'];
 		for (let i = 0; i < VCC_list.length; i++) {
 			console.log('[VCC] Checking ' + VCC_list[i] + '...')
@@ -452,12 +452,12 @@ client.on('ready', () => {
 			if (channel_list.length == 0) continue;
 			for (let j = 0; j < channel_list.length; j++) {
 				if (channel_list[j].members.size == 0) {
-					console.log('[VCC] ' + channel_list[j].name + ' は誰も居ないため削除します。');
+					console.log('[VCC] VC removed: ' + channel_list[j].name);
 					channel_list[j].delete();
 				}
 			}
 		}
-		console.log('[VCC] チェックが終了しました。');
+		console.log('[VCC] Check finished.');
 	}, 300000);//5分ごとにスケーラブルVCのチェック、誰も居ないなら削除
 	const VoiceChatCreate_button = new ButtonBuilder().setCustomId('VoiceChatCreate').setStyle(ButtonStyle.Success).setLabel('イベントVCを作成する');
 	const VCCembed = {
