@@ -292,7 +292,7 @@ for (const file of CommandNDFiles) {
 	}
 }
 
-
+/*
 const slashCommandsNDPath = path.join(__dirname, '/nullpo/SlashCommand/nullpo_debug');
 const slashCommandNDFiles = fs.readdirSync(slashCommandsNDPath).filter(file => file.endsWith('.js'));
 
@@ -304,7 +304,7 @@ for (const file of slashCommandNDFiles) {
 		client.SlashCommands_NullpoDebug.set(command.data.name, command);
 	}
 }
-
+*/
 let rest;
 if(process.env.NODE_ENV === 'heroku') {
 rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
@@ -463,8 +463,8 @@ client.on('ready', () => {
 			color: 0xF0E68C,
 			description: 'イベント用VC作成ボタン',
 			fields: [{
-				name: 'ボタンを押すとイベント用VCが作成されます。',
-				value: '大量に生成しないでください。場合によってはボタンを押せなくなることがあります。',
+				name: '概要',
+				value: 'ボタンを押すとイベント用VCが作成されます。大量に生成しないでください。場合によってはボタンを押せなくなることがあります。\n5分ごとに誰も居ないVCは削除されるようになっています。削除されない場合は管理者にお問い合わせください。',
 			}],
 			fetchReply: true,
 	};
