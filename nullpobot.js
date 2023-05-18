@@ -1,4 +1,4 @@
-const { Client, GatewayIntentBits, Collection, REST, Routes } = require('discord.js');
+const { Client, GatewayIntentBits, Collection, REST, Routes, ButtonBuilder, ActionRowBuilder, ButtonStyle } = require('discord.js');
 const config = require('config');
 const fs = require('node:fs');
 const path = require('node:path');
@@ -12,6 +12,7 @@ all_log = 0,join_log = 0,move_log = 0,leave_log = 0,clock_log = 0,restart_log = 
 const update_from_db = require('./nullpo/components/update_from_db.js');
 const yes_button = require('./nullpo/components/button/yes.js');
 const no_button = require('./nullpo/components/button/no.js');
+const VoiceChatCreate = require('./nullpo/components/button/VoiceChatCreate.js');
 const cronjob = require('./nullpo/events/cron.js');
 const nullpo_server_id = '966674976956645407',nullpo_casino_server_id = '1015585928779137105',nullpo_debug_server_id = '979084665958834216';
 const nullpo_admin_log = '997341001809133588',nullpo_casino_admin_log = '1042484015720042546',nullpo_debug_test = '986475538770194432';
@@ -22,6 +23,8 @@ client.slashCommands = new Collection();
 slashCommands_rest = [];
 client.Commands_NullpoDebug = new Collection();
 Commands_rest_NullpoDebug = [];
+client.SlashCommands_NullpoDebug = new Collection();
+slashCommands_rest_NullpoDebug = [];
 
 
 client.once('ready', () => {	
@@ -34,6 +37,7 @@ client.once('ready', () => {
 });
 const cron = require('node-cron');
 const schedule = require('node-schedule');
+const { channel } = require('node:diagnostics_channel');
 errorCount = 0,SuccessLogin = 0;
 const tex_dblog = '979084899703218186',tex_jihou = '997274370122731611',tex_nlpcs_nofi = '1015852168810606592',tex_jllog = '978962695418155019',tex_pjsekai = '999675995936280717';
 const vc_atumare = '997274624045879407',vc_pjsekai = '981173824294879322',vc_apex = '992161885862502400',vc_music = '982523943309180978',vc_spla = '1017431011442819142',vc_granblue = '1083006425791463494';
@@ -277,15 +281,27 @@ for (const file of slashCommandFiles) {
 	}
 }
 
-const slashCommandsndPath = path.join(__dirname, '/nullpo/SlashCommand/nullpo_debug');
-const slashCommandndFiles = fs.readdirSync(slashCommandsndPath).filter(file => file.endsWith('.js'));
+const CommandsNDPath = path.join(__dirname, '/nullpo/components/appCommand/nullpo_debug');
+const CommandNDFiles = fs.readdirSync(CommandsNDPath).filter(file => file.endsWith('.js'));
 
-for (const file of slashCommandndFiles) {
-	const filePath = path.join(slashCommandsndPath, file);
+for (const file of CommandNDFiles) {
+	const command = require(`./nullpo/components/appCommand/${file}`);
+	Commands_rest_NullpoDebug.push(command.data.toJSON());
+	if('data' in command && 'execute' in command) {
+		client.Commands_NullpoDebug.set(command.data.name, command);
+	}
+}
+
+
+const slashCommandsNDPath = path.join(__dirname, '/nullpo/SlashCommand/nullpo_debug');
+const slashCommandNDFiles = fs.readdirSync(slashCommandsNDPath).filter(file => file.endsWith('.js'));
+
+for (const file of slashCommandNDFiles) {
+	const filePath = path.join(slashCommandsNDPath, file);
 	const command = require(filePath);
 	Commands_rest_NullpoDebug.push(command.data.toJSON());
 	if ('data' in command && 'execute' in command) {
-		client.Commands_NullpoDebug.set(command.data.name, command);
+		client.SlashCommands_NullpoDebug.set(command.data.name, command);
 	}
 }
 
@@ -299,7 +315,7 @@ rest = new REST({ version: '10' }).setToken(config.get('DISCORD_TOKEN'));
 (async () => {
 	try {
 		console.log('アプリケーションコマンドの登録開始');
-		//if (process.env.NODE_ENV === 'heroku') 
+		if (process.env.NODE_ENV === 'heroku') 
 			await rest.put(
 				Routes.applicationCommands(botID),
 				{ body: commands_rest },
@@ -332,6 +348,7 @@ client.on('interactionCreate', async (interaction) => {//コマンド・ボタ�
 	if(interaction.isButton()){
 		if (interaction.customId === 'yes') yes_button(interaction);
 		if (interaction.customId === 'no') no_button(interaction);
+		if (interaction.customId === 'VoiceChatCreate') VoiceChatCreate(interaction);	
 	}
 	if (interaction.isMessageContextMenuCommand()){
 		const resistered_context = interaction.client.Commands.get(interaction.commandName);
@@ -352,7 +369,12 @@ client.on('interactionCreate', async (interaction) => {//コマンド・ボタ�
 client.on('messageDelete', message => {
 	logger("delete");
 	const Month = new Date().getMonth()+1,Day = new Date().getDate(),Hour = new Date().getHours(),Min = new Date().getMinutes(),Sec = new Date().getSeconds(),Hour0 = ('0' + Hour).slice(-2),Min0 = ('0' + Min).slice(-2),Sec0 = ('0' + Sec).slice(-2),Year = new Date().getFullYear();
-	const author_with_nick = (message.member.nickname != null ? (message.author.tag + ' (' + message.member.nickname + ')') : message.author.tag);
+	let author_with_nick;
+	if (message.author.tag.split('#')[1] == "0") {
+		author_with_nick = (message.member.nickname != null ? (message.author.username + ' (' + message.member.nickname + ')') : message.author.username);
+	} else {
+		author_with_nick = (message.member.nickname != null ? (message.author.tag + ' (' + message.member.nickname + ')') : message.author.tag);
+	}
         const embed = {
                 color: 0xCC0000,
                 description: String(message.channel) + 'にてメッセージが削除されました。',
@@ -418,7 +440,38 @@ client.on('ready', () => {
 			}
 		}, 15000);//15秒間ping、5秒間動作モード表示
 	}, 20000)//20秒ごとにpingを更新
+
+	setInterval(() => {
+		console.log('[VCC] チェックを開始します。');
+		const VCC_list = ['テスト','イベント'];
+		for (let i = 0; i < VCC_list.length; i++) {
+			console.log('[VCC] Checking ' + VCC_list[i] + '...')
+			const channel_list = [];
+			client.channels.cache.filter(ch => ch.name.slice(-(VCC_list[i].length + 1)) === ('-' + VCC_list[i])).each(channel => channel_list.push(channel));
+			if (channel_list.length == 0) continue;
+			for (let j = 0; j < channel_list.length; j++) {
+				if (channel_list[j].members.size == 0) {
+					console.log('[VCC] ' + channel_list[j].name + ' は誰も居ないため削除します。');
+					channel_list[j].delete();
+				}
+			}
+		}
+		console.log('[VCC] チェックが終了しました。');
+	}, 300000);//5分ごとにスケーラブルVCのチェック、誰も居ないなら削除
+	const VoiceChatCreate_button = new ButtonBuilder().setCustomId('VoiceChatCreate').setStyle(ButtonStyle.Success).setLabel('イベントVCを作成する');
+	const VCCembed = {
+			color: 0xF0E68C,
+			description: 'イベント用VC作成ボタン',
+			fields: [{
+				name: 'ボタンを押すとイベント用VCが作成されます。',
+				value: '大量に生成しないでください。場合によってはボタンを押せなくなることがあります。',
+			}],
+			fetchReply: true,
+	};
+	//client.channels.cache.get('1108678708480446535').send({embeds: [VCCembed],components:[new ActionRowBuilder().addComponents([VoiceChatCreate_button])]});
 });
+
+
 /*
 const tryLogin = function(){
 	if(errorCount < 3){//最大3回までリトライ
