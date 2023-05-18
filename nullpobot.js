@@ -367,6 +367,9 @@ client.on('interactionCreate', async (interaction) => {//コマンド・ボタ�
 		
 	}
 });
+client.on('messageCreate', async (message) => {//メッセージ処理
+	
+})
 client.on('messageDelete', message => {
 	logger("delete");
 	const Month = new Date().getMonth()+1,Day = new Date().getDate(),Hour = new Date().getHours(),Min = new Date().getMinutes(),Sec = new Date().getSeconds(),Hour0 = ('0' + Hour).slice(-2),Min0 = ('0' + Min).slice(-2),Sec0 = ('0' + Sec).slice(-2),Year = new Date().getFullYear();
@@ -458,19 +461,20 @@ client.on('ready', () => {
 			}
 		}
 		console.log('[VCC] Check finished.');
-	}, 300000);//5分ごとにスケーラブルVCのチェック、誰も居ないなら削除
+	}, 300000);//5分ごとにVCCのチェック、誰も居ないなら削除
+
 	const VoiceChatCreate_button = new ButtonBuilder().setCustomId('VoiceChatCreate').setStyle(ButtonStyle.Success).setLabel('イベントVCを作成する');
 	const VCCembed = {
 			color: 0xF0E68C,
 			description: 'イベント用VC作成ボタン',
 			fields: [{
 				name: '概要',
-				value: 'ボタンを押すとイベント用VCが作成されます。大量に生成しないでください。場合によってはボタンを押せなくなることがあります。\n5分ごとに誰も居ないVCは削除されるようになっています。削除されない場合は管理者にお問い合わせください。',
+				value: 'ボタンを押すとイベント用VCが作成されます。大量に生成しないでください。場合によってはボタンを押せなくなることがあります。\n5分ごとに誰も居ないVCは削除されるようになっています。削除されない場合は管理者にお問い合わせください。\n作成されるVCのビットレートは192kbps、人数制限はありません。',
 			}],
 			fetchReply: true,
 	};
 	//client.channels.cache.get('1108678708480446535').send({embeds: [VCCembed],components:[new ActionRowBuilder().addComponents([VoiceChatCreate_button])]});
-});
+});//手動でボタンを設置する用
 
 
 /*

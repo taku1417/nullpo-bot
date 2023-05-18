@@ -1,11 +1,15 @@
-const {Client , GatewayIntentBits} = require('discord.js');
+const {Client, GatewayIntentBits, ButtonBuilder, ActionRowBuilder, ButtonStyle} = require('discord.js');
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildVoiceStates, GatewayIntentBits.MessageContent]});
 let number;
 async function VoiceChatCreate(interaction) {
+    const VoiceChatCreate_button_disabled = new ButtonBuilder().setCustomId('VoiceChatCreate').setStyle(ButtonStyle.Danger).setLabel('作成中...').setDisabled(true);
+    await interaction.message.edit({
+        components: [new ActionRowBuilder().addComponents(VoiceChatCreate_button_disabled)],
+    })
 	await interaction.reply({
         content: "ボイスチャットを作成しています...",
         ephemeral: true,
-        fetchReply: true
+        fetchReply: true,
     });
     switch(interaction.channelId){//ボタンのあるチャンネルID
         case '1108624508211966012'://debug鯖でのテスト用
@@ -69,7 +73,9 @@ function execute(interaction, category, VCname, VCbitrate) {
                 console.error(err);
             }
         });
-        
+    interaction.message.edit({
+        components: [new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId('VoiceChatCreate').setStyle(ButtonStyle.Success).setLabel('イベントVCを作成する'))],
+    })
 }
 
 module.exports = VoiceChatCreate;
