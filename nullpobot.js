@@ -417,8 +417,11 @@ client.on('messageDelete', message => {
 });
 client.once('ready', () => {
 	client.channels.cache.get(tex_dblog).send('ぬるぽbotが起動しました。');//デバッグ鯖のログに流れる
+	const VoiceChatCreate_button = new ButtonBuilder().setCustomId('VoiceChatCreate').setStyle(ButtonStyle.Success).setLabel('イベントVCを作成する');
+	client.channels.cache.get('1108678708480446535').messages.fetch('1108803775415730246').then(message => message.edit({components:[new ActionRowBuilder().addComponents([VoiceChatCreate_button])]}));//ボタンを直す
 });
 client.on('ready', () => {
+	const VoiceChatCreate_button = new ButtonBuilder().setCustomId('VoiceChatCreate').setStyle(ButtonStyle.Success).setLabel('イベントVCを作成する');
 	setInterval(() => {
 		client.user.setPresence({
 			activities: [{
@@ -463,7 +466,7 @@ client.on('ready', () => {
 		console.log('[VCC] Check finished.');
 	}, 300000);//5分ごとにVCCのチェック、誰も居ないなら削除
 
-	const VoiceChatCreate_button = new ButtonBuilder().setCustomId('VoiceChatCreate').setStyle(ButtonStyle.Success).setLabel('イベントVCを作成する');
+	
 	const VCCembed = {
 			color: 0xF0E68C,
 			description: 'イベント用VC作成ボタン',
