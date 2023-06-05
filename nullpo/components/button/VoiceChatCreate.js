@@ -1,6 +1,7 @@
 const {Client, GatewayIntentBits, ButtonBuilder, ActionRowBuilder, ButtonStyle} = require('discord.js');
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildVoiceStates, GatewayIntentBits.MessageContent]});
 let number;
+const throw_webhook = require('../../../function/throw_webhook.js');
 async function VoiceChatCreate(interaction) {
     const VoiceChatCreate_button_disabled = new ButtonBuilder().setCustomId('VoiceChatCreate').setStyle(ButtonStyle.Danger).setLabel('作成中...').setDisabled(true);
     await interaction.message.edit({
@@ -27,8 +28,9 @@ async function VoiceChatCreate(interaction) {
     }
 }
 
+//ボイスチャット作成
 function execute(interaction, category, VCname, VCbitrate) {
-    const bitrateAmount = (VCbitrate ?? 64000);
+    const bitrateAmount = (VCbitrate ?? 64000);//VCbitrateがnullの場合は64000になる
     const array = [];
     interaction.guild.channels.cache.filter(ch => ch.name.slice(-(VCname.length + 1)) === ('-' + VCname)).each(channel => array.push(Number(channel.name.slice(0, -(VCname.length + 1)))));
     const checkVC = Array.from(new Set(array));
@@ -63,13 +65,20 @@ function execute(interaction, category, VCname, VCbitrate) {
                     ephemeral: true,
                     fetchReply: true
                 });
+                interaction.message.edit({
+                    components: [new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId('VoiceChatCreate').setStyle(ButtonStyle.Success).setLabel('イベントVCを作成する'))],
+                })
                 console.error(err);
             } else {
                 interaction.editReply({
-                    content: 'なんらかのエラーによりチャンネルの作成に失敗しました。ログを精査しますので、発生日時と共に管理者にお問い合わせください。',
+                    content: 'なんらかのエラーによりチャンネルの作成に失敗しました。時間をおいてもう一度お試しください。\n何度もこのエラーが出る場合は管理者にお問い合わせください。',
                     ephemeral: true,
                     fetchReply: true
                 });
+                interaction.message.edit({
+                    components: [new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId('VoiceChatCreate').setStyle(ButtonStyle.Success).setLabel('イベントVCを作成する'))],
+                })
+                throw_webhook('error', `VoiceChatCreate.js:作成失敗(${VCname})`, err, "");
                 console.error(err);
             }
         });

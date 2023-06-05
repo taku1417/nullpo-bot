@@ -5,6 +5,7 @@ const path = require('node:path');
 if(process.env.NODE_ENV !== 'heroku') {
 	process.env.NODE_ENV === 'default';
 } 
+const throw_webhook = require('./function/throw_webhook.js');
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildVoiceStates, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMessages] });
 const logger = require('./nullpo/log/logger.js');
 //const delete_logger = require('./nullpo/log/delete_logger.js');
@@ -417,6 +418,7 @@ client.on('messageDelete', message => {
 });
 client.once('ready', () => {
 	client.channels.cache.get(tex_dblog).send('ぬるぽbotが起動しました。');//デバッグ鯖のログに流れる
+	
 	const VoiceChatCreate_button = new ButtonBuilder().setCustomId('VoiceChatCreate').setStyle(ButtonStyle.Success).setLabel('イベントVCを作成する');
 	client.channels.cache.get('1108678708480446535').messages.fetch('1108803775415730246').then(message => message.edit({components:[new ActionRowBuilder().addComponents([VoiceChatCreate_button])]}));//ボタンを直す
 });
@@ -463,8 +465,9 @@ client.on('ready', () => {
 				}
 			}
 		}
+		client.channels.cache.get('1108678708480446535').messages.fetch('1108803775415730246').then(message => message.edit({components:[new ActionRowBuilder().addComponents([VoiceChatCreate_button])]}));//ボタンを直す
 		console.log('[VCC] Check finished.');
-	}, 300000);//5分ごとにVCCのチェック、誰も居ないなら削除
+	}, 300000);//5分ごとにVCCのチェック、誰も居ないなら削除 & ボタンを直す
 
 	
 	const VCCembed = {
@@ -505,17 +508,19 @@ setInterval(tryLogin,15000);//15秒ごとにtryLoginを実行
 if(process.env.NODE_ENV === 'heroku'){
 	try {
 		client.login();//ログイン
-		console.log('Discordサービスへの接続に成功しました。');
+		console.log('Discord APIへの接続に成功しました。');
 	} catch (error) {
-		console.error('Discordサービスへの接続に失敗。プロセスを終了します。',error);
-		process.exit(1);
+		console.error('Discord APIへの接続に失敗。プロセスを終了します。',error);
+		throw_webhook("error", 'Discord APIへの接続:失敗', error, "");
+		process.exit(9000);
 	}	
 } else {
 	try {
 		client.login(config.get('DISCORD_TOKEN'));//ログイン
-		console.log('Discordサービスへの接続に成功しました。');
+		console.log('Discord APIへの接続に成功しました。');
 	} catch (error) {
-		console.error('Discordサービスへの接続に失敗。プロセスを終了します。',error);
-		process.exit(1);
+		console.error('Discord APIへの接続に失敗。プロセスを終了します。',error);
+		throw_webhook("error", 'Discord APIへの接続:失敗', error, "");
+		process.exit(9000);
 	}	
 }
