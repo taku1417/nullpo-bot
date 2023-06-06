@@ -11,6 +11,9 @@ async function VoiceChatCreate(interaction) {
         content: "ボイスチャットを作成しています...",
         ephemeral: true,
         fetchReply: true,
+    }).catch(err => {
+        throw_webhook("error", "command[VoiceChatCreate]: ボイスチャット作成時にエラーが発生しました。", err); 
+        console.error("\n\n[VoiceChatCreate] VoiceChatCreate error", err);
     });
     switch(interaction.channelId){//ボタンのあるチャンネルID
         case '1108624508211966012'://debug鯖でのテスト用
@@ -65,9 +68,6 @@ function execute(interaction, category, VCname, VCbitrate) {
                     ephemeral: true,
                     fetchReply: true
                 });
-                interaction.message.edit({
-                    components: [new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId('VoiceChatCreate').setStyle(ButtonStyle.Success).setLabel('イベントVCを作成する'))],
-                })
                 console.error(err);
             } else {
                 interaction.editReply({
@@ -75,12 +75,12 @@ function execute(interaction, category, VCname, VCbitrate) {
                     ephemeral: true,
                     fetchReply: true
                 });
-                interaction.message.edit({
-                    components: [new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId('VoiceChatCreate').setStyle(ButtonStyle.Success).setLabel('イベントVCを作成する'))],
-                })
                 throw_webhook('error', `VoiceChatCreate.js:作成失敗(${VCname})`, err, "");
                 console.error(err);
             }
+            interaction.message.edit({
+                components: [new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId('VoiceChatCreate').setStyle(ButtonStyle.Success).setLabel('イベントVCを作成する'))],
+            })
         });
     interaction.message.edit({
         components: [new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId('VoiceChatCreate').setStyle(ButtonStyle.Success).setLabel('イベントVCを作成する'))],

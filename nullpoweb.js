@@ -4,6 +4,7 @@ var retry_ms = 5000;  //. retry every 5 sec
 var connectionString = (process.env.NODE_ENV === 'heroku') ? process.env.DATABASE_URL : config.get('DATABASE_URL');
 var PG = require('pg');
 const express = require('express');
+const throw_webhook = require('./function/throw_webhook');
 const app = express();
 const PORT= process.env.PORT || 3000;
 app.listen(PORT,()=>{
@@ -19,6 +20,7 @@ var pg = new PG.Pool({
 pg.on( 'error', function( err ){
     console.log( "[postgreSQL] db connection error on starting. retry connect every" + retry_ms + "ms.\n" + 
                     "[postgreSQL] データベースへの接続に失敗しました。" + retry_ms + "ミリ秒ごとに再接続を試みます。", err );
+    throw_webhook("error", "postgreSQL: db connection error. retry connect every" + retry_ms + "ms.", err);
     if( err.code && err.code.startsWith( '5' ) ){
         //. terminated by admin?
         try_reconnect( retry_ms );
@@ -54,12 +56,14 @@ async function query_execute(query_sql) {
         connection.query( query, function( err, result ){
             if ( err ){//クエリ実行のエラー時
                 console.error("[postgreSQL] query error occurred.\n[postgreSQL] クエリ実行時にエラーが発生しました。\n\n" + { err } );
+                throw_webhook("error", "postgreSQL: query error.", err);
             } else {//実行成功時
         
             }
         });
     } catch ( e ){//エラー時
         console.error("[postgreSQL] error occurred.\n[postgreSQL] エラーが発生しました。\n\n" + e);
+        throw_webhook("error", "postgreSQL: error.", e);
     } finally {
         if( connection ){
             connection.release();//dbをプールに戻す

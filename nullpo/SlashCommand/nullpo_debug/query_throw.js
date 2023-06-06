@@ -1,6 +1,7 @@
 const logger = require('../../log/logger.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const query_execute = require('../../../nullpoweb.js');
+const throw_webhook = require('../../../function/throw_webhook.js');
 
 
 module.exports = {
@@ -15,7 +16,8 @@ module.exports = {
         try {
             query_result = String(throw_query(interaction.options.getString('query')))
         } catch (e) {
-                'クエリが正常に実行されませんでした。'
+                query_result = 'クエリが正常に実行されませんでした。';
+                throw_webhook("error", "command[query_throw]: クエリが正常に実行されませんでした。", e);
                 console.error(e);
         }
         await interaction.reply({
@@ -31,6 +33,7 @@ async function throw_query (query) {
     await dbclient.query(query, (err, result) => {
         if (err) {
             console.error("\n\n[query] query error", err);
+            throw_webhook("error", "command[query_throw]: クエリが正常に実行されませんでした。", err);
             reply_message = err;
         } else {
             console.log(result);

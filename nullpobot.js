@@ -42,7 +42,6 @@ const { channel } = require('node:diagnostics_channel');
 errorCount = 0,SuccessLogin = 0;
 const tex_dblog = '979084899703218186',tex_jihou = '997274370122731611',tex_nlpcs_nofi = '1015852168810606592',tex_jllog = '978962695418155019',tex_pjsekai = '999675995936280717';
 const vc_atumare = '997274624045879407',vc_pjsekai = '981173824294879322',vc_apex = '992161885862502400',vc_music = '982523943309180978',vc_spla = '1017431011442819142',vc_granblue = '1083006425791463494';
-const svid = '966674976956645407',ncsvid = '1015585928779137105';
 const mori = new schedule.RecurrenceRule();
 mori.minute = 0;
 //const job = schedule.scheduleJob(mori, function(){//森レイドのやつ
@@ -337,6 +336,7 @@ client.on('interactionCreate', async (interaction) => {//コマンド・ボタ�
 		const resistered_command = interaction.client.slashCommands.get(interaction.commandName) || interaction.client.Commands_NullpoDebug.get(interaction.commandName);
 		if (!resistered_command) {
 			console.error(`No command matching ${interaction.commandName} was found.`);
+			throw_webhook("error", "command search: No Command matching. →" + interaction.commandName, "", "");
 			interaction.reply({ content: '指定したコマンドが見つかりませんでした。このメッセージが何度も出てくる場合は、下記のエラーコード、実行されたコマンド名ともにtaku1417#3456まで問い合わせてください。\nエラーコード: 1404  実行されたコマンド名: ' + interaction.commandName, ephemeral: true })
 			return;
 		}
@@ -344,6 +344,7 @@ client.on('interactionCreate', async (interaction) => {//コマンド・ボタ�
 			await resistered_command.execute(interaction);
 		} catch (error) {
 			console.error(`Error executing ${interaction.commandName}`);
+			throw_webhook("error", "command execute: Error executing. → " + interaction.commandName, error, "");
 			console.error(error);
 		}
 	}
@@ -356,13 +357,15 @@ client.on('interactionCreate', async (interaction) => {//コマンド・ボタ�
 		const resistered_context = interaction.client.Commands.get(interaction.commandName);
 		if (!resistered_context) {
 			console.error(`No command matching ${interaction.commandName} was found.`);
-			interaction.reply({ content: '指定したコマンドが見つかりませんでした。このメッセージが何度も出てくる場合は、下記のエラーコード、実行したコマンド名ともにtaku1417#3456まで問い合わせてください。\nエラーコード: 1404  実行されたコマンド名: ' + interaction.commandName, ephemeral: true })
+			throw_webhook("error", "command search: No Command matching.", interaction.commandName, "");
+			interaction.reply({ content: '指定したコマンドが見つかりませんでした。コマンド名を確認して下さい。\nまた、このエラーは管理者に通知されました。', ephemeral: true })
 			return;
 		}
 		try {
 			await resistered_context.execute(interaction);
 		} catch (error) {
 			console.error(`Error executing ${interaction.commandName}`);
+			throw_webhook("error", "command execute: Error executing. → " + interaction.commandName, error, "");
 			console.error(error);
 		}
 		
@@ -376,7 +379,7 @@ client.on('messageDelete', message => {
 	const Month = new Date().getMonth()+1,Day = new Date().getDate(),Hour = new Date().getHours(),Min = new Date().getMinutes(),Sec = new Date().getSeconds(),Hour0 = ('0' + Hour).slice(-2),Min0 = ('0' + Min).slice(-2),Sec0 = ('0' + Sec).slice(-2),Year = new Date().getFullYear();
 	let author_with_nick;
 	if (message.author.tag.split('#')[1] == "0") {
-		author_with_nick = (message.member.nickname != null ? (message.author.username + ' (' + message.member.nickname + ')') : message.author.username);
+		author_with_nick = (message.member.nickname != null ? (message.author.username + ' (' + message.member.nickname + ')') : message.author.username);//ID+タグとIDのみが混在するため、とりあえずの対策。IDのみの場合の表示方法が分かれば変更。グローバル表示名を考慮する必要もあるが方法が不明。
 	} else {
 		author_with_nick = (message.member.nickname != null ? (message.author.tag + ' (' + message.member.nickname + ')') : message.author.tag);
 	}
@@ -512,7 +515,7 @@ if(process.env.NODE_ENV === 'heroku'){
 	} catch (error) {
 		console.error('Discord APIへの接続に失敗。プロセスを終了します。',error);
 		throw_webhook("error", 'Discord APIへの接続:失敗', error, "");
-		process.exit(9000);
+		process.exit(1);
 	}	
 } else {
 	try {
@@ -521,6 +524,6 @@ if(process.env.NODE_ENV === 'heroku'){
 	} catch (error) {
 		console.error('Discord APIへの接続に失敗。プロセスを終了します。',error);
 		throw_webhook("error", 'Discord APIへの接続:失敗', error, "");
-		process.exit(9000);
+		process.exit(1);
 	}	
 }
