@@ -39,6 +39,7 @@ client.once('ready', () => {
 const cron = require('node-cron');
 const schedule = require('node-schedule');
 const { channel } = require('node:diagnostics_channel');
+const VCJoinLeaveCheck = require('./function/VCJoinLeaveCheck.js');
 errorCount = 0,SuccessLogin = 0;
 const tex_dblog = '979084899703218186',tex_jihou = '997274370122731611',tex_nlpcs_nofi = '1015852168810606592',tex_jllog = '978962695418155019',tex_pjsekai = '999675995936280717';
 const vc_atumare = '997274624045879407',vc_pjsekai = '981173824294879322',vc_apex = '992161885862502400',vc_music = '982523943309180978',vc_spla = '1017431011442819142',vc_granblue = '1083006425791463494';
@@ -93,8 +94,13 @@ ItemList = [
 /*ステメメモ
 
 */
-client.on('voiceStateUpdate', (oldState, newState) =>	{ 
+//以下をいずれ別ファイルへまとめたい
+client.on('voiceStateUpdate', (oldState, newState) =>	{
 	const channeljllog = client.channels.cache.get(tex_jllog), channelatumare = oldState.member.guild.channels.cache.get(vc_atumare), channelvcpjsekai = oldState.member.guild.channels.cache.get(vc_pjsekai), channelapex = oldState.member.guild.channels.cache.get(vc_apex),channelmusic = oldState.member.guild.channels.cache.get(vc_music),Ochanneljihou = oldState.member.guild.channels.cache.get(tex_jihou),channelpjsekai = oldState.member.guild.channels.cache.get(tex_pjsekai),channelspla = oldState.member.guild.channels.cache.get(vc_spla),channelgranblue = oldState.member.guild.channels.cache.get(vc_granblue);
+
+	VCJoinLeaveCheck(client, oldState, newState);
+
+
 	if (oldState.channelId === null && newState.channelId === vc_atumare) {
 		logger("join");
 		channelatumare.send(`__**入室** ${oldState.member.displayName} さんが入室しました。__`);
@@ -336,15 +342,15 @@ client.on('interactionCreate', async (interaction) => {//コマンド・ボタ�
 		const resistered_command = interaction.client.slashCommands.get(interaction.commandName) || interaction.client.Commands_NullpoDebug.get(interaction.commandName);
 		if (!resistered_command) {
 			console.error(`No command matching ${interaction.commandName} was found.`);
-			throw_webhook("error", "command search: No Command matching. →" + interaction.commandName, "", "");
-			interaction.reply({ content: '指定したコマンドが見つかりませんでした。このメッセージが何度も出てくる場合は、下記のエラーコード、実行されたコマンド名ともにtaku1417#3456まで問い合わせてください。\nエラーコード: 1404  実行されたコマンド名: ' + interaction.commandName, ephemeral: true })
+			throw_webhook("error", "command search: No Command matching. →" + interaction.commandName, "", "slash command");
+			interaction.reply({ content: '指定したコマンドが見つかりませんでした。コマンド名を確認して下さい。\nまた、このエラーは管理者に通知されました。改善されるまでお待ちください。', ephemeral: true })
 			return;
 		}
 		try {
 			await resistered_command.execute(interaction);
 		} catch (error) {
 			console.error(`Error executing ${interaction.commandName}`);
-			throw_webhook("error", "command execute: Error executing. → " + interaction.commandName, error, "");
+			throw_webhook("error", "command execute: Error executing. → " + interaction.commandName, error, "slash command");
 			console.error(error);
 		}
 	}
@@ -357,15 +363,15 @@ client.on('interactionCreate', async (interaction) => {//コマンド・ボタ�
 		const resistered_context = interaction.client.Commands.get(interaction.commandName);
 		if (!resistered_context) {
 			console.error(`No command matching ${interaction.commandName} was found.`);
-			throw_webhook("error", "command search: No Command matching.", interaction.commandName, "");
-			interaction.reply({ content: '指定したコマンドが見つかりませんでした。コマンド名を確認して下さい。\nまた、このエラーは管理者に通知されました。', ephemeral: true })
+			throw_webhook("error", "command search: No Command matching.", interaction.commandName, "", "message context menu");
+			interaction.reply({ content: '指定したコマンドが見つかりませんでした。コマンド名を確認して下さい。\nまた、このエラーは管理者に通知されました。改善されるまでお待ちください。', ephemeral: true })
 			return;
 		}
 		try {
 			await resistered_context.execute(interaction);
 		} catch (error) {
 			console.error(`Error executing ${interaction.commandName}`);
-			throw_webhook("error", "command execute: Error executing. → " + interaction.commandName, error, "");
+			throw_webhook("error", "command execute: Error executing. → " + interaction.commandName, error, "message context menu");
 			console.error(error);
 		}
 		
@@ -379,7 +385,7 @@ client.on('messageDelete', message => {
 	const Month = new Date().getMonth()+1,Day = new Date().getDate(),Hour = new Date().getHours(),Min = new Date().getMinutes(),Sec = new Date().getSeconds(),Hour0 = ('0' + Hour).slice(-2),Min0 = ('0' + Min).slice(-2),Sec0 = ('0' + Sec).slice(-2),Year = new Date().getFullYear();
 	let author_with_nick;
 	if (message.author.tag.split('#')[1] == "0") {
-		author_with_nick = (message.member.nickname != null ? (message.author.username + ' (' + message.member.nickname + ')') : message.author.username);//ID+タグとIDのみが混在するため、とりあえずの対策。IDのみの場合の表示方法が分かれば変更。グローバル表示名を考慮する必要もあるが方法が不明。
+		author_with_nick = (message.member.nickname != null ? (message.author.username + ' (' + message.member.nickname + ')') : message.author.username);//ID+タグとIDのみが混在するため、とりあえずの対策。移行済みのユーザーはユーザーネームのみになる。グローバル表示名を考慮する必要もあるが方法が不明。
 	} else {
 		author_with_nick = (message.member.nickname != null ? (message.author.tag + ' (' + message.member.nickname + ')') : message.author.tag);
 	}
@@ -423,7 +429,7 @@ client.once('ready', () => {
 	client.channels.cache.get(tex_dblog).send('ぬるぽbotが起動しました。');//デバッグ鯖のログに流れる
 	
 	const VoiceChatCreate_button = new ButtonBuilder().setCustomId('VoiceChatCreate').setStyle(ButtonStyle.Success).setLabel('イベントVCを作成する');
-	client.channels.cache.get('1108678708480446535').messages.fetch('1108803775415730246').then(message => message.edit({components:[new ActionRowBuilder().addComponents([VoiceChatCreate_button])]}));//ボタンを直す
+	if(process.env.NODE_ENV === 'heroku') client.channels.cache.get('1108678708480446535').messages.fetch('1108803775415730246').then(message => message.edit({components:[new ActionRowBuilder().addComponents([VoiceChatCreate_button])]}));//ボタンを直す
 });
 client.on('ready', () => {
 	const VoiceChatCreate_button = new ButtonBuilder().setCustomId('VoiceChatCreate').setStyle(ButtonStyle.Success).setLabel('イベントVCを作成する');
@@ -468,7 +474,7 @@ client.on('ready', () => {
 				}
 			}
 		}
-		client.channels.cache.get('1108678708480446535').messages.fetch('1108803775415730246').then(message => message.edit({components:[new ActionRowBuilder().addComponents([VoiceChatCreate_button])]}));//ボタンを直す
+		if(process.env.NODE_ENV === 'heroku') client.channels.cache.get('1108678708480446535').messages.fetch('1108803775415730246').then(message => message.edit({components:[new ActionRowBuilder().addComponents([VoiceChatCreate_button])]}));//ボタンを直す
 		console.log('[VCC] Check finished.');
 	}, 300000);//5分ごとにVCCのチェック、誰も居ないなら削除 & ボタンを直す
 
@@ -519,7 +525,7 @@ if(process.env.NODE_ENV === 'heroku'){
 	}	
 } else {
 	try {
-		client.login(config.get('DISCORD_TOKEN'));//ログイン
+		client.login(config.get('DISCORD_TOKEN.DEBUG'));//ログイン
 		console.log('Discord APIへの接続に成功しました。');
 	} catch (error) {
 		console.error('Discord APIへの接続に失敗。プロセスを終了します。',error);
