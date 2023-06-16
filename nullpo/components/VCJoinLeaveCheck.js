@@ -22,7 +22,7 @@ async function VCJoinLeaveCheck(client, oldState, newState){//type: "join", "lea
             const logChannel = ServerLogChannelFinder(client, newState) ?? null;
             if(logChannel == null) return;
             logChannel.send(`${member_with_nick(newState)} が ${newChannelName} に参加しました`);
-            console.log("member.user.tag  " + newState.member.user.tag + "  member.username  " + newState.member.user.username + "  member.nickname  " + newState.member.user.nickname)
+            console.log("member.user.tag  " + newState.member.user.tag + "  member.username  " + newState.member.user.username + "  member.nickname  " + newState.member.globalName + "\nmember[]  " + newState.member.user);
             break;
         case "leave":
             break;
@@ -40,9 +40,9 @@ function ServerLogChannelFinder(client, State){//各種ログというチャン�
 
 function member_with_nick(State){
     if (State.member.user.tag.split('#')[1] == "0") {
-        return State.member.nickname != null ? (State.member.user.username + ' (' + State.member.displayName + ')') : State.member.user.username;//ID+タグとIDのみが混在するため、とりあえずの対策。移行済みのユーザーはユーザーネームのみになる。グローバル表示名を考慮する必要もあるが方法が不明。
+        return State.member.nickname != null ? (State.member.user.username + ' (' + State.member.displayName + ')') : State.member.user.username;//ID+タグとIDのみが混在するため、とりあえずの対策。移行済みのユーザーはユーザーネームのみになる。グローバル表示名を考慮する必要もあるが、14.11.0時点で未実装。devにはあるため、stableへの実装待ち。
     } else {
-        return State.member.nickname != null ? (State.member.user.tag + ' (' + State.member.user.nickname + ')') : State.member.user.tag;
+        return State.member.nickname != null ? (State.member.user.tag + ' (' + State.member.displayName + ')') : State.member.user.tag;
     }
 }
 
