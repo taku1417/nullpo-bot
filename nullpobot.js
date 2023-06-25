@@ -30,6 +30,7 @@ const cron = require('node-cron');
 const schedule = require('node-schedule');
 const { channel } = require('node:diagnostics_channel');
 const VCJoinLeaveCheck = require('./nullpo/components/VCJoinLeaveCheck.js');
+const ServerLogChannelFinder = require('./nullpo/components/ServerLogChannelFinder.js');
 
 client.once('ready', () => {	
 	client.user.setPresence({
@@ -315,7 +316,7 @@ let rest;
 if(process.env.NODE_ENV === 'heroku') {
 rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
 } else {
-rest = new REST({ version: '10' }).setToken(config.get('DISCORD_TOKEN'));
+rest = new REST({ version: '10' }).setToken(config.get('DISCORD_TOKEN.DEBUG'));
 }
 
 (async () => {
@@ -383,17 +384,22 @@ client.on('messageDelete', message => {
 	logger("delete");
 	const Month = new Date().getMonth()+1,Day = new Date().getDate(),Hour = new Date().getHours(),Min = new Date().getMinutes(),Sec = new Date().getSeconds(),Hour0 = ('0' + Hour).slice(-2),Min0 = ('0' + Min).slice(-2),Sec0 = ('0' + Sec).slice(-2),Year = new Date().getFullYear();
 	let author_with_nick;
-	if (message.author.tag.split('#')[1] == "0") {
-		author_with_nick = (message.member.nickname != null ? (message.author.username + ' (' + message.member.nickname + ')') : message.author.username);//ID+タグとIDのみが混在するため、とりあえずの対策。移行済みのユーザーはユーザーネームのみになる。グローバル表示名を考慮する必要もあるが方法が不明。
-	} else {
-		author_with_nick = (message.member.nickname != null ? (message.author.tag + ' (' + message.member.nickname + ')') : message.author.tag);
+	try {
+		if (message.author.tag.split('#')[1] == "0") {
+			author_with_nick = (message.member.nickname != null ? (message.author.username + ' (' + message.member.nickname + ')') : message.author.username);//ID+タグとIDのみが混在するため、とりあえずの対策。移行済みのユーザーはユーザーネームのみになる。グローバル表示名を考慮する必要もあるが、djs@14.11.0時点で未実装。devにはあるため、stableへの実装待ち。
+		} else {
+			author_with_nick = (message.member.nickname != null ? (message.author.tag + ' (' + message.member.nickname + ')') : message.author.tag);
+		}
+	} catch (error) {
+		console.log("\n\n" + error);
+		return;
 	}
         const embed = {
                 color: 0xCC0000,
                 description: String(message.channel) + 'にてメッセージが削除されました。',
                 author: {
                         name: author_with_nick,
-                        icon_url: message.author.avatarURL(),
+                        icon_url: message.author.displayAvatarURL(),
                 },
                 fields: [{
                         name: 'メッセージ内容',
@@ -410,15 +416,16 @@ client.on('messageDelete', message => {
         switch(message.guild.id) {
                 case nullpo_server_id:
 					if(message.author.bot == true) return;
-                        client.guilds.cache.get(nullpo_server_id).channels.cache.get(nullpo_admin_log).send({embeds: [embed]});
+					ServerLogChannelFinder(client, null, "メッセージログ", nullpo_server_id).send({embeds: [embed]});
                         break;
                 case nullpo_casino_server_id:
 					if(message.author.bot == true) return;
-                        client.guilds.cache.get(nullpo_casino_server_id).channels.cache.get(nullpo_casino_admin_log).send({embeds: [embed]});
+                        ServerLogChannelFinder(client, null, "メッセージログ", nullpo_casino_server_id).send({embeds: [embed]});
                         break;
                 case nullpo_debug_server_id:
-                        client.guilds.cache.get(nullpo_debug_server_id).channels.cache.get(nullpo_debug_test).send({embeds: [embed]});
-			break;
+					if(message.author.bot == true) return;
+						ServerLogChannelFinder(client, null, "メッセージログ", nullpo_debug_server_id).send({embeds: [embed]});
+						break;
                 default:
                         break;
         }
