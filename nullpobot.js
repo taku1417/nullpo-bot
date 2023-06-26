@@ -6,10 +6,19 @@ if(process.env.NODE_ENV !== 'heroku') {
 	process.env.NODE_ENV === 'default';
 } 
 const throw_webhook = require('./function/throw_webhook.js');
-const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildVoiceStates, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMessages] });
+const client = new Client({
+	intents: [
+		GatewayIntentBits.Guilds,
+		GatewayIntentBits.GuildMembers,
+		GatewayIntentBits.GuildVoiceStates,
+		GatewayIntentBits.MessageContent,
+		GatewayIntentBits.GuildMessages,
+		GatewayIntentBits.GuildMessageTyping
+	]
+});
 const logger = require('./nullpo/log/logger.js');
 //const delete_logger = require('./nullpo/log/delete_logger.js');
-all_log = 0,join_log = 0,move_log = 0,leave_log = 0,clock_log = 0,restart_log = 0,command_log = 0,delete_log = 0,unknown_log = 0;
+all_log = 0,join_log = 0,move_log = 0,leave_log = 0,clock_log = 0,restart_log = 0,command_log = 0,message_log = 0,unknown_log = 0;
 const update_from_db = require('./nullpo/components/update_from_db.js');
 const yes_button = require('./nullpo/components/button/yes.js');
 const no_button = require('./nullpo/components/button/no.js');
@@ -19,18 +28,17 @@ const nullpo_server_id = '966674976956645407',nullpo_casino_server_id = '1015585
 const nullpo_admin_log = '997341001809133588',nullpo_casino_admin_log = '1042484015720042546',nullpo_debug_test = '986475538770194432';
 const botID = '978923316557537280';
 client.Commands = new Collection();
-commands_rest = [];
 client.slashCommands = new Collection();
-slashCommands_rest = [];
+commands_rest = [];
 client.Commands_NullpoDebug = new Collection();
-Commands_rest_NullpoDebug = [];
 client.SlashCommands_NullpoDebug = new Collection();
-slashCommands_rest_NullpoDebug = [];
+Commands_rest_NullpoDebug = [];
 const cron = require('node-cron');
 const schedule = require('node-schedule');
 const { channel } = require('node:diagnostics_channel');
 const VCJoinLeaveCheck = require('./nullpo/components/VCJoinLeaveCheck.js');
 const ServerLogChannelFinder = require('./nullpo/components/ServerLogChannelFinder.js');
+const MessageUpdateLogger = require('./nullpo/log/message/update.js');
 
 client.once('ready', () => {	
 	client.user.setPresence({
@@ -377,9 +385,9 @@ client.on('interactionCreate', async (interaction) => {//コマンド・ボタ�
 		
 	}
 });
-client.on('messageCreate', async (message) => {//メッセージ処理
-	
-})
+client.on('messageUpdate', async (oldMessage, newMessage) => {
+	MessageUpdateLogger(client, oldMessage, newMessage);
+});
 client.on('messageDelete', message => {
 	logger("delete");
 	const Month = new Date().getMonth()+1,Day = new Date().getDate(),Hour = new Date().getHours(),Min = new Date().getMinutes(),Sec = new Date().getSeconds(),Hour0 = ('0' + Hour).slice(-2),Min0 = ('0' + Min).slice(-2),Sec0 = ('0' + Sec).slice(-2),Year = new Date().getFullYear();
