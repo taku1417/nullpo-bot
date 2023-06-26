@@ -31,7 +31,7 @@ async function VCJoinLeaveCheck(client, oldState, newState){//type: "join", "lea
             if(logChannel == null) break;
             embed = {
                 color: 0x00CC00,
-                description: `<#${newChannelID}> に参加しました`,
+                description: `<#${newChannelID}> に**参加**しました`,
                 author: {
                     name: member_with_nick(newState),
                     icon_url: newState.member.displayAvatarURL(),
@@ -47,7 +47,7 @@ async function VCJoinLeaveCheck(client, oldState, newState){//type: "join", "lea
             if(logChannel == null) break;
             embed = {
                 color: 0xCC0000,
-                description: `<#${oldChannelID}> から退出しました`,
+                description: `<#${oldChannelID}> から**退出**しました`,
                 author: {
                     name: member_with_nick(oldState),
                     icon_url: oldState.member.displayAvatarURL(),
@@ -63,7 +63,7 @@ async function VCJoinLeaveCheck(client, oldState, newState){//type: "join", "lea
             if(logChannel == null) break;
             embed = {
                 color: 0x0000CC,
-                description: `<#${oldChannelID}> から <#${newChannelID}> に移動しました`,
+                description: `<#${oldChannelID}> から <#${newChannelID}> に**移動**しました`,
                 author: {
                     name: member_with_nick(newState),
                     icon_url: newState.member.displayAvatarURL(),
