@@ -9,8 +9,13 @@ const nullpo_server_id = '966674976956645407',nullpo_casino_server_id = '1015585
  * @returns 
  */
 function MessageUpdateLogger(client, oldMessage, newMessage){
+    if(newMessage.author.bot == true) return;
+    if(oldMessage.content == newMessage.content) return;
+    if(newMessage.guild == null) return;
+
     logger("edit");
 	const Month = new Date().getMonth()+1,Day = new Date().getDate(),Hour = new Date().getHours(),Min = new Date().getMinutes(),Sec = new Date().getSeconds(),Hour0 = ('0' + Hour).slice(-2),Min0 = ('0' + Min).slice(-2),Sec0 = ('0' + Sec).slice(-2),Year = new Date().getFullYear();
+    
 	let author_with_nick;
 	try {
 		if (newMessage.author.tag.split('#')[1] == "0") {
@@ -22,6 +27,7 @@ function MessageUpdateLogger(client, oldMessage, newMessage){
 		console.log("\n\n" + error);
 		return;
 	}
+
     const embed = {
         color: 0xe62aed,
         description: String(newMessage.channel) + 'にてメッセージが編集されました。',
@@ -40,27 +46,24 @@ function MessageUpdateLogger(client, oldMessage, newMessage){
             value: Year + '/' + Month + '/' + Day + ' ' + Hour0 + ':' + Min0 + ':' + Sec0 + '(JST)',
         },{
             name: 'メッセージID',
-            value: `${newMessage.id}\n[このメッセージに飛ぶ](${newMessage.url})`,
+            value: `${newMessage.id}\n[対象のメッセージに飛ぶ](${newMessage.url})`,
         }],
         timestamp: new Date(),
     };
-        switch(newMessage.guild.id) {
-                case nullpo_server_id:
-					if(newMessage.author.bot == true) return;
-					    ServerLogChannelFinder(client, null, "メッセージログ", nullpo_server_id).send({embeds: [embed]});
-                    break;
-                case nullpo_casino_server_id:
-					if(newMessage.author.bot == true) return;
-                        ServerLogChannelFinder(client, null, "メッセージログ", nullpo_casino_server_id).send({embeds: [embed]});
-                    break;
-                case nullpo_debug_server_id:
-					if(newMessage.author.bot == true) return;
-						ServerLogChannelFinder(client, null, "メッセージログ", nullpo_debug_server_id).send({embeds: [embed]});
-					break;
-                default:
-                    break;
-        }
 
+    switch(newMessage.guild.id) {
+        case nullpo_server_id:
+                ServerLogChannelFinder(client, null, "メッセージログ", nullpo_server_id).send({embeds: [embed]});
+            break;
+        case nullpo_casino_server_id:
+                ServerLogChannelFinder(client, null, "メッセージログ", nullpo_casino_server_id).send({embeds: [embed]});
+            break;
+        case nullpo_debug_server_id:
+                ServerLogChannelFinder(client, null, "メッセージログ", nullpo_debug_server_id).send({embeds: [embed]});
+            break;
+        default:
+            break;
     }
+}
 
 module.exports = MessageUpdateLogger;
