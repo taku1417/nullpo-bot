@@ -13,7 +13,7 @@ const client = new Client({
 		GatewayIntentBits.GuildVoiceStates,
 		GatewayIntentBits.MessageContent,
 		GatewayIntentBits.GuildMessages,
-		GatewayIntentBits.GuildMessageTyping
+		GatewayIntentBits.GuildPresences
 	]
 });
 const logger = require('./nullpo/log/logger.js');
@@ -35,7 +35,6 @@ client.SlashCommands_NullpoDebug = new Collection();
 Commands_rest_NullpoDebug = [];
 const cron = require('node-cron');
 const schedule = require('node-schedule');
-const { channel } = require('node:diagnostics_channel');
 const VCJoinLeaveCheck = require('./nullpo/components/VCJoinLeaveCheck.js');
 const ServerLogChannelFinder = require('./nullpo/components/ServerLogChannelFinder.js');
 const MessageUpdateLogger = require('./nullpo/log/message/update.js');
@@ -491,6 +490,24 @@ client.on('ready', () => {
 		if(process.env.NODE_ENV === 'heroku') client.channels.cache.get('1108678708480446535').messages.fetch('1108803775415730246').then(message => message.edit({components:[new ActionRowBuilder().addComponents([VoiceChatCreate_button])]}));//ボタンを直す
 		console.log('[VCC] Check finished.');
 	}, 300000);//5分ごとにVCCのチェック、誰も居ないなら削除 & ボタンを直す
+
+	// setInterval(async () => {
+	// 	const offlineBots = await client.guilds.cache.forEach(async (guild) => (await guild.members.fetch()).filter(
+	// 		member => member.user.bot && member.presence.status === "offline"
+	// 	));
+	// 	await console.log(offlineBots);
+	// 	const notification = await Object.values(offlineBots).map(member => member.id);
+	// 	await notification.forEach(member => {
+	// 		const botOnlineCheckEmbed = {
+	// 			color: 0xCCCC00,
+	// 			description: `<@${member.id}>がオフラインになっています。確認してください。`,
+	// 			fields: [{
+	// 			name: '日付',
+	// 			value: Year + '/' + Month + '/' + Day + ' ' + Hour0 + ':' + Min0 + ':' + Sec0 + '(JST)',
+	// 		}]};
+	// 		ServerLogChannelFinder(client, null, "bot疎通確認ログ", guild.id).send(`<@270515939739566080>`, {embeds: [botOnlineCheckEmbed]});//オフラインならメッセージを送信
+	// 	});
+	// }, 10000);//10秒ごとにbotがオンラインかどうかを確認、オフラインならメッセージを送信
 
 	
 	const VCCembed = {
