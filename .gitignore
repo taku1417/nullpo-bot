@@ -9,3 +9,4 @@ debug/
 config/
 memo/
 web起動.bat
+data/*/*

@@ -38,6 +38,7 @@ const schedule = require('node-schedule');
 const VCJoinLeaveCheck = require('./nullpo/components/VCJoinLeaveCheck.js');
 const ServerLogChannelFinder = require('./nullpo/components/ServerLogChannelFinder.js');
 const MessageUpdateLogger = require('./nullpo/log/message/update.js');
+const r2 = require('./nullpo/Built-inModule/r2/index.js');
 
 client.once('ready', () => {	
 	client.user.setPresence({
@@ -232,8 +233,9 @@ client.on('ready', () => {
 	})//tips(大体毎時)
 	cron.schedule('0 0 * * *', () => {
 		channeljihou.send(`${new Date().getMonth()+1}月${new Date().getDate()}日、${new Date().getHours()}時になりました。` + "[Tips:" + tips[Math.floor(Math.random() * tips.length)] + 	"]");
+		r2.Backup24h("coins");
 		logger("clock");
-	})//tips(0時)
+	})//tips(0時),r2の長期保存用バックアップ
 	cron.schedule('55 3 * * *', () => {
 		//channeljihou.send(`**3分後にlife本鯖からkickされる可能性があります。注意してください。**`);
 		//logger("restart");
@@ -443,6 +445,8 @@ client.once('ready', () => {
 	
 	const VoiceChatCreate_button = new ButtonBuilder().setCustomId('VoiceChatCreate').setStyle(ButtonStyle.Success).setLabel('イベントVCを作成する');
 	if(process.env.NODE_ENV === 'heroku') client.channels.cache.get('1108678708480446535').messages.fetch('1108803775415730246').then(message => message.edit({components:[new ActionRowBuilder().addComponents([VoiceChatCreate_button])]}));//ボタンを直す
+
+	
 });
 client.on('ready', () => {
 	const VoiceChatCreate_button = new ButtonBuilder().setCustomId('VoiceChatCreate').setStyle(ButtonStyle.Success).setLabel('イベントVCを作成する');
@@ -487,8 +491,9 @@ client.on('ready', () => {
 				}
 			}
 		}
-		if(process.env.NODE_ENV === 'heroku') client.channels.cache.get('1108678708480446535').messages.fetch('1108803775415730246').then(message => message.edit({components:[new ActionRowBuilder().addComponents([VoiceChatCreate_button])]}));//ボタンを直す
 		console.log('[VCC] Check finished.');
+
+		if(process.env.NODE_ENV === 'heroku') client.channels.cache.get('1108678708480446535').messages.fetch('1108803775415730246').then(message => message.edit({components:[new ActionRowBuilder().addComponents([VoiceChatCreate_button])]}));//ボタンを直す
 	}, 300000);//5分ごとにVCCのチェック、誰も居ないなら削除 & ボタンを直す
 
 	// setInterval(async () => {
@@ -509,6 +514,12 @@ client.on('ready', () => {
 	// 	});
 	// }, 10000);//10秒ごとにbotがオンラインかどうかを確認、オフラインならメッセージを送信
 
+	// r2へのバックアップ処理
+	//r2Load('coins', 'test.json');
+	r2.Backup('coins');
+	setInterval(() => {
+		r2.Backup('coins');
+	}, 300000);//settings/global.jsonのbackup_intervalに従ってバックアップ(にする)
 	
 	const VCCembed = {
 			color: 0xF0E68C,
