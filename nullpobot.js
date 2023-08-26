@@ -515,7 +515,7 @@ client.on('ready', () => {
 	// }, 10000);//10秒ごとにbotがオンラインかどうかを確認、オフラインならメッセージを送信
 
 	// r2へのバックアップ処理
-	//r2Load('coins', 'test.json');
+	r2.Load.single('coins', 'test.json');
 	r2.Backup('coins');
 	setInterval(() => {
 		r2.Backup('coins');

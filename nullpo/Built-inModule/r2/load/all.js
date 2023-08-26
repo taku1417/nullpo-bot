@@ -22,12 +22,13 @@ const S3 = new S3Client({//S3となっているがS3のAPIを利用している�
     }
 });
 /**
- * R2からファイルを読み込む returnに読みこんだファイルの内容が入るため、変数に代入するなどして利用する
+ * R2から読み込める全てのファイルを読み込む returnはnull
  * @param {string} Bucket
  * @param {string} fileName
- * @return {JSON} content
+ * @return null
  */
-async function r2Load(Bucket, fileName){
+//処理はsingleと同じ。変更する
+async function r2LoadAll(Bucket, fileName){
     if (!fs.existsSync(`data/${Bucket}`)) {
         fs.mkdirSync(`data/${Bucket}`);
     }//フォルダが存在しないときは作成する
@@ -47,4 +48,4 @@ async function r2Load(Bucket, fileName){
     return dataJSON;
 }
 
-module.exports = r2Load;
+module.exports = r2LoadAll;
