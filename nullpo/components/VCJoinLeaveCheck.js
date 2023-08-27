@@ -1,3 +1,4 @@
+const throw_webhook = require('../../function/throw_webhook.js');
 const ServerLogChannelFinder = require('./ServerLogChannelFinder.js');
 /**
  * VCへの入退室を検知し、ログの出力や入退室の間隔の確認を行う
@@ -45,7 +46,8 @@ async function VCJoinLeaveCheck(client, oldState, newState){//type: "join", "lea
 
             publicLogChannel = ServerLogChannelFinder(client, newState, "vc入退室log");
             if(publicLogChannel != null) {
-                publicLogChannel.send(newState.channel.name + " に " + member_with_nick(newState) + " さんが参加しました");
+                membercount = "現在、" + newState.channel.members?.size + "人が参加中です。";
+                publicLogChannel.send(newState.channel.name + " に " + member_with_nick(newState) + " さんが参加しました。\n" + membercount);
             }
             break;
         case "leave":
@@ -67,7 +69,12 @@ async function VCJoinLeaveCheck(client, oldState, newState){//type: "join", "lea
 
             publicLogChannel = ServerLogChannelFinder(client, oldState, "vc入退室log");
             if(publicLogChannel != null) {
-                publicLogChannel.send(oldState.channel.name + " から " + member_with_nick(oldState) + " さんが退出しました");
+                try {
+                    membercount = ("現在、" + newState.channel.members?.size + "人が参加中です。");
+                } catch (e) {
+                    membercount = "誰も居なくなったようです。";
+                }
+                publicLogChannel.send(oldState.channel.name + " から " + member_with_nick(oldState) + " さんが退出しました。\n" + membercount);
             }
             break;
         case "move":
@@ -90,7 +97,8 @@ async function VCJoinLeaveCheck(client, oldState, newState){//type: "join", "lea
             publicLogChannel = ServerLogChannelFinder(client, newState, "vc入退室log");
             console.log( member_with_nick(newState) + ' / ' + newState.member.user.globalName );
             if(publicLogChannel != null) {
-                publicLogChannel.send(oldState.channel.name + " から " + newState.channel.name + " へ " + member_with_nick(newState) + " さんが移動しました");
+                membercount = "現在、" + newState.channel.members?.size + "人が参加中です。";
+                publicLogChannel.send(oldState.channel.name + " から " + newState.channel.name + " へ " + member_with_nick(newState) + " さんが移動しました。\n" + membercount);
             }
             break;
         default:
