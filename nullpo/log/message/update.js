@@ -18,11 +18,11 @@ function MessageUpdateLogger(client, oldMessage, newMessage){
     
 	let author_with_nick;
 	try {
-		if (newMessage.author.tag.split('#')[1] == "0") {
-			author_with_nick = (newMessage.member.nickname != null ? (newMessage.author.username + ' (' + newMessage.member.nickname + ')') : newMessage.author.username);//ID+タグとIDのみが混在するため、とりあえずの対策。移行済みのユーザーはユーザーネームのみになる。グローバル表示名を考慮する必要もあるが、djs@14.11.0時点で未実装。devにはあるため、stableへの実装待ち。
-		} else {
-			author_with_nick = (newMessage.member.nickname != null ? (newMessage.author.tag + ' (' + newMessage.member.nickname + ')') : newMessage.author.tag);
-		}
+		if(State.member.user.globalName != null) {
+            author_with_nick = State.member.nickname != null ? (State.member.user.username + ' (' + State.member.displayName + ')') : (State.member.user.username + '(' + State.member.user.globalName + ')');
+        } else { 
+            author_with_nick = State.member.nickname != null ? (State.member.user.username + ' (' + State.member.displayName + ')') : State.member.user.username; 
+        }//globalName = ユーザー表示名 / nickname = サーバー表示名
 	} catch (error) {
 		console.log("\n\n" + error);
 		return;
