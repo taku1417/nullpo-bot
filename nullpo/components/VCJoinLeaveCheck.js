@@ -70,7 +70,7 @@ async function VCJoinLeaveCheck(client, oldState, newState){//type: "join", "lea
             publicLogChannel = ServerLogChannelFinder(client, oldState, "vc入退室log");
             if(publicLogChannel != null) {
                 if(oldState.channel.members?.size != 1){
-                    membercount = "現在、" + newState.channel.members?.size + "人が参加中です。";
+                    membercount = "現在、" + (oldState.channel.members?.size - 1) + "人が参加中です。";
                 } else {
                     membercount = "誰も居なくなったようです。";
                 }
