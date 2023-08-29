@@ -1,5 +1,6 @@
 const throw_webhook = require('../../function/throw_webhook.js');
 const ServerLogChannelFinder = require('./ServerLogChannelFinder.js');
+const LogDMsender = require('./VoiceChat/LogDMsender.js');
 /**
  * VCへの入退室を検知し、ログの出力や入退室の間隔の確認を行う
  * @param {Discord.Client} client 
@@ -11,9 +12,8 @@ async function VCJoinLeaveCheck(client, oldState, newState){//type: "join", "lea
     const Month = new Date().getMonth()+1,Day = new Date().getDate(),Hour = new Date().getHours(),Min = new Date().getMinutes(),Sec = new Date().getSeconds(),Hour0 = ('0' + Hour).slice(-2),Min0 = ('0' + Min).slice(-2),Sec0 = ('0' + Sec).slice(-2),Year = new Date().getFullYear();
     const userid = newState.member.user.id;
     const oldChannelID = oldState.channelId ?? null;
-    const oldChannelName = oldState.channelId ? oldState.channel.name : null;
     const newChannelID = newState.channelId ?? null;
-    const newChannelName = newState.channelId ? newState.channel.name : null;
+
     let type, logChannel, embed;
     if(oldChannelID == null && newChannelID != null) type = "join";
     else if(oldChannelID != null && newChannelID == null) type = "leave";
@@ -25,6 +25,7 @@ async function VCJoinLeaveCheck(client, oldState, newState){//type: "join", "lea
     /* メモ
     *  サーバーを超える移動はmoveにならず、leave -> joinになる 
     *  短時間であればサーバーを超える移動をmoveにするという処理を追加する必要がありそう
+    *  よくよく考えたらサーバーを超える移動まで変えたら寧ろ困るので、このままでいいかも
     */
     switch(type){
         case "join":
@@ -47,7 +48,9 @@ async function VCJoinLeaveCheck(client, oldState, newState){//type: "join", "lea
             publicLogChannel = ServerLogChannelFinder(client, newState, "vc入退室log");
             if(publicLogChannel != null) {
                 membercount = "現在、" + newState.channel.members?.size + "人が参加中です。";
-                publicLogChannel.send(newState.channel.name + " に " + member_with_nick(newState) + " さんが参加しました。\n" + membercount);
+                message = newState.channel.name + " に " + member_with_nick(newState) + " さんが参加しました。\n" + membercount;
+                publicLogChannel.send(message);
+                LogDMsender(client, oldState, newState, message);
             }
             break;
         case "leave":
@@ -74,7 +77,9 @@ async function VCJoinLeaveCheck(client, oldState, newState){//type: "join", "lea
                 } else {
                     membercount = "誰も居なくなったようです。";
                 }
-                publicLogChannel.send(oldState.channel.name + " から " + member_with_nick(oldState) + " さんが退出しました。\n" + membercount);
+                message = oldState.channel.name + " から " + member_with_nick(oldState) + " さんが退出しました。\n" + membercount;
+                publicLogChannel.send(message);
+                LogDMsender(client, oldState, newState, message);
             }
             break;
         case "move":
@@ -95,21 +100,24 @@ async function VCJoinLeaveCheck(client, oldState, newState){//type: "join", "lea
             }
 
             publicLogChannel = ServerLogChannelFinder(client, newState, "vc入退室log");
-            console.log( member_with_nick(newState) + ' / ' + newState.member.user.globalName );
             if(publicLogChannel != null) {
                 membercount = "現在、" + newState.channel.members?.size + "人が参加中です。";
-                publicLogChannel.send(oldState.channel.name + " から " + newState.channel.name + " へ " + member_with_nick(newState) + " さんが移動しました。\n" + membercount);
+                message = oldState.channel.name + " から " + newState.channel.name + " へ " + member_with_nick(newState) + " さんが移動しました。\n" + membercount;
+                publicLogChannel.send(message);
+                LogDMsender(client, oldState, newState, message);
             }
             break;
         default:
             break;
     }
+
+    
 }
 
 /**
  * VoiceStateからニックネームを考慮した文字列を返す 
  * @param {Discord.VoiceState} State 
- * @example taku1417 (tk) | taku1417#3456 (tk)
+ * @example taku1417 (tk) | taku1417
  * @return {string}
  * @private
  */

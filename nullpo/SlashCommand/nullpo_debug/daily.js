@@ -1,7 +1,6 @@
 const logger = require('../../log/logger.js');
 const daily_db = require('../../events/daily_db.js');
-const { Client, GatewayIntentBits, SlashCommandBuilder } = require('discord.js');
-const client = new Client({ intents: [GatewayIntentBits.Guilds]});
+const { GatewayIntentBits, SlashCommandBuilder } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
