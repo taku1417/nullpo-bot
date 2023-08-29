@@ -26,7 +26,7 @@ const VoiceChatCreate = require('./nullpo/components/button/VoiceChatCreate.js')
 const cronjob = require('./nullpo/events/cron.js');
 const nullpo_server_id = '966674976956645407',nullpo_casino_server_id = '1015585928779137105',nullpo_debug_server_id = '979084665958834216';
 const nullpo_admin_log = '997341001809133588',nullpo_casino_admin_log = '1042484015720042546',nullpo_debug_test = '986475538770194432';
-const botID = '978923316557537280';
+const botID = process.env.NODE_ENV === 'heroku' ? process.env.CLIENT_ID_prod : config.get('CLIENT_ID.PRODUCTION');const botID_debug = process.env.NODE_ENV === 'heroku' ? process.env.CLIENT_ID_DEBUG : config.get('CLIENT_ID.DEBUG');
 client.Commands = new Collection();
 client.slashCommands = new Collection();
 commands_rest = [];
@@ -329,15 +329,17 @@ rest = new REST({ version: '10' }).setToken(config.get('DISCORD_TOKEN.DEBUG'));
 (async () => {
 	try {
 		console.log('アプリケーションコマンドの登録開始');
-		if (process.env.NODE_ENV === 'heroku') 
+		if (process.env.NODE_ENV === 'heroku') {
 			await rest.put(
 				Routes.applicationCommands(botID),
 				{ body: commands_rest },
 			);//herokuで実行されているときのみグローバルコマンドを登録する
+		} else {
 		await rest.put(
-			Routes.applicationGuildCommands(botID, nullpo_debug_server_id),
+			Routes.applicationGuildCommands(botID_debug, nullpo_debug_server_id),
 			{ body: Commands_rest_NullpoDebug },
-		);//実行環境に関わらずnullpo_debugのサーバーコマンドを登録する
+		);//ローカルで実行されているときのみnullpo_debugのサーバーコマンドを登録する
+		}
 		console.log('アプリケーションコマンドの登録完了');
 	} catch (error) {
 		console.error(error);
@@ -346,7 +348,7 @@ rest = new REST({ version: '10' }).setToken(config.get('DISCORD_TOKEN.DEBUG'));
 
 client.on('interactionCreate', async (interaction) => {//コマンド・ボタン処理
 	if (interaction.isChatInputCommand()){
-		const resistered_command = interaction.client.slashCommands.get(interaction.commandName) || interaction.client.Commands_NullpoDebug.get(interaction.commandName);
+		const resistered_command = interaction.client.slashCommands.get(interaction.commandName) || interaction.client.SlashCommands_NullpoDebug.get(interaction.commandName);
 		if (!resistered_command) {
 			console.error(`No command matching ${interaction.commandName} was found.`);
 			throw_webhook("error", "command search: No Command matching. →" + interaction.commandName, "", "slash command");
