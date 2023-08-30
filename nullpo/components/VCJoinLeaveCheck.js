@@ -48,7 +48,7 @@ async function VCJoinLeaveCheck(client, oldState, newState){//type: "join", "lea
             publicLogChannel = ServerLogChannelFinder(client, newState, "vc入退室log");
             if(publicLogChannel != null) {
                 membercount = "現在、" + newState.channel.members?.size + "人が参加中です。";
-                message = newState.channel.name + " に " + member_with_nick(newState) + " さんが参加しました。\n" + membercount;
+                message = newState.channel.name + " に " + markdown_escaper(member_with_nick(newState)) + " さんが参加しました。\n" + membercount;
                 publicLogChannel.send(message);
                 LogDMsender(client, oldState, newState, message);
             }
@@ -77,7 +77,7 @@ async function VCJoinLeaveCheck(client, oldState, newState){//type: "join", "lea
                 } else {
                     membercount = "誰も居なくなったようです。";
                 }
-                message = oldState.channel.name + " から " + member_with_nick(oldState) + " さんが退出しました。\n" + membercount;
+                message = oldState.channel.name + " から " + markdown_escaper(member_with_nick(oldState)) + " さんが退出しました。\n" + membercount;
                 publicLogChannel.send(message);
                 LogDMsender(client, oldState, newState, message);
             }
@@ -102,7 +102,7 @@ async function VCJoinLeaveCheck(client, oldState, newState){//type: "join", "lea
             publicLogChannel = ServerLogChannelFinder(client, newState, "vc入退室log");
             if(publicLogChannel != null) {
                 membercount = "現在、" + newState.channel.members?.size + "人が参加中です。";
-                message = oldState.channel.name + " から " + newState.channel.name + " へ " + member_with_nick(newState) + " さんが移動しました。\n" + membercount;
+                message = oldState.channel.name + " から " + newState.channel.name + " へ " + markdown_escaper(member_with_nick(newState)) + " さんが移動しました。\n" + membercount;
                 publicLogChannel.send(message);
                 LogDMsender(client, oldState, newState, message);
             }
@@ -115,7 +115,7 @@ async function VCJoinLeaveCheck(client, oldState, newState){//type: "join", "lea
 }
 
 /**
- * VoiceStateからニックネームを考慮した文字列を返す 
+ * VoiceStateからニックネームを考慮した文字列を返す
  * @param {Discord.VoiceState} State 
  * @example taku1417 (tk) | taku1417
  * @return {string}
@@ -129,4 +129,15 @@ function member_with_nick(State){
         }//globalName = ユーザー表示名 / nickname = サーバー表示名
 }
 
+/**
+ * discordのマークダウン記法に使われる文字をエスケープする
+ * @param {String} text 
+ * @example taku1417_s -> taku1417\_s | __taku1417__ -> \_\_taku1417\_\_
+ * @returns {String} escaped text
+ */
+function markdown_escaper(text){
+    return text.replace(/([\\*_\-#<>~])/g, '\\$1');
+}
+
 module.exports = VCJoinLeaveCheck;
+
