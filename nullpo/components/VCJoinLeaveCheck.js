@@ -13,6 +13,8 @@ async function VCJoinLeaveCheck(client, oldState, newState){//type: "join", "lea
     const userid = newState.member.user.id;
     const oldChannelID = oldState.channelId ?? null;
     const newChannelID = newState.channelId ?? null;
+    const oldStage = oldState.channel == null ? null : oldState.channel.type == 13/*GUILD_STAGE_VOICE*/;
+    const newStage = newState.channel == null ? null : newState.channel.type == 13/*GUILD_STAGE_VOICE*/;
 
     let type, logChannel, embed;
     if(oldChannelID == null && newChannelID != null) type = "join";
@@ -20,13 +22,9 @@ async function VCJoinLeaveCheck(client, oldState, newState){//type: "join", "lea
     else if(oldChannelID != null && newChannelID != null) type = "move";//ごみこーど
 
     console.log(`[VC] ${type} ${userid} ${oldChannelID} -> ${newChannelID}`);
+    if(oldChannelID == null && newChannelID == null) return;//ないとは思うがどちらもnullなら無視
     if(oldChannelID == newChannelID) return;//移動してないので無視 カメラ起動やミュート切り替えなどを条件に使う場合このif文を使う
 
-    /* メモ
-    *  サーバーを超える移動はmoveにならず、leave -> joinになる 
-    *  短時間であればサーバーを超える移動をmoveにするという処理を追加する必要がありそう
-    *  よくよく考えたらサーバーを超える移動まで変えたら寧ろ困るので、このままでいいかも
-    */
     switch(type){
         case "join":
             logChannel = ServerLogChannelFinder(client, newState, "VC入退室ログ");
@@ -46,9 +44,8 @@ async function VCJoinLeaveCheck(client, oldState, newState){//type: "join", "lea
             }
 
             publicLogChannel = ServerLogChannelFinder(client, newState, "vc入退室log");
-            if(publicLogChannel != null) {
-                membercount = "現在、" + newState.channel.members?.size + "人が参加中です。";
-                message = newState.channel.name + " に " + markdown_escaper(member_with_nick(newState)) + " さんが参加しました。\n" + membercount;
+            if(!(publicLogChannel == null || newStage)) {
+                const message = logMessageCreate(oldState, newState, "join");
                 publicLogChannel.send(message);
                 LogDMsender(client, oldState, newState, message);
             }
@@ -71,13 +68,8 @@ async function VCJoinLeaveCheck(client, oldState, newState){//type: "join", "lea
             }
 
             publicLogChannel = ServerLogChannelFinder(client, oldState, "vc入退室log");
-            if(publicLogChannel != null) {
-                if(oldState.channel.members?.size >= 1){
-                    membercount = "現在、" + (oldState.channel.members?.size) + "人が参加中です。";
-                } else {
-                    membercount = "誰も居なくなったようです。";
-                }
-                message = oldState.channel.name + " から " + markdown_escaper(member_with_nick(oldState)) + " さんが退出しました。\n" + membercount;
+            if(!(publicLogChannel == null || oldStage)) {
+                const message = logMessageCreate(oldState, newState, "leave");
                 publicLogChannel.send(message);
                 LogDMsender(client, oldState, newState, message);
             }
@@ -100,9 +92,16 @@ async function VCJoinLeaveCheck(client, oldState, newState){//type: "join", "lea
             }
 
             publicLogChannel = ServerLogChannelFinder(client, newState, "vc入退室log");
-            if(publicLogChannel != null) {
-                membercount = "現在、" + newState.channel.members?.size + "人が参加中です。";
-                message = oldState.channel.name + " から " + newState.channel.name + " へ " + markdown_escaper(member_with_nick(newState)) + " さんが移動しました。\n" + membercount;
+            if(!(publicLogChannel == null)) {
+                let message = "",membercount = "";//ステージチャンネルからの出入りを無かったことにする
+                if(newStage && oldStage) break;//ステージチャンネルからステージチャンネルへの移動は無視
+                if(oldStage) {//ステージ→ボイス 入室
+                    message = logMessageCreate(oldState, newState, "join");
+                } else if(newStage) {//ボイス→ステージ 退室
+                        message = logMessageCreate(oldState, newState, "leave");
+                } else { //ボイス→ボイス 移動
+                    message = logMessageCreate(oldState, newState, "move");
+                }
                 publicLogChannel.send(message);
                 LogDMsender(client, oldState, newState, message);
             }
@@ -133,11 +132,38 @@ function member_with_nick(State){
  * discordのマークダウン記法に使われる文字をエスケープする
  * @param {String} text 
  * @example taku1417_s -> taku1417\_s | __taku1417__ -> \_\_taku1417\_\_
- * @returns {String} escaped text
+ * @return {String} escaped text
+ * @private
  */
-function markdown_escaper(text){
+function markdownEscape(text){
     return text.replace(/([\\*_\-#<>~])/g, '\\$1');
 }
 
-module.exports = VCJoinLeaveCheck;
+/**
+ * vc入退室logチャンネルへ送信するメッセ―ジを返す
+ * @param {Discord.VoiceState} oldState
+ * @param {Discord.VoiceState} newState
+ * @param {String} type
+ * @return {String} message
+ * @private
+ */
+function logMessageCreate(oldState, newState, type){
+    let membercount = "";
+    switch(type){
+        case "join":
+            membercount = "現在、" + newState.channel.members?.size + "人が参加中です。";
+            return newState.channel.name + " に " + markdownEscape(member_with_nick(newState)) + " さんが参加しました。\n" + membercount;
+        case "leave":
+            if(oldState.channel.members?.size >= 1){
+                membercount = "現在、" + (oldState.channel.members?.size) + "人が参加中です。";
+            } else {
+                membercount = "誰も居なくなったようです。";
+            }
+            return oldState.channel.name + " から " + markdownEscape(member_with_nick(oldState)) + " さんが退出しました。\n" + membercount;
+        case "move":
+            membercount = "現在、" + newState.channel.members?.size + "人が参加中です。";
+            return oldState.channel.name + " から " + newState.channel.name + " へ " + markdownEscape(member_with_nick(newState)) + " さんが移動しました。\n" + membercount;
+    }
+}
 
+module.exports = VCJoinLeaveCheck;
