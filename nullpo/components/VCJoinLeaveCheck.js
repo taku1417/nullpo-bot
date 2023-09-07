@@ -13,8 +13,10 @@ async function VCJoinLeaveCheck(client, oldState, newState){//type: "join", "lea
     const userid = newState.member.user.id;
     const oldChannelID = oldState.channelId ?? null;
     const newChannelID = newState.channelId ?? null;
-    const oldStage = oldState.channel == null ? null : oldState.channel.type == 13/*GUILD_STAGE_VOICE*/;
-    const newStage = newState.channel == null ? null : newState.channel.type == 13/*GUILD_STAGE_VOICE*/;
+    const oldIgnore = oldState.channel == null ? null : (oldState.channel.type == 13/*GUILD_STAGE_VOICE*/ || oldState.channel.name.includes("非表示"));//ステージチャンネル、非表示と名前にあるチャンネルを無視
+    const newIgnore = newState.channel == null ? null : (newState.channel.type == 13/*GUILD_STAGE_VOICE*/ || newState.channel.name.includes("非表示"));//ステージチャンネル、非表示と名前にあるチャンネルを無視
+
+    //  console.log(oldIgnore + " " + newIgnore) //デバッグ用
 
     let type, logChannel, embed;
     if(oldChannelID == null && newChannelID != null) type = "join";
@@ -44,7 +46,7 @@ async function VCJoinLeaveCheck(client, oldState, newState){//type: "join", "lea
             }
 
             publicLogChannel = ServerLogChannelFinder(client, newState, "vc入退室log");
-            if(!(publicLogChannel == null || newStage)) {
+            if(!(publicLogChannel == null || newIgnore)) {
                 const message = logMessageCreate(oldState, newState, "join");
                 publicLogChannel.send(message);
                 LogDMsender(client, oldState, newState, message);
@@ -68,7 +70,7 @@ async function VCJoinLeaveCheck(client, oldState, newState){//type: "join", "lea
             }
 
             publicLogChannel = ServerLogChannelFinder(client, oldState, "vc入退室log");
-            if(!(publicLogChannel == null || oldStage)) {
+            if(!(publicLogChannel == null || oldIgnore)) {
                 const message = logMessageCreate(oldState, newState, "leave");
                 publicLogChannel.send(message);
                 LogDMsender(client, oldState, newState, message);
@@ -94,11 +96,11 @@ async function VCJoinLeaveCheck(client, oldState, newState){//type: "join", "lea
             publicLogChannel = ServerLogChannelFinder(client, newState, "vc入退室log");
             if(!(publicLogChannel == null)) {
                 let message = "",membercount = "";//ステージチャンネルからの出入りを無かったことにする
-                if(newStage && oldStage) break;//ステージチャンネルからステージチャンネルへの移動は無視
-                if(oldStage) {//ステージ→ボイス 入室
+                if(newIgnore && oldIgnore) break;//ステージチャンネルからステージチャンネルへの移動は無視
+                if(oldIgnore) {//ステージ→ボイス 入室
                     message = logMessageCreate(oldState, newState, "join");
-                } else if(newStage) {//ボイス→ステージ 退室
-                        message = logMessageCreate(oldState, newState, "leave");
+                } else if(newIgnore) {//ボイス→ステージ 退室
+                    message = logMessageCreate(oldState, newState, "leave");
                 } else { //ボイス→ボイス 移動
                     message = logMessageCreate(oldState, newState, "move");
                 }
