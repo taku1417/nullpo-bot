@@ -6,10 +6,7 @@ const pool = new Pool({
     connectionString: connectionString,
     port: 5432,
     max: 5,
-    ssl: {
-        sslmode: 'require',
-        rejectUnauthorized: false
-    }
+    ssl: {sslmode: 'require'}
 });
 
 module.exports = pool;
