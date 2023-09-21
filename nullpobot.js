@@ -347,6 +347,8 @@ rest = new REST({ version: '10' }).setToken(config.get('DISCORD_TOKEN.DEBUG'));
 })();
 
 client.on('interactionCreate', async (interaction) => {//コマンド・ボタン処理
+
+	interaction.member.voice.channel
 	if (interaction.isChatInputCommand()){
 		const resistered_command = interaction.client.slashCommands.get(interaction.commandName) || interaction.client.SlashCommands_NullpoDebug.get(interaction.commandName);
 		if (!resistered_command) {
@@ -394,11 +396,11 @@ client.on('messageDelete', message => {
 	const Month = new Date().getMonth()+1,Day = new Date().getDate(),Hour = new Date().getHours(),Min = new Date().getMinutes(),Sec = new Date().getSeconds(),Hour0 = ('0' + Hour).slice(-2),Min0 = ('0' + Min).slice(-2),Sec0 = ('0' + Sec).slice(-2),Year = new Date().getFullYear();
 	let author_with_nick;
 	try {
-		if (message.author.tag.split('#')[1] == "0") {
-			author_with_nick = (message.member.nickname != null ? (message.author.username + ' (' + message.member.nickname + ')') : message.author.username);//ID+タグとIDのみが混在するため、とりあえずの対策。移行済みのユーザーはユーザーネームのみになる。グローバル表示名を考慮する必要もあるが、djs@14.11.0時点で未実装。devにはあるため、stableへの実装待ち。
-		} else {
-			author_with_nick = (message.member.nickname != null ? (message.author.tag + ' (' + message.member.nickname + ')') : message.author.tag);
-		}
+		if(message.member.user.globalName != null) {
+            author_with_nick = message.member.nickname != null ? (message.member.user.username + ' (' + message.member.displayName + ')') : (message.member.user.username + '(' + message.member.user.globalName + ')');
+        } else { 
+            author_with_nick = message.member.nickname != null ? (message.member.user.username + ' (' + message.member.displayName + ')') : message.member.user.username; 
+        }//globalName = ユーザー表示名 / nickname = サーバー表示名
 	} catch (error) {
 		console.log("\n\n" + error);
 		return;
