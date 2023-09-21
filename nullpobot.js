@@ -358,7 +358,7 @@ client.on('interactionCreate', async (interaction) => {//コマンド・ボタ�
 		try {
 			await resistered_command.execute(interaction);
 		} catch (error) {
-			console.error(`Error executing ${interaction.commandName}`);
+			console.error(`${interaction.commandName}(slash command)を実行できませんでした。`);
 			throw_webhook("error", "command execute: Error executing. → " + interaction.commandName, error, "slash command");
 			console.error(error);
 		}
@@ -379,7 +379,7 @@ client.on('interactionCreate', async (interaction) => {//コマンド・ボタ�
 		try {
 			await resistered_context.execute(interaction);
 		} catch (error) {
-			console.error(`Error executing ${interaction.commandName}`);
+			console.error(`${interaction.commandName}(Message context)を実行できませんでした。`);
 			throw_webhook("error", "command execute: Error executing. → " + interaction.commandName, error, "message context menu");
 			console.error(error);
 		}
