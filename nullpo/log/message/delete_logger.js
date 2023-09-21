@@ -14,7 +14,7 @@ function delete_logger(message) {
                 description: String(message.channel) + 'にてメッセージが削除されました。',
                 author: {
                         name: message.author.tag,
-                        icon_url: message.author.avatarURL(),
+                        icon_url: message.author.displayAvatarURL(),
                 },
                 fields: [{
                         name: 'メッセージ内容',

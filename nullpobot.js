@@ -477,10 +477,10 @@ client.on('ready', () => {
 	setInterval(() => {
 		console.log('[VCC] Start checking...');
 		const VCC_list = ['テスト','イベント'];
-		try {
-			for (let i = 0; i < VCC_list.length; i++) {
-				console.log('[VCC] Checking ' + VCC_list[i] + '...')
-				const channel_list = [];
+		for (let i = 0; i < VCC_list.length; i++) {
+			console.log('[VCC] Checking ' + VCC_list[i] + '...')
+			const channel_list = [];
+			try {
 				client.channels.cache.filter(ch => ch.name.slice(-(VCC_list[i].length + 1)) === ('-' + VCC_list[i])).each(channel => channel_list.push(channel));
 				if (channel_list.length == 0) continue;
 				for (let j = 0; j < channel_list.length; j++) {
@@ -489,9 +489,9 @@ client.on('ready', () => {
 						channel_list[j].delete();
 					}
 				}
+			} 	catch (error) {
+				console.error(error);
 			}
-		} catch (error) {
-			console.error(error);
 		}
 		if(process.env.NODE_ENV === 'heroku') client.channels.cache.get('1108678708480446535').messages.fetch('1108803775415730246').then(message => message.edit({components:[new ActionRowBuilder().addComponents([VoiceChatCreate_button])]}));//ボタンを直す
 		console.log('[VCC] Check finished.');
