@@ -18,10 +18,10 @@ function MessageUpdateLogger(client, oldMessage, newMessage){
     
 	let author_with_nick;
 	try {
-		if(State.member.user.globalName != null) {
-            author_with_nick = State.member.nickname != null ? (State.member.user.username + ' (' + State.member.displayName + ')') : (State.member.user.username + '(' + State.member.user.globalName + ')');
+		if(newMessage.author.member.user.globalName != null) {
+            author_with_nick = newMessage.member.nickname != null ? (newMessage.member.user.username + ' (' + newMessage.member.displayName + ')') : (newMessage.member.user.username + '(' + newMessage.member.user.globalName + ')');
         } else { 
-            author_with_nick = State.member.nickname != null ? (State.member.user.username + ' (' + State.member.displayName + ')') : State.member.user.username; 
+            author_with_nick = newMessage.member.nickname != null ? (newMessage.member.user.username + ' (' + newMessage.member.displayName + ')') : newMessage.member.user.username; 
         }//globalName = ユーザー表示名 / nickname = サーバー表示名
 	} catch (error) {
 		console.log("\n\n" + error);
