@@ -1,2 +1,2 @@
-worker: node nullpobot.js
-debug: node debugbot.js
+web: node nullpoweb.js
+worker: node -r newrelic nullpobot.js

@@ -1,26 +1,43 @@
-const { Client, GatewayIntentBits, Collection, REST, Routes } = require('discord.js');
+const { Client, GatewayIntentBits, Collection, REST, Routes, ButtonBuilder, ActionRowBuilder, ButtonStyle } = require('discord.js');
 const config = require('config');
 const fs = require('node:fs');
 const path = require('node:path');
 if(process.env.NODE_ENV !== 'heroku') {
 	process.env.NODE_ENV === 'default';
 } 
-const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildVoiceStates, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMessages] });
-module.exports = client;
+const throw_webhook = require('./function/throw_webhook.js');
+const client = new Client({
+	intents: [
+		GatewayIntentBits.Guilds,
+		GatewayIntentBits.GuildMembers,
+		GatewayIntentBits.GuildVoiceStates,
+		GatewayIntentBits.MessageContent,
+		GatewayIntentBits.GuildMessages,
+		GatewayIntentBits.GuildPresences
+	]
+});
 const logger = require('./nullpo/log/logger.js');
 //const delete_logger = require('./nullpo/log/delete_logger.js');
-all_log = 0,join_log = 0,move_log = 0,leave_log = 0,clock_log = 0,restart_log = 0,command_log = 0,delete_log = 0,unknown_log = 0;
+all_log = 0,join_log = 0,move_log = 0,leave_log = 0,clock_log = 0,restart_log = 0,command_log = 0,message_log = 0,unknown_log = 0;
 const update_from_db = require('./nullpo/components/update_from_db.js');
 const yes_button = require('./nullpo/components/button/yes.js');
 const no_button = require('./nullpo/components/button/no.js');
+const VoiceChatCreate = require('./nullpo/components/button/VoiceChatCreate.js');
+const cronjob = require('./nullpo/events/cron.js');
 const nullpo_server_id = '966674976956645407',nullpo_casino_server_id = '1015585928779137105',nullpo_debug_server_id = '979084665958834216';
 const nullpo_admin_log = '997341001809133588',nullpo_casino_admin_log = '1042484015720042546',nullpo_debug_test = '986475538770194432';
-const botID = '978923316557537280';
+const botID = process.env.NODE_ENV === 'heroku' ? process.env.CLIENT_ID_prod : config.get('CLIENT_ID.PRODUCTION');const botID_debug = process.env.NODE_ENV === 'heroku' ? process.env.CLIENT_ID_DEBUG : config.get('CLIENT_ID.DEBUG');
 client.Commands = new Collection();
-commands_rest = [];
 client.slashCommands = new Collection();
-slashCommands_rest = [];
-
+commands_rest = [];
+client.Commands_NullpoDebug = new Collection();
+client.SlashCommands_NullpoDebug = new Collection();
+Commands_rest_NullpoDebug = [];
+const cron = require('node-cron');
+const schedule = require('node-schedule');
+const VCJoinLeaveCheck = require('./nullpo/components/VCJoinLeaveCheck.js');
+const ServerLogChannelFinder = require('./nullpo/components/ServerLogChannelFinder.js');
+const MessageUpdateLogger = require('./nullpo/log/message/update.js');
 
 client.once('ready', () => {	
 	client.user.setPresence({
@@ -30,8 +47,7 @@ client.once('ready', () => {
 		status: "dnd"
 	});
 });
-const cron = require('node-cron');
-const schedule = require('node-schedule');
+
 errorCount = 0,SuccessLogin = 0;
 const tex_dblog = '979084899703218186',tex_jihou = '997274370122731611',tex_nlpcs_nofi = '1015852168810606592',tex_jllog = '978962695418155019',tex_pjsekai = '999675995936280717';
 const vc_atumare = '997274624045879407',vc_pjsekai = '981173824294879322',vc_apex = '992161885862502400',vc_music = '982523943309180978',vc_spla = '1017431011442819142',vc_granblue = '1083006425791463494';
@@ -43,37 +59,7 @@ mori.minute = 0;
 	//console.log(`森レイド通知`);
 //});
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
-const dbClient = require('pg/lib/client');
-let dbclient;
-if(process.env.NODE_ENV === 'heroku') {
-	dbclient = new dbClient({
-		user: process.env.DATABASE_USER,
-		password: process.env.DATABASE_PASS,
-		host: process.env.DATABASE_HOST,
-		port: 5432,
-		database: process.env.DATABASE,
-		ssl: true
-	});
-} else {
-	dbclient = new dbClient({
-		user: config.get('DATABASE_USER'),
-		password: config.get('DATABASE_PASS'),
-		host: config.get('DATABASE_HOST'),
-		port: 5432,
-		database: config.get('DATABASE'),
-		ssl: true
-	});
-}
-try {
-dbclient.connect()
-} catch (err) {
-	console.error('[postgreSQL] 接続に失敗しました。', err);
-	process.exit(1);
-} finally {
-	console.log('[postgreSQL] 接続に成功しました。');
-	console.log(update_from_db('load','all'));
-	dbclient.end();
-}
+
 rental = { mjc_pic: 0, mjc_swo: 0, mjc_sho: 0, star_guide: 0,ravan: 0,beer: 0,mrz_iron: 0,mrz_gold: 0,mrz_dia: 0,mrz_eme:0,soul_protection: 0,vortex: 0,haruspe: 0,moriDoll: 0,MGF: 0,MTF: 0,all_pic: 0, GR: 0,origin: 0,orichal: 0,youtou: 0,gokuen: 0,requiem: 0,ffggr: 0,枯れた心: 0,envenom: 0,AZI: 0,sac: 0,vega: 0,fulldora: 0,炎廃業: 0};
 maxRental = { mjc_pic: 1, mjc_swo: 1, mjc_sho: 1, star_guide: 1,ravan: 1,beer: 2,mrz_iron: 1,mrz_gold: 1,mrz_dia: 1,mrz_eme:1,soul_protection: 1,vortex: 1,haruspe: 3,moriDoll: 3,MGF: 1,MTF: 2,all_pic: 2,GR: 1,origin: 1,orichal: 1,youtou: 1,gokuen: 1,requiem: 1,ffggr: 1,枯れた心: 1,envenom: 1,AZI: 1,sac: 1,vega: 1,fulldora: 1,炎廃業: 1};
 lendSystemCurrent = '';
@@ -116,8 +102,12 @@ ItemList = [
 /*ステメメモ
 
 */
-client.on('voiceStateUpdate', (oldState, newState) =>	{ 
+//以下をいずれ別ファイルへまとめたい
+client.on('voiceStateUpdate', (oldState, newState) =>	{
 	const channeljllog = client.channels.cache.get(tex_jllog), channelatumare = oldState.member.guild.channels.cache.get(vc_atumare), channelvcpjsekai = oldState.member.guild.channels.cache.get(vc_pjsekai), channelapex = oldState.member.guild.channels.cache.get(vc_apex),channelmusic = oldState.member.guild.channels.cache.get(vc_music),Ochanneljihou = oldState.member.guild.channels.cache.get(tex_jihou),channelpjsekai = oldState.member.guild.channels.cache.get(tex_pjsekai),channelspla = oldState.member.guild.channels.cache.get(vc_spla),channelgranblue = oldState.member.guild.channels.cache.get(vc_granblue);
+
+	VCJoinLeaveCheck(client, oldState, newState);
+
 	if (oldState.channelId === null && newState.channelId === vc_atumare) {
 		logger("join");
 		channelatumare.send(`__**入室** ${oldState.member.displayName} さんが入室しました。__`);
@@ -227,7 +217,8 @@ client.on('voiceStateUpdate', (oldState, newState) =>	{
 	}
 });
 client.on('ready', () => {
-	const tips = ["Ebiflyは/fly [分数]で飛ぶ分数の指定が出来ます","life本鯖の再起動は5時、16時です","どうでもいいTipsです。追加希望はtaku1417のDMまで。",/*"コマンドはキーボードの↑キーで一つ前の自分が打ったコマンドを入力省略できるが、しかしこれでは種などの購入と圧縮を繰り返す作業には不向きである、そこで二度↑キーを押すと2つ前の自分が打ったコマンドに戻れる。これで/shopと/rguiを簡単に交互に実行することができる",*/"きりんとねこの身長が180cmなのは嘘である。本当は270cmである","パンに生ハムを乗せると美味しい","薄皮一枚無いスキンをもとに戻したい場合はF3+H","このbotはHerokuというサービス上で稼働しています","あおいんは逆転ものも好き","しまりんはそこまで地上絵が好きじゃない","Monocraftは0時、JMSは9時に投票が可能になります","実はあもさんは下ネタが嫌い","うおみーの言うことは全て嘘","でも実は本当","って言ってるのも嘘かもしれない","でも実は嘘","初めましてronpenです 初めてすぐに10m獲得しました() まだまだ分からないことしかないので色々教えてくれたら嬉しいです","ぬるぽ語録集はVCで生まれた名(迷)言をまとめたものです","この鯖には実に60個ものロールが存在します","畑では植え直しを忘れずに。","木こりは稼げません、マジで。","lifeには統合版でもアクセスできます","釣りをしていると出てくる心の闇は、どこかに座っていると攻撃を大体回避できます","/wikiと打つと主要なwikiページを見ることが出来ます","/recipeと打つとlife独自レシピを見ることが出来ます。レシピは随時追加。","/rentalと打つと貸出記録をbotがやってくれます","/returnと打つと返却記録をbotがやってくれます","真のSはMの天才だし、真のMはSの天才である。それが僕の持論ですね。~LingThai~","しまりんかわいいね","堅あげポテトで口内炎ができるやつ落ち着きがない","命を知ろう〜バイシクル川崎の生体について〜\n一日に生まれるバイシクル川崎のうち約9割がバイク川崎になれないと言われています。\nそしてバイク川崎になれなかったバイシクル川崎の過半数は自然淘汰に対抗するためにコックカワサキへと姿を変えるのです","美味しいヤミー❗️✨🤟😁👍感謝❗️🙌✨感謝❗️🙌✨またいっぱい食べたいな❗️🍖😋🍴✨デリシャッ‼️🙏✨ｼｬ‼️🙏✨ ｼｬ‼️🙏✨ ｼｬ‼️🙏✨ ｼｬ‼️🙏✨ ｼｬ‼️🙏✨ ｼｬｯｯ‼ハッピー🌟スマイル❗️👉😁👈","食前の合掌、いただきます。","本鯖以外のlife系列サーバーは、重くなると再起動されます。","男装男子の定義：女のように見える男が女が男装するときに着る服を着て最終的にギャップだらけになるおとこ"];
+	cronjob;
+	const tips = ["Ebiflyは/fly [分数]で飛ぶ分数の指定が出来ます","life本鯖の再起動は5時、16時です","どうでもいいTipsです。追加希望はtaku1417のDMまで。","きりんとねこの身長が180cmなのは嘘である。本当は270cmである","パンに生ハムを乗せると美味しい","薄皮一枚無いスキンをもとに戻したい場合はF3+H","このbotはHerokuというサービス上で稼働しています","あおいんは逆転ものも好き","しまりんはそこまで地上絵が好きじゃない","Monocraftは0時、JMSは9時に投票が可能になります","実はあもさんは下ネタが嫌い","うおみーの言うことは全て嘘","でも実は本当","って言ってるのも嘘かもしれない","でも実は嘘","初めましてronpenです 初めてすぐに10m獲得しました() まだまだ分からないことしかないので色々教えてくれたら嬉しいです","ぬるぽ語録集はVCで生まれた名(迷)言をまとめたものです","この鯖には実に60個ものロールが存在します","畑では植え直しを忘れずに。","木こりは稼げません、マジで。","lifeには統合版でもアクセスできます","釣りをしていると出てくる心の闇は、どこかに座っていると攻撃を大体回避できます","/wikiと打つと主要なwikiページを見ることが出来ます","/recipeと打つとlife独自レシピを見ることが出来ます。レシピは随時追加。","/rentalと打つと貸出記録をbotがやってくれます","/returnと打つと返却記録をbotがやってくれます","真のSはMの天才だし、真のMはSの天才である。それが僕の持論ですね。~LingThai~","しまりんかわいいね","堅あげポテトで口内炎ができるやつ落ち着きがない","命を知ろう〜バイシクル川崎の生体について〜\n一日に生まれるバイシクル川崎のうち約9割がバイク川崎になれないと言われています。\nそしてバイク川崎になれなかったバイシクル川崎の過半数は自然淘汰に対抗するためにコックカワサキへと姿を変えるのです","美味しいヤミー❗️✨🤟😁👍感謝❗️🙌✨感謝❗️🙌✨またいっぱい食べたいな❗️🍖😋🍴✨デリシャッ‼️🙏✨ｼｬ‼️🙏✨ ｼｬ‼️🙏✨ ｼｬ‼️🙏✨ ｼｬ‼️🙏✨ ｼｬ‼️🙏✨ ｼｬｯｯ‼ハッピー🌟スマイル❗️👉😁👈","食前の合掌、いただきます。","本鯖以外のlife系列サーバーは、重くなると再起動されます。","男装男子の定義：女のように見える男が女が男装するときに着る服を着て最終的にギャップだらけになるおとこ"];
 
 	const channeljihou = client.channels.cache.get(tex_jihou);
 	const channelncnofi = client.channels.cache.get(tex_nlpcs_nofi);
@@ -249,7 +240,7 @@ client.on('ready', () => {
 	})//本鯖kick注意
 	cron.schedule('50 4 * * *', () => {
 		channeljihou.send(`__**life系列を除くアジ鯖全体、life本鯖再起動まであと10分です。**__`);
-		channelncnofi.send(`<@&1018040272506069042> life本鯖再起動まであと10分です。__**回路が動かなくなるため、再起動が終わるまでは回さないようお願いします。**__`)
+		//channelncnofi.send(`<@&1018040272506069042> life本鯖再起動まであと10分です。__**回路が動かなくなるため、再起動が終わるまでは回さないようお願いします。**__`)
 		logger("clock");
 	})//アジ鯖再起前
 	cron.schedule('0 5 * * *', () => {
@@ -258,7 +249,7 @@ client.on('ready', () => {
 	})//アジ鯖再起
 	cron.schedule('50 15 * * *', () => {
 		channeljihou.send(`__**life本鯖再起動まであと10分です。**__`);
-		channelncnofi.send(`<@&1018040272506069042> life本鯖再起動まであと10分です。__**回路が動かなくなるため、再起動が終わるまでは回さないようお願いします。**__`)
+		//channelncnofi.send(`<@&1018040272506069042> life本鯖再起動まであと10分です。__**回路が動かなくなるため、再起動が終わるまでは回さないようお願いします。**__`)
 		//channeljihou.send(`**本日、4時より__最大30分のlife全鯖メンテナンス__があります。メンテナンス中はlife系列サーバーにアクセスすることが出来ません。**`)//不定期の長期メンテナンス用
 		logger("clock");
 	})//本鯖再起前
@@ -274,23 +265,10 @@ client.on('ready', () => {
 		//channeljihou.send(`**只今より最大30分の__life全鯖__メンテナンスが行われます。**`)
 		//logger("clock");
 	//})//臨時
-	cron.schedule('0 18 10,25 * *', () => {
-		channeljihou.send(`**<@431843298588622858> Prince鯖にログインしましょう。**`)
-		logger("clock");
-	})//ナショさん用のリマインド(毎月10日と25日の18時)
-});
-client.once("ready", async () => {//コマンド定義
-	const data = [
-/*		{name: "mori", description: "森レイドの時間を指定します。",
-		options: [{
-			type: "INTEGER",
-			name: "minute",
-			description: "レイドが終了した時間を分で指定してください。",
-			required: true
-		}]
-		},
-*/
-	];
+	//cron.schedule('0 18 10,25 * *', () => {
+		//channeljihou.send(`**<@431843298588622858> Prince鯖にログインしましょう。**`)
+		//logger("clock");
+	//})//ナショさん用のリマインド(毎月10日と25日の18時)
 });
 
 const CommandsPath = path.join(__dirname, '/nullpo/components/appCommand');
@@ -310,9 +288,34 @@ const slashCommandFiles = fs.readdirSync(slashCommandsPath).filter(file => file.
 for (const file of slashCommandFiles) {
 	const filePath = path.join(slashCommandsPath, file);
 	const command = require(filePath);
-	slashCommands_rest.push(command.data.toJSON());
+	commands_rest.push(command.data.toJSON());
 	if ('data' in command && 'execute' in command) {
 		client.slashCommands.set(command.data.name, command);
+	}
+}
+
+/*
+const CommandsNDPath = path.join(__dirname, '/nullpo/components/appCommand/nullpo_debug');
+const CommandNDFiles = fs.readdirSync(CommandsNDPath).filter(file => file.endsWith('.js'));
+
+for (const file of CommandNDFiles) {
+	const command = require(`./nullpo/components/appCommand/${file}`);
+	Commands_rest_NullpoDebug.push(command.data.toJSON());
+	if('data' in command && 'execute' in command) {
+		client.Commands_NullpoDebug.set(command.data.name, command);
+	}
+}
+*/
+
+const slashCommandsNDPath = path.join(__dirname, '/nullpo/SlashCommand/nullpo_debug');
+const slashCommandNDFiles = fs.readdirSync(slashCommandsNDPath).filter(file => file.endsWith('.js'));
+
+for (const file of slashCommandNDFiles) {
+	const filePath = path.join(slashCommandsNDPath, file);
+	const command = require(filePath);
+	Commands_rest_NullpoDebug.push(command.data.toJSON());
+	if ('data' in command && 'execute' in command) {
+		client.SlashCommands_NullpoDebug.set(command.data.name, command);
 	}
 }
 
@@ -320,20 +323,23 @@ let rest;
 if(process.env.NODE_ENV === 'heroku') {
 rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
 } else {
-rest = new REST({ version: '10' }).setToken(config.get('DISCORD_TOKEN'));
+rest = new REST({ version: '10' }).setToken(config.get('DISCORD_TOKEN.DEBUG'));
 }
 
 (async () => {
 	try {
 		console.log('アプリケーションコマンドの登録開始');
+		if (process.env.NODE_ENV === 'heroku') {
+			await rest.put(
+				Routes.applicationCommands(botID),
+				{ body: commands_rest },
+			);//herokuで実行されているときのみグローバルコマンドを登録する
+		} else {
 		await rest.put(
-			Routes.applicationCommands(botID),
-			{ body: commands_rest },
-		);
-		await rest.put(
-			Routes.applicationCommands(botID),
-			{ body: slashCommands_rest },
-		);
+			Routes.applicationGuildCommands(botID_debug, nullpo_debug_server_id),
+			{ body: Commands_rest_NullpoDebug },
+		);//ローカルで実行されているときのみnullpo_debugのサーバーコマンドを登録する
+		}
 		console.log('アプリケーションコマンドの登録完了');
 	} catch (error) {
 		console.error(error);
@@ -342,71 +348,67 @@ rest = new REST({ version: '10' }).setToken(config.get('DISCORD_TOKEN'));
 
 client.on('interactionCreate', async (interaction) => {//コマンド・ボタン処理
 	if (interaction.isChatInputCommand()){
-		const command = interaction.client.slashCommands.get(interaction.commandName);
-		if (!command) {
-			console.error(`${interaction.commandName} というコマンドが見つかりませんでした。`);
-			interaction.reply({ content: '指定したコマンドが見つかりませんでした。このメッセージが何度も出てくる場合は、下記のエラーコード、実行したコマンド名ともに taku1417#3456(<@270515939739566080>) まで問い合わせてください。\nエラーコード: 1404  実行されたコマンド名: ' + interaction.commandName, ephemeral: true })
+		const resistered_command = interaction.client.slashCommands.get(interaction.commandName) || interaction.client.SlashCommands_NullpoDebug.get(interaction.commandName);
+		if (!resistered_command) {
+			console.error(`No command matching ${interaction.commandName} was found.`);
+			throw_webhook("error", "command search: No Command matching. →" + interaction.commandName, "", "slash command");
+			interaction.reply({ content: '指定したコマンドが見つかりませんでした。コマンド名を確認して下さい。\nまた、このエラーは管理者に通知されました。改善されるまでお待ちください。', ephemeral: true })
 			return;
 		}
 		try {
-			await command.execute(interaction);
+			await resistered_command.execute(interaction);
 		} catch (error) {
 			console.error(`${interaction.commandName}(slash command)を実行できませんでした。`);
+			throw_webhook("error", "command execute: Error executing. → " + interaction.commandName, error, "slash command");
 			console.error(error);
 		}
 	}
-/*	
-if (interaction.commandName === 'mori') {
-		var minute = interaction.options.getInteger('minute');
-		if(minute < 0 || minute > 59){
-			await interaction.reply({ content: "設定できません。0~59の範囲で入力してください。", ephemeral: true});
-		}else{
-			logger("command");
-			job.cancel();
-			await interaction.reply({ content: "森レイドの時間を"+minute+"分に設定しました。", ephemeral: false});
-			if (minute >= 0 && minute <= 2) { minute += 60; }
-			mori.minute = minute - 3;
-			job.reschedule(mori);
-		}
-	}
-*/
 	if(interaction.isButton()){
 		if (interaction.customId === 'yes') yes_button(interaction);
 		if (interaction.customId === 'no') no_button(interaction);
+		if (interaction.customId === 'VoiceChatCreate') VoiceChatCreate(interaction);	
 	}
 	if (interaction.isMessageContextMenuCommand()){
-		const command = interaction.client.Commands.get(interaction.commandName);
-		if (!command) {
+		const resistered_context = interaction.client.Commands.get(interaction.commandName);
+		if (!resistered_context) {
 			console.error(`No command matching ${interaction.commandName} was found.`);
-			interaction.reply({ content: '指定したコマンドが見つかりませんでした。このメッセージが何度も出てくる場合は、下記のエラーコード、実行したコマンド名ともにtaku1417#3456まで問い合わせてください。\nエラーコード: 3404  実行されたコマンド名: ' + interaction.commandName, ephemeral: true })
+			throw_webhook("error", "command search: No Command matching.", interaction.commandName, "", "message context menu");
+			interaction.reply({ content: '指定したコマンドが見つかりませんでした。コマンド名を確認して下さい。\nまた、このエラーは管理者に通知されました。改善されるまでお待ちください。', ephemeral: true })
 			return;
 		}
 		try {
-			await command.execute(interaction);
+			await resistered_context.execute(interaction);
 		} catch (error) {
 			console.error(`${interaction.commandName}(Message context)を実行できませんでした。`);
+			throw_webhook("error", "command execute: Error executing. → " + interaction.commandName, error, "message context menu");
 			console.error(error);
 		}
 		
 	}
 });
+client.on('messageUpdate', async (oldMessage, newMessage) => {
+	MessageUpdateLogger(client, oldMessage, newMessage);
+});
 client.on('messageDelete', message => {
 	logger("delete");
 	const Month = new Date().getMonth()+1,Day = new Date().getDate(),Hour = new Date().getHours(),Min = new Date().getMinutes(),Sec = new Date().getSeconds(),Hour0 = ('0' + Hour).slice(-2),Min0 = ('0' + Min).slice(-2),Sec0 = ('0' + Sec).slice(-2),Year = new Date().getFullYear();
-	const author_with_nick = (message.member.nickname != null ? (message.author.tag + ' (' + message.member.nickname + ')') : message.author.tag);
-	let has_content;
-	if(message.attachments.first() != null) {
-		has_content = (message.attachments.first().contentType?.startsWith("image" || "movie") ? true : false);
-	} else {
-		has_content = false;
+	let author_with_nick;
+	try {
+		if (message.author.tag.split('#')[1] == "0") {
+			author_with_nick = (message.member.nickname != null ? (message.author.username + ' (' + message.member.nickname + ')') : message.author.username);//ID+タグとIDのみが混在するため、とりあえずの対策。移行済みのユーザーはユーザーネームのみになる。グローバル表示名を考慮する必要もあるが、djs@14.11.0時点で未実装。devにはあるため、stableへの実装待ち。
+		} else {
+			author_with_nick = (message.member.nickname != null ? (message.author.tag + ' (' + message.member.nickname + ')') : message.author.tag);
+		}
+	} catch (error) {
+		console.log("\n\n" + error);
+		return;
 	}
-	//const channelInput = (message.channel != null ? String(message.channel) : '不明なチャンネル');
         const embed = {
                 color: 0xCC0000,
                 description: String(message.channel) + 'にてメッセージが削除されました。',
                 author: {
                         name: author_with_nick,
-                        icon_url: message.author.avatarURL(),
+                        icon_url: message.author.displayAvatarURL(),
                 },
                 fields: [{
                         name: 'メッセージ内容',
@@ -422,27 +424,17 @@ client.on('messageDelete', message => {
         };
         switch(message.guild.id) {
                 case nullpo_server_id:
-                        client.guilds.cache.get(nullpo_server_id).channels.cache.get(nullpo_admin_log).send({embeds: [embed]});
+					if(message.author.bot == true) return;
+					ServerLogChannelFinder(client, null, "メッセージログ", nullpo_server_id).send({embeds: [embed]});
                         break;
                 case nullpo_casino_server_id:
-                        client.guilds.cache.get(nullpo_casino_server_id).channels.cache.get(nullpo_casino_admin_log).send({embeds: [embed]});
+					if(message.author.bot == true) return;
+                        ServerLogChannelFinder(client, null, "メッセージログ", nullpo_casino_server_id).send({embeds: [embed]});
                         break;
                 case nullpo_debug_server_id:
-                        client.guilds.cache.get(nullpo_debug_server_id).channels.cache.get(nullpo_debug_test).send({embeds: [embed]}).then(msg => {
-				/*if(has_content == true) {
-					msg.edit({
-						embeds: [{
-							description: String(message.channel) + 'にてメッセージが削除されました。',
-							files: [
-								Array.from(message.attachments.values())
-							],
-						}]
-					})
-				}*/
-			});
-			const atta = message.attachments;
-			console.log(Array.from(atta.values()));
-			break;
+					if(message.author.bot == true) return;
+						ServerLogChannelFinder(client, null, "メッセージログ", nullpo_debug_server_id).send({embeds: [embed]});
+						break;
                 default:
                         break;
         }
@@ -450,8 +442,12 @@ client.on('messageDelete', message => {
 });
 client.once('ready', () => {
 	client.channels.cache.get(tex_dblog).send('ぬるぽbotが起動しました。');//デバッグ鯖のログに流れる
+	
+	const VoiceChatCreate_button = new ButtonBuilder().setCustomId('VoiceChatCreate').setStyle(ButtonStyle.Success).setLabel('イベントVCを作成する');
+	if(process.env.NODE_ENV === 'heroku') client.channels.cache.get('1108678708480446535').messages.fetch('1108803775415730246').then(message => message.edit({components:[new ActionRowBuilder().addComponents([VoiceChatCreate_button])]}));//ボタンを直す
 });
 client.on('ready', () => {
+	const VoiceChatCreate_button = new ButtonBuilder().setCustomId('VoiceChatCreate').setStyle(ButtonStyle.Success).setLabel('イベントVCを作成する').setDisabled(true);
 	setInterval(() => {
 		client.user.setPresence({
 			activities: [{
@@ -475,9 +471,64 @@ client.on('ready', () => {
 					status: "online"
 				});
 			}
-		}, 15000);
-	}, 20000)
-});
+		}, 15000);//15秒間ping、5秒間動作モード表示
+	}, 20000)//20秒ごとにpingを更新
+
+	setInterval(() => {
+		console.log('[VCC] Start checking...');
+		const VCC_list = ['テスト','イベント'];
+		try {
+			for (let i = 0; i < VCC_list.length; i++) {
+				console.log('[VCC] Checking ' + VCC_list[i] + '...')
+				const channel_list = [];
+				client.channels.cache.filter(ch => ch.name.slice(-(VCC_list[i].length + 1)) === ('-' + VCC_list[i])).each(channel => channel_list.push(channel));
+				if (channel_list.length == 0) continue;
+				for (let j = 0; j < channel_list.length; j++) {
+					if (channel_list[j].members.size == 0) {
+						console.log('[VCC] VC removed: ' + channel_list[j].name);
+						channel_list[j].delete();
+					}
+				}
+			}
+		} catch (error) {
+			console.error(error);
+		}
+		if(process.env.NODE_ENV === 'heroku') client.channels.cache.get('1108678708480446535').messages.fetch('1108803775415730246').then(message => message.edit({components:[new ActionRowBuilder().addComponents([VoiceChatCreate_button])]}));//ボタンを直す
+		console.log('[VCC] Check finished.');
+	}, 300000);//5分ごとにVCCのチェック、誰も居ないなら削除 & ボタンを直す
+
+	// setInterval(async () => {
+	// 	const offlineBots = await client.guilds.cache.forEach(async (guild) => (await guild.members.fetch()).filter(
+	// 		member => member.user.bot && member.presence.status === "offline"
+	// 	));
+	// 	await console.log(offlineBots);
+	// 	const notification = await Object.values(offlineBots).map(member => member.id);
+	// 	await notification.forEach(member => {
+	// 		const botOnlineCheckEmbed = {
+	// 			color: 0xCCCC00,
+	// 			description: `<@${member.id}>がオフラインになっています。確認してください。`,
+	// 			fields: [{
+	// 			name: '日付',
+	// 			value: Year + '/' + Month + '/' + Day + ' ' + Hour0 + ':' + Min0 + ':' + Sec0 + '(JST)',
+	// 		}]};
+	// 		ServerLogChannelFinder(client, null, "bot疎通確認ログ", guild.id).send(`<@270515939739566080>`, {embeds: [botOnlineCheckEmbed]});//オフラインならメッセージを送信
+	// 	});
+	// }, 10000);//10秒ごとにbotがオンラインかどうかを確認、オフラインならメッセージを送信
+
+	
+	const VCCembed = {
+			color: 0xF0E68C,
+			description: 'イベント用VC作成ボタン',
+			fields: [{
+				name: '概要',
+				value: 'ボタンを押すとイベント用VCが作成されます。大量に生成しないでください。場合によってはボタンを押せなくなることがあります。\n5分ごとに誰も居ないVCは削除されるようになっています。削除されない場合は管理者にお問い合わせください。\n作成されるVCのビットレートは192kbps、人数制限はありません。',
+			}],
+			fetchReply: true,
+	};
+	//client.channels.cache.get('1108678708480446535').send({embeds: [VCCembed],components:[new ActionRowBuilder().addComponents([VoiceChatCreate_button])]});
+});//手動でボタンを設置する用
+
+
 /*
 const tryLogin = function(){
 	if(errorCount < 3){//最大3回までリトライ
@@ -503,17 +554,19 @@ setInterval(tryLogin,15000);//15秒ごとにtryLoginを実行
 if(process.env.NODE_ENV === 'heroku'){
 	try {
 		client.login();//ログイン
-		console.log('Discordサービスへの接続に成功しました。');
+		console.log('Discord APIへの接続に成功しました。');
 	} catch (error) {
-		console.error('Discordサービスへの接続に失敗。プロセスを終了します。',error);
+		console.error('Discord APIへの接続に失敗。プロセスを終了します。',error);
+		throw_webhook("error", 'Discord APIへの接続:失敗', error, "");
 		process.exit(1);
 	}	
 } else {
 	try {
-		client.login(config.get('DISCORD_TOKEN'));//ログイン
-		console.log('Discordサービスへの接続に成功しました。');
+		client.login(config.get('DISCORD_TOKEN.DEBUG'));//ログイン
+		console.log('Discord APIへの接続に成功しました。');
 	} catch (error) {
-		console.error('Discordサービスへの接続に失敗。プロセスを終了します。',error);
+		console.error('Discord APIへの接続に失敗。プロセスを終了します。',error);
+		throw_webhook("error", 'Discord APIへの接続:失敗', error, "");
 		process.exit(1);
 	}	
 }

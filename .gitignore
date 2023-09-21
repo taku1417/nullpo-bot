@@ -5,5 +5,8 @@ debug.exe.lnk
 nullpo.exe.lnk
 config.json
 debug/
-.vscode/settings.json
+.vscode/
 config/
+memo/
+web起動.bat
+newrelic_agent.log
