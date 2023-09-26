@@ -495,6 +495,7 @@ client.on('ready', () => {
 				}
 			} 	catch (error) {
 				console.error(error);
+				throw_webhook("error", "VCC: An error occurred while checking VC deletion", error, "VCC");
 			}
 		}
 		if(process.env.NODE_ENV === 'heroku') client.channels.cache.get('1108678708480446535').messages.fetch('1108803775415730246').then(message => message.edit({components:[new ActionRowBuilder().addComponents([VoiceChatCreate_button])]}));//ボタンを直す
