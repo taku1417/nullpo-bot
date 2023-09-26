@@ -448,7 +448,7 @@ client.once('ready', () => {
 	
 	const VoiceChatCreate_button = new ButtonBuilder().setCustomId('VoiceChatCreate').setStyle(ButtonStyle.Success).setLabel('イベントVCを作成する').setDisabled(false);
 	if(process.env.NODE_ENV === 'heroku') client.channels.cache.get('1108678708480446535').messages.fetch('1108803775415730246').then(message => message.edit({components:[new ActionRowBuilder().addComponents([VoiceChatCreate_button])]}));//ボタンを直す
-	if(process.env.NODE_ENV === 'default') client.channels.cache.get('1108678708480446535').messages.fetch('1146451411681431603').then(message => message.edit({components:[new ActionRowBuilder().addComponents([VoiceChatCreate_button])]}));//ボタンを直す
+	if(process.env.NODE_ENV === 'default') client.channels.cache.get('1108624508211966012').messages.fetch('1146451411681431603').then(message => message.edit({components:[new ActionRowBuilder().addComponents([VoiceChatCreate_button])]}));//ボタンを直す
 });
 
 client.on('ready', () => {
@@ -497,8 +497,8 @@ client.on('ready', () => {
 				console.error(error);
 			}
 		}
-		if(process.env.NODE_ENV === 'heroku') client.channels.cache.get('1108624508211966012').messages.fetch('1108803775415730246').then(message => message.edit({components:[new ActionRowBuilder().addComponents([VoiceChatCreate_button])]}));//ボタンを直す
-		if(process.env.NODE_ENV === 'default') client.channels.cache.get('1108678708480446535').messages.fetch('1146451411681431603').then(message => message.edit({components:[new ActionRowBuilder().addComponents([VoiceChatCreate_button])]}));//ボタンを直す
+		if(process.env.NODE_ENV === 'heroku') client.channels.cache.get('1108678708480446535').messages.fetch('1108803775415730246').then(message => message.edit({components:[new ActionRowBuilder().addComponents([VoiceChatCreate_button])]}));//ボタンを直す
+		if(process.env.NODE_ENV === 'default') client.channels.cache.get('1108624508211966012').messages.fetch('1146451411681431603').then(message => message.edit({components:[new ActionRowBuilder().addComponents([VoiceChatCreate_button])]}));//ボタンを直す
 		console.log('[VCC] Check finished.');
 	}, 300000);//5分ごとにVCCのチェック、誰も居ないなら削除 & ボタンを直す
 
