@@ -485,9 +485,9 @@ client.on('ready', () => {
 			console.log('[VCC] Checking ' + VCC_list[i] + '...')
 			let channel_list = [];
 			try {
-				client.channels.fetch();//チャンネルを取得
+				let filtered_channel;
+				client.channels.fetch(nullpo_casino_server_id).then(channel => filtered_channel = client.channels.cache.filter(ch => ch.name.slice(-(VCC_list[i].length + 1)) === ('-' + VCC_list[i])));//チャンネルを取得
 				//下の2行をまとめるとtimeoutエラーを吐いたため、試験的に分けた
-				let filtered_channel = client.channels.cache.filter(ch => ch.name.slice(-(VCC_list[i].length + 1)) === ('-' + VCC_list[i]));
 				filtered_channel.forEach(channel => channel_list.push(channel));
 				if (channel_list.length == 0) continue;
 				for (let j = 0; j < channel_list.length; j++) {
