@@ -485,8 +485,9 @@ client.on('ready', () => {
 		for (let i = 0; i < VCC_list.length; i++) {
 			console.log('[VCC] Checking ' + VCC_list[i] + '...')
 			try {
+				let reg = RegExp("\d*\-" + VCC_list[i]);
 				for(let channel of client.channels.cache) {
-					if(channel[1].name.slice(-(VCC_list[i].length + 1)) === ('-' + VCC_list[i]) && channel[1].type === ChannelType.GuildVoice) {
+					if ( channel[1].name.match(reg) && channel[1].type === ChannelType.GuildVoice) {
 						if(channel[1].members.size === 0) {
 							channel[1].delete().catch(error => console.error(error));
 							console.log('[VCC] VC removed: ' + channel[1].name);
