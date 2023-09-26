@@ -1,4 +1,4 @@
-const { Client, GatewayIntentBits, Collection, REST, Routes, ButtonBuilder, ActionRowBuilder, ButtonStyle } = require('discord.js');
+const { Client, GatewayIntentBits, Collection, REST, Routes, ButtonBuilder, ActionRowBuilder, ButtonStyle, ChannelType } = require('discord.js');
 const config = require('config');
 const fs = require('node:fs');
 const path = require('node:path');
@@ -446,12 +446,13 @@ client.on('messageDelete', message => {
 client.once('ready', () => {
 	client.channels.cache.get(tex_dblog).send('ぬるぽbotが起動しました。');//デバッグ鯖のログに流れる
 	
-	const VoiceChatCreate_button = new ButtonBuilder().setCustomId('VoiceChatCreate').setStyle(ButtonStyle.Success).setLabel('イベントVCを作成する');
+	const VoiceChatCreate_button = new ButtonBuilder().setCustomId('VoiceChatCreate').setStyle(ButtonStyle.Success).setLabel('イベントVCを作成する').setDisabled(false);
 	if(process.env.NODE_ENV === 'heroku') client.channels.cache.get('1108678708480446535').messages.fetch('1108803775415730246').then(message => message.edit({components:[new ActionRowBuilder().addComponents([VoiceChatCreate_button])]}));//ボタンを直す
+	if(process.env.NODE_ENV === 'default') client.channels.cache.get('1108678708480446535').messages.fetch('1146451411681431603').then(message => message.edit({components:[new ActionRowBuilder().addComponents([VoiceChatCreate_button])]}));//ボタンを直す
 });
 
 client.on('ready', () => {
-	const VoiceChatCreate_button = new ButtonBuilder().setCustomId('VoiceChatCreate').setStyle(ButtonStyle.Success).setLabel('イベントVCを作成する').setDisabled(true);
+	const VoiceChatCreate_button = new ButtonBuilder().setCustomId('VoiceChatCreate').setStyle(ButtonStyle.Success).setLabel('イベントVCを作成する').setDisabled(false);
 	setInterval(() => {
 		client.user.setPresence({
 			activities: [{
@@ -483,24 +484,21 @@ client.on('ready', () => {
 		const VCC_list = ['テスト','イベント'];
 		for (let i = 0; i < VCC_list.length; i++) {
 			console.log('[VCC] Checking ' + VCC_list[i] + '...')
-			let channel_list = [];
 			try {
-				let filtered_channel;
-				client.channels.fetch(nullpo_casino_server_id).then(channel => filtered_channel = client.channels.cache.filter(ch => ch.name.slice(-(VCC_list[i].length + 1)) === ('-' + VCC_list[i])));//チャンネルを取得
-				//下の2行をまとめるとtimeoutエラーを吐いたため、試験的に分けた
-				filtered_channel.forEach(channel => channel_list.push(channel));
-				if (channel_list.length == 0) continue;
-				for (let j = 0; j < channel_list.length; j++) {
-					if (channel_list[j].members.size == 0) {
-						console.log('[VCC] VC removed: ' + channel_list[j].name);
-						channel_list[j].delete();
+				for(let channel of client.channels.cache) {
+					if(channel[1].name.slice(-(VCC_list[i].length + 1)) === ('-' + VCC_list[i]) && channel[1].type === ChannelType.GuildVoice) {
+						if(channel[1].members.size === 0) {
+							channel[1].delete().catch(error => console.error(error));
+							console.log('[VCC] VC removed: ' + channel[1].name);
+						}
 					}
 				}
 			} 	catch (error) {
 				console.error(error);
 			}
 		}
-		if(process.env.NODE_ENV === 'heroku') client.channels.cache.get('1108678708480446535').messages.fetch('1108803775415730246').then(message => message.edit({components:[new ActionRowBuilder().addComponents([VoiceChatCreate_button])]}));//ボタンを直す
+		if(process.env.NODE_ENV === 'heroku') client.channels.cache.get('1108624508211966012').messages.fetch('1108803775415730246').then(message => message.edit({components:[new ActionRowBuilder().addComponents([VoiceChatCreate_button])]}));//ボタンを直す
+		if(process.env.NODE_ENV === 'default') client.channels.cache.get('1108678708480446535').messages.fetch('1146451411681431603').then(message => message.edit({components:[new ActionRowBuilder().addComponents([VoiceChatCreate_button])]}));//ボタンを直す
 		console.log('[VCC] Check finished.');
 	}, 300000);//5分ごとにVCCのチェック、誰も居ないなら削除 & ボタンを直す
 
