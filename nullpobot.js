@@ -500,7 +500,7 @@ client.on('ready', () => {
 		if(process.env.NODE_ENV === 'heroku') client.channels.cache.get('1108678708480446535').messages.fetch('1108803775415730246').then(message => message.edit({components:[new ActionRowBuilder().addComponents([VoiceChatCreate_button])]}));//ボタンを直す
 		if(process.env.NODE_ENV === 'default') client.channels.cache.get('1108624508211966012').messages.fetch('1146451411681431603').then(message => message.edit({components:[new ActionRowBuilder().addComponents([VoiceChatCreate_button])]}));//ボタンを直す
 		console.log('[VCC] Check finished.');
-	}, 300);//5分ごとにVCCのチェック、誰も居ないなら削除 & ボタンを直す
+	}, 300000);//5分ごとにVCCのチェック、誰も居ないなら削除 & ボタンを直す
 
 	// setInterval(async () => {
 	// 	const offlineBots = await client.guilds.cache.forEach(async (guild) => (await guild.members.fetch()).filter(
