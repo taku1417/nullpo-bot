@@ -485,13 +485,11 @@ client.on('ready', () => {
 		for (let i = 0; i < VCC_list.length; i++) {
 			console.log('[VCC] Checking ' + VCC_list[i] + '...')
 			try {
-				let reg = RegExp("\d*\-" + VCC_list[i]);
 				for(let channel of client.channels.cache) {
-					const current_channel = channel[1];
-					if ( String(current_channel.name).match(reg) && current_channel.type === ChannelType.GuildVoice) {
-						if(current_channel.members.size === 0) {
-							current_channel.delete().catch(error => console.error(error));
-							console.log('[VCC] VC removed: ' + current_channel.name);
+					if ( String(channel[1].name).match(RegExp("\d*\-" + VCC_list[i])) && channel[1].type === ChannelType.GuildVoice) {
+						if(channel[1].members.size === 0) {
+							channel[1].delete().catch(error => console.error(error));
+							console.log('[VCC] VC removed: ' + channel[1].name);
 						}
 					}
 				}
@@ -502,7 +500,7 @@ client.on('ready', () => {
 		if(process.env.NODE_ENV === 'heroku') client.channels.cache.get('1108678708480446535').messages.fetch('1108803775415730246').then(message => message.edit({components:[new ActionRowBuilder().addComponents([VoiceChatCreate_button])]}));//ボタンを直す
 		if(process.env.NODE_ENV === 'default') client.channels.cache.get('1108624508211966012').messages.fetch('1146451411681431603').then(message => message.edit({components:[new ActionRowBuilder().addComponents([VoiceChatCreate_button])]}));//ボタンを直す
 		console.log('[VCC] Check finished.');
-	}, 60000);//5分ごとにVCCのチェック、誰も居ないなら削除 & ボタンを直す
+	}, 300);//5分ごとにVCCのチェック、誰も居ないなら削除 & ボタンを直す
 
 	// setInterval(async () => {
 	// 	const offlineBots = await client.guilds.cache.forEach(async (guild) => (await guild.members.fetch()).filter(
