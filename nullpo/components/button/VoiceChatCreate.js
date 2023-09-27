@@ -92,11 +92,11 @@ function execute(interaction, category, VCname, VCbitrate) {
                 console.error(err);
             }
             interaction.message.edit({
-                components: [new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId('VoiceChatCreate').setStyle(ButtonStyle.Success).setLabel('イベントVCを作成する'))],
+                components: [new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId('VoiceChatCreate').setStyle(ButtonStyle.Success).setLabel('サブVCを作成する'))],
             })
         });
     interaction.message.edit({
-        components: [new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId('VoiceChatCreate').setStyle(ButtonStyle.Success).setLabel('イベントVCを作成する'))],
+        components: [new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId('VoiceChatCreate').setStyle(ButtonStyle.Success).setLabel('サブVCを作成する'))],
     })
 }
 
