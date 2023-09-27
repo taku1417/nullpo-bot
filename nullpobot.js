@@ -455,16 +455,16 @@ client.once('ready', () => {
 		}],
 		fetchReply: true,
 	};
-	const VoiceChatCreate_button = new ButtonBuilder().setCustomId('VoiceChatCreate').setStyle(ButtonStyle.Success).setLabel('サブVCを作成する').setDisabled(false);
-	const VCCreateButton_fix = new ButtonBuilder().setCustomId('VoiceChatCreate').setStyle(ButtonStyle.Success).setDisabled(false);
+	const VCCreateButton_sub = new ButtonBuilder().setCustomId('VoiceChatCreate').setStyle(ButtonStyle.Success).setLabel('サブVCを作成する').setDisabled(false);
+	const VCCreateButton_test = new ButtonBuilder().setCustomId('VoiceChatCreate').setStyle(ButtonStyle.Success).setLabel('テストVCを作成する').setDisabled(false);
 
-	if(process.env.NODE_ENV === 'heroku') client.channels.cache.get('1108678708480446535').messages.fetch('1108803775415730246').then(message => message.edit({components:[new ActionRowBuilder().addComponents([VCCreateButton_fix])]}));//ボタンを直す
-	if(process.env.NODE_ENV === 'default') client.channels.cache.get('1108624508211966012').messages.fetch('1146451411681431603').then(message => message.edit({components:[new ActionRowBuilder().addComponents([VCCreateButton_fix])]}));//ボタンを直す
+	if(process.env.NODE_ENV === 'heroku') client.channels.cache.get('1108678708480446535').messages.fetch('1108803775415730246').then(message => message.edit({components:[new ActionRowBuilder().addComponents([VCCreateButton_sub])]}));//ボタンを直す
+	if(process.env.NODE_ENV === 'default') client.channels.cache.get('1108624508211966012').messages.fetch('1146451411681431603').then(message => message.edit({components:[new ActionRowBuilder().addComponents([VCCreateButton_test])]}));//ボタンを直す
 });
 
 client.on('ready', () => {
-	const VoiceChatCreate_button = new ButtonBuilder().setCustomId('VoiceChatCreate').setStyle(ButtonStyle.Success).setLabel('サブVCを作成する').setDisabled(false);
-	const VCCreateButton_fix = new ButtonBuilder().setCustomId('VoiceChatCreate').setStyle(ButtonStyle.Success).setDisabled(false);
+	const VCCreateButton_sub = new ButtonBuilder().setCustomId('VoiceChatCreate').setStyle(ButtonStyle.Success).setLabel('サブVCを作成する').setDisabled(false);
+	const VCCreateButton_test = new ButtonBuilder().setCustomId('VoiceChatCreate').setStyle(ButtonStyle.Success).setLabel('テストVCを作成する').setDisabled(false);
 	setInterval(() => {
 		client.user.setPresence({
 			activities: [{
@@ -510,8 +510,8 @@ client.on('ready', () => {
 				throw_webhook("error", "VCC: An error occurred while checking VC deletion", error, "VCC");
 			}
 		}
-		if(process.env.NODE_ENV === 'heroku') client.channels.cache.get('1108678708480446535').messages.fetch('1108803775415730246').then(message => message.edit({components:[new ActionRowBuilder().addComponents([VCCreateButton_fix])]}));//ボタンを直す
-		if(process.env.NODE_ENV === 'default') client.channels.cache.get('1108624508211966012').messages.fetch('1146451411681431603').then(message => message.edit({components:[new ActionRowBuilder().addComponents([VCCreateButton_fix])]}));//ボタンを直す
+		if(process.env.NODE_ENV === 'heroku') client.channels.cache.get('1108678708480446535').messages.fetch('1108803775415730246').then(message => message.edit({components:[new ActionRowBuilder().addComponents([VCCreateButton_sub])]}));//ボタンを直す
+		if(process.env.NODE_ENV === 'default') client.channels.cache.get('1108624508211966012').messages.fetch('1146451411681431603').then(message => message.edit({components:[new ActionRowBuilder().addComponents([VCCreateButton_test])]}));//ボタンを直す
 		console.log('[VCC] Check finished.');
 	}, 300000);//5分ごとにVCCのチェック、誰も居ないなら削除 & ボタンを直す
 
