@@ -493,7 +493,7 @@ client.on('ready', () => {
 
 	setInterval(() => {
 		console.log('[VCC] Start checking...');
-		const VCC_list = ['テスト','イベント'];
+		const VCC_list = ['テスト','サブ'];
 		for (let i = 0; i < VCC_list.length; i++) {
 			console.log('[VCC] Checking ' + VCC_list[i] + '...')
 			try {
