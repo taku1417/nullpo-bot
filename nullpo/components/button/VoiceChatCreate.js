@@ -1,7 +1,12 @@
-const {Client, GatewayIntentBits, ButtonBuilder, ActionRowBuilder, ButtonStyle} = require('discord.js');
-const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildVoiceStates, GatewayIntentBits.MessageContent]});
+const {ButtonBuilder, ActionRowBuilder, ButtonStyle} = require('discord.js');
 let number;
 const throw_webhook = require('../../../function/throw_webhook.js');
+
+/**
+ * VC作成ボタンが押されたときの処理
+ * @param {Discord.interaction} interaction
+ * @returns {Promise<void>}
+ */
 async function VoiceChatCreate(interaction) {
     const VoiceChatCreate_button_disabled = new ButtonBuilder().setCustomId('VoiceChatCreate').setStyle(ButtonStyle.Danger).setLabel('作成中...').setDisabled(true);
     await interaction.message.edit({
@@ -22,16 +27,24 @@ async function VoiceChatCreate(interaction) {
             const bitrate_test = 96000;
             await execute(interaction, category_test, VC_name_test, bitrate_test);
             break;
-        case '1108678708480446535'://CASINO イベントVC
-            const VC_name_event = "イベント";
-            const category_event = '1108678500963061891';
-            const bitrate_event = 192000;
-            await execute(interaction, category_event, VC_name_event, bitrate_event);
+        case '1108678708480446535'://CASINO サブVC
+            const VC_name_sub = "サブ";
+            const category_sub = '1108678500963061891';
+            const bitrate_sub = 192000;
+            await execute(interaction, category_sub, VC_name_sub, bitrate_sub);
             break;
     }
 }
 
-//ボイスチャット作成
+/**
+ * 実際に作る処理
+ * @param {Discord.interaction} interaction 
+ * @param {Discord.channel} category 
+ * @param {String} VCname 
+ * @param {number} VCbitrate 
+ * @private
+ * @return {null}
+ */
 function execute(interaction, category, VCname, VCbitrate) {
     const bitrateAmount = (VCbitrate ?? 64000);//VCbitrateがnullの場合は64000になる
     const array = [];
@@ -75,7 +88,7 @@ function execute(interaction, category, VCname, VCbitrate) {
                     ephemeral: true,
                     fetchReply: true
                 });
-                throw_webhook('error', `VoiceChatCreate.js:作成失敗(${VCname})`, err, "");
+                throw_webhook('error', `VoiceChatCreate.js:作成失敗(${VCname})`, err, "作成上限以外のエラー");
                 console.error(err);
             }
             interaction.message.edit({

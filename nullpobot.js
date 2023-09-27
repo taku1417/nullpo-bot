@@ -446,13 +446,24 @@ client.on('messageDelete', message => {
 client.once('ready', () => {
 	client.channels.cache.get(tex_dblog).send('ぬるぽbotが起動しました。');//デバッグ鯖のログに流れる
 	
-	const VoiceChatCreate_button = new ButtonBuilder().setCustomId('VoiceChatCreate').setStyle(ButtonStyle.Success).setLabel('イベントVCを作成する').setDisabled(false);
-	if(process.env.NODE_ENV === 'heroku') client.channels.cache.get('1108678708480446535').messages.fetch('1108803775415730246').then(message => message.edit({components:[new ActionRowBuilder().addComponents([VoiceChatCreate_button])]}));//ボタンを直す
-	if(process.env.NODE_ENV === 'default') client.channels.cache.get('1108624508211966012').messages.fetch('1146451411681431603').then(message => message.edit({components:[new ActionRowBuilder().addComponents([VoiceChatCreate_button])]}));//ボタンを直す
+	const VCCembed = {
+		color: 0xF0E68C,
+		description: 'サブVC作成ボタン',
+		fields: [{
+			name: '概要',
+			value: 'ボタンを押すとサブVCが作成されます。連続で3つ以上生成しようとしないでください。ボタンが戻らなくなることがあります。\n5分ごとに誰も居ないVCは削除されるようになっています。削除されない場合は管理者にお問い合わせください。\n作成されるVCのビットレートは192kbps、人数制限はありません。',
+		}],
+		fetchReply: true,
+	};
+	const VoiceChatCreate_button = new ButtonBuilder().setCustomId('VoiceChatCreate').setStyle(ButtonStyle.Success).setLabel('サブVCを作成する').setDisabled(false);
+	const VCCreateButton_fix = new ButtonBuilder().setCustomId('VoiceChatCreate').setStyle(ButtonStyle.Success).setDisabled(false);
+	if(process.env.NODE_ENV === 'heroku') client.channels.cache.get('1108678708480446535').messages.fetch('1108803775415730246').then(message => message.edit({embeds: [VCCembed], components:[new ActionRowBuilder().addComponents([VoiceChatCreate_button])]}));//ボタンを直す
+	if(process.env.NODE_ENV === 'default') client.channels.cache.get('1108624508211966012').messages.fetch('1146451411681431603').then(message => message.edit({components:[new ActionRowBuilder().addComponents([VCCreateButton_fix])]}));//ボタンを直す
 });
 
 client.on('ready', () => {
-	const VoiceChatCreate_button = new ButtonBuilder().setCustomId('VoiceChatCreate').setStyle(ButtonStyle.Success).setLabel('イベントVCを作成する').setDisabled(false);
+	const VoiceChatCreate_button = new ButtonBuilder().setCustomId('VoiceChatCreate').setStyle(ButtonStyle.Success).setLabel('サブVCを作成する').setDisabled(false);
+	const VCCreateButton_fix = new ButtonBuilder().setCustomId('VoiceChatCreate').setStyle(ButtonStyle.Success).setDisabled(false);
 	setInterval(() => {
 		client.user.setPresence({
 			activities: [{
@@ -499,7 +510,7 @@ client.on('ready', () => {
 			}
 		}
 		if(process.env.NODE_ENV === 'heroku') client.channels.cache.get('1108678708480446535').messages.fetch('1108803775415730246').then(message => message.edit({components:[new ActionRowBuilder().addComponents([VoiceChatCreate_button])]}));//ボタンを直す
-		if(process.env.NODE_ENV === 'default') client.channels.cache.get('1108624508211966012').messages.fetch('1146451411681431603').then(message => message.edit({components:[new ActionRowBuilder().addComponents([VoiceChatCreate_button])]}));//ボタンを直す
+		if(process.env.NODE_ENV === 'default') client.channels.cache.get('1108624508211966012').messages.fetch('1146451411681431603').then(message => message.edit({components:[new ActionRowBuilder().addComponents([VCCreateButton_fix])]}));//ボタンを直す
 		console.log('[VCC] Check finished.');
 	}, 300000);//5分ごとにVCCのチェック、誰も居ないなら削除 & ボタンを直す
 
@@ -524,10 +535,10 @@ client.on('ready', () => {
 	
 	const VCCembed = {
 			color: 0xF0E68C,
-			description: 'イベント用VC作成ボタン',
+			description: 'サブVC作成ボタン',
 			fields: [{
 				name: '概要',
-				value: 'ボタンを押すとイベント用VCが作成されます。大量に生成しないでください。場合によってはボタンを押せなくなることがあります。\n5分ごとに誰も居ないVCは削除されるようになっています。削除されない場合は管理者にお問い合わせください。\n作成されるVCのビットレートは192kbps、人数制限はありません。',
+				value: 'ボタンを押すとサブVCが作成されます。連続で3つ以上生成しようとしないでください。\n5分ごとに誰も居ないVCは削除されるようになっています。削除されない場合は管理者にお問い合わせください。\n作成されるVCのビットレートは192kbps、人数制限はありません。',
 			}],
 			fetchReply: true,
 	};
