@@ -20,5 +20,4 @@ function try_reconnect(pg, retry_ms){
     }, ts );
 }
 
-
 module.exports = try_reconnect;

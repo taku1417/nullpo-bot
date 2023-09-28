@@ -1,4 +1,3 @@
 'use strict'
 
-exports.connection = require('./connection');
-exports.queryExecute = require('./queryExecute');
+exports.connection = require('./connection.js');

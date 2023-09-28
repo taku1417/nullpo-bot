@@ -334,11 +334,15 @@ rest = new REST({ version: '10' }).setToken(config.get('DISCORD_TOKEN.DEBUG'));
 				Routes.applicationCommands(botID),
 				{ body: commands_rest },
 			);//herokuで実行されているときのみグローバルコマンドを登録する
+			await rest.put(
+				Routes.applicationGuildCommands(botID, nullpo_debug_server_id),
+				{ body: Commands_rest_NullpoDebug },
+			);//production bot用 nullpo_debugのサーバーコマンドを登録する
 		} else {
 		await rest.put(
 			Routes.applicationGuildCommands(botID_debug, nullpo_debug_server_id),
 			{ body: Commands_rest_NullpoDebug },
-		);//ローカルで実行されているときのみnullpo_debugのサーバーコマンドを登録する
+		);//debug bot用 nullpo_debugのサーバーコマンドを登録する
 		}
 		console.log('アプリケーションコマンドの登録完了');
 	} catch (error) {
