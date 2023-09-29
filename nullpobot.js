@@ -360,7 +360,7 @@ client.on('interactionCreate', async (interaction) => {//コマンド・ボタ�
 			return;
 		}
 		try {
-			await resistered_command.execute(interaction);
+			await resistered_command.execute(interaction, client);
 		} catch (error) {
 			console.error(`Error executing ${interaction.commandName}`);
 			throw_webhook("error", "command execute: Error executing. → " + interaction.commandName, error, "slash command");
