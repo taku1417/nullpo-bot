@@ -1,4 +1,4 @@
-const { Client, GatewayIntentBits, Collection, REST, Routes, ButtonBuilder, ActionRowBuilder, ButtonStyle } = require('discord.js');
+const { Client, GatewayIntentBits, Collection, REST, Routes, ButtonBuilder, ActionRowBuilder, ButtonStyle, ChannelType } = require('discord.js');
 const config = require('config');
 const fs = require('node:fs');
 const path = require('node:path');
@@ -333,12 +333,20 @@ rest = new REST({ version: '10' }).setToken(config.get('DISCORD_TOKEN.DEBUG'));
 			await rest.put(
 				Routes.applicationCommands(botID),
 				{ body: commands_rest },
-			);//herokuで実行されているときのみグローバルコマンドを登録する
+			);//production用 グローバルコマンドを登録する
+			await rest.put(
+				Routes.applicationGuildCommands(botID, nullpo_debug_server_id),
+				{ body: Commands_rest_NullpoDebug },
+			);//production用 nullpo_debugのサーバーコマンドを登録する
 		} else {
+		await rest.put(
+			Routes.applicationCommands(botID_debug),
+			{ body: commands_rest },
+		);//debug用 グローバルコマンドを登録する
 		await rest.put(
 			Routes.applicationGuildCommands(botID_debug, nullpo_debug_server_id),
 			{ body: Commands_rest_NullpoDebug },
-		);//ローカルで実行されているときのみnullpo_debugのサーバーコマンドを登録する
+		);//debug用 nullpo_debugのサーバーコマンドを登録する
 		}
 		console.log('アプリケーションコマンドの登録完了');
 	} catch (error) {
@@ -347,6 +355,8 @@ rest = new REST({ version: '10' }).setToken(config.get('DISCORD_TOKEN.DEBUG'));
 })();
 
 client.on('interactionCreate', async (interaction) => {//コマンド・ボタン処理
+
+	interaction.member.voice.channel
 	if (interaction.isChatInputCommand()){
 		const resistered_command = interaction.client.slashCommands.get(interaction.commandName) || interaction.client.SlashCommands_NullpoDebug.get(interaction.commandName);
 		if (!resistered_command) {
@@ -356,9 +366,9 @@ client.on('interactionCreate', async (interaction) => {//コマンド・ボタ�
 			return;
 		}
 		try {
-			await resistered_command.execute(interaction);
+			await resistered_command.execute(interaction, client);
 		} catch (error) {
-			console.error(`Error executing ${interaction.commandName}`);
+			console.error(`${interaction.commandName}(slash command)を実行できませんでした。`);
 			throw_webhook("error", "command execute: Error executing. → " + interaction.commandName, error, "slash command");
 			console.error(error);
 		}
@@ -379,7 +389,7 @@ client.on('interactionCreate', async (interaction) => {//コマンド・ボタ�
 		try {
 			await resistered_context.execute(interaction);
 		} catch (error) {
-			console.error(`Error executing ${interaction.commandName}`);
+			console.error(`${interaction.commandName}(Message context)を実行できませんでした。`);
 			throw_webhook("error", "command execute: Error executing. → " + interaction.commandName, error, "message context menu");
 			console.error(error);
 		}
@@ -394,11 +404,11 @@ client.on('messageDelete', message => {
 	const Month = new Date().getMonth()+1,Day = new Date().getDate(),Hour = new Date().getHours(),Min = new Date().getMinutes(),Sec = new Date().getSeconds(),Hour0 = ('0' + Hour).slice(-2),Min0 = ('0' + Min).slice(-2),Sec0 = ('0' + Sec).slice(-2),Year = new Date().getFullYear();
 	let author_with_nick;
 	try {
-		if (message.author.tag.split('#')[1] == "0") {
-			author_with_nick = (message.member.nickname != null ? (message.author.username + ' (' + message.member.nickname + ')') : message.author.username);//ID+タグとIDのみが混在するため、とりあえずの対策。移行済みのユーザーはユーザーネームのみになる。グローバル表示名を考慮する必要もあるが、djs@14.11.0時点で未実装。devにはあるため、stableへの実装待ち。
-		} else {
-			author_with_nick = (message.member.nickname != null ? (message.author.tag + ' (' + message.member.nickname + ')') : message.author.tag);
-		}
+		if(message.member.user.globalName != null) {
+            author_with_nick = message.member.nickname != null ? (message.member.user.username + ' (' + message.member.displayName + ')') : (message.member.user.username + '(' + message.member.user.globalName + ')');
+        } else { 
+            author_with_nick = message.member.nickname != null ? (message.member.user.username + ' (' + message.member.displayName + ')') : message.member.user.username; 
+        }//globalName = ユーザー表示名 / nickname = サーバー表示名
 	} catch (error) {
 		console.log("\n\n" + error);
 		return;
@@ -440,14 +450,29 @@ client.on('messageDelete', message => {
         }
 	//delete_logger(message);
 });
+
 client.once('ready', () => {
 	client.channels.cache.get(tex_dblog).send('ぬるぽbotが起動しました。');//デバッグ鯖のログに流れる
 	
-	const VoiceChatCreate_button = new ButtonBuilder().setCustomId('VoiceChatCreate').setStyle(ButtonStyle.Success).setLabel('イベントVCを作成する');
-	if(process.env.NODE_ENV === 'heroku') client.channels.cache.get('1108678708480446535').messages.fetch('1108803775415730246').then(message => message.edit({components:[new ActionRowBuilder().addComponents([VoiceChatCreate_button])]}));//ボタンを直す
+	const VCCembed = {
+		color: 0xF0E68C,
+		description: 'サブVC作成ボタン',
+		fields: [{
+			name: '概要',
+			value: 'ボタンを押すとサブVCが作成されます。連続で3つ以上生成しようとしないでください。ボタンが戻らなくなることがあります。\n5分ごとに誰も居ないVCは削除されるようになっています。削除されない場合は管理者にお問い合わせください。\n作成されるVCのビットレートは192kbps、人数制限はありません。',
+		}],
+		fetchReply: true,
+	};
+	const VCCreateButton_sub = new ButtonBuilder().setCustomId('VoiceChatCreate').setStyle(ButtonStyle.Success).setLabel('サブVCを作成する').setDisabled(false);
+	const VCCreateButton_test = new ButtonBuilder().setCustomId('VoiceChatCreate').setStyle(ButtonStyle.Success).setLabel('テストVCを作成する').setDisabled(false);
+
+	if(process.env.NODE_ENV === 'heroku') client.channels.cache.get('1108678708480446535').messages.fetch('1108803775415730246').then(message => message.edit({components:[new ActionRowBuilder().addComponents([VCCreateButton_sub])]}));//ボタンを直す
+	if(process.env.NODE_ENV === 'default') client.channels.cache.get('1108624508211966012').messages.fetch('1146451411681431603').then(message => message.edit({components:[new ActionRowBuilder().addComponents([VCCreateButton_test])]}));//ボタンを直す
 });
+
 client.on('ready', () => {
-	const VoiceChatCreate_button = new ButtonBuilder().setCustomId('VoiceChatCreate').setStyle(ButtonStyle.Success).setLabel('イベントVCを作成する');
+	const VCCreateButton_sub = new ButtonBuilder().setCustomId('VoiceChatCreate').setStyle(ButtonStyle.Success).setLabel('サブVCを作成する').setDisabled(false);
+	const VCCreateButton_test = new ButtonBuilder().setCustomId('VoiceChatCreate').setStyle(ButtonStyle.Success).setLabel('テストVCを作成する').setDisabled(false);
 	setInterval(() => {
 		client.user.setPresence({
 			activities: [{
@@ -476,24 +501,25 @@ client.on('ready', () => {
 
 	setInterval(() => {
 		console.log('[VCC] Start checking...');
-		const VCC_list = ['テスト','イベント'];
-		try {
-			for (let i = 0; i < VCC_list.length; i++) {
-				console.log('[VCC] Checking ' + VCC_list[i] + '...')
-				const channel_list = [];
-				client.channels.cache.filter(ch => ch.name.slice(-(VCC_list[i].length + 1)) === ('-' + VCC_list[i])).each(channel => channel_list.push(channel));
-				if (channel_list.length == 0) continue;
-				for (let j = 0; j < channel_list.length; j++) {
-					if (channel_list[j].members.size == 0) {
-						console.log('[VCC] VC removed: ' + channel_list[j].name);
-						channel_list[j].delete();
+		const VCC_list = ['テスト','サブ'];
+		for (let i = 0; i < VCC_list.length; i++) {
+			console.log('[VCC] Checking ' + VCC_list[i] + '...')
+			try {
+				for(let channel of client.channels.cache) {
+					if ( String(channel[1].name).match(RegExp("\d*\-" + VCC_list[i])) && channel[1].type === ChannelType.GuildVoice) {
+						if(channel[1].members.size === 0) {
+							channel[1].delete().catch(error => console.error(error));
+							console.log('[VCC] VC removed: ' + channel[1].name);
+						}
 					}
 				}
+			} 	catch (error) {
+				console.error(error);
+				throw_webhook("error", "VCC: An error occurred while checking VC deletion", error, "VCC");
 			}
-		} catch (error) {
-			console.error(error);
 		}
-		if(process.env.NODE_ENV === 'heroku') client.channels.cache.get('1108678708480446535').messages.fetch('1108803775415730246').then(message => message.edit({components:[new ActionRowBuilder().addComponents([VoiceChatCreate_button])]}));//ボタンを直す
+		if(process.env.NODE_ENV === 'heroku') client.channels.cache.get('1108678708480446535').messages.fetch('1108803775415730246').then(message => message.edit({components:[new ActionRowBuilder().addComponents([VCCreateButton_sub])]}));//ボタンを直す
+		if(process.env.NODE_ENV === 'default') client.channels.cache.get('1108624508211966012').messages.fetch('1146451411681431603').then(message => message.edit({components:[new ActionRowBuilder().addComponents([VCCreateButton_test])]}));//ボタンを直す
 		console.log('[VCC] Check finished.');
 	}, 300000);//5分ごとにVCCのチェック、誰も居ないなら削除 & ボタンを直す
 
@@ -518,10 +544,10 @@ client.on('ready', () => {
 	
 	const VCCembed = {
 			color: 0xF0E68C,
-			description: 'イベント用VC作成ボタン',
+			description: 'サブVC作成ボタン',
 			fields: [{
 				name: '概要',
-				value: 'ボタンを押すとイベント用VCが作成されます。大量に生成しないでください。場合によってはボタンを押せなくなることがあります。\n5分ごとに誰も居ないVCは削除されるようになっています。削除されない場合は管理者にお問い合わせください。\n作成されるVCのビットレートは192kbps、人数制限はありません。',
+				value: 'ボタンを押すとサブVCが作成されます。連続で3つ以上生成しようとしないでください。\n5分ごとに誰も居ないVCは削除されるようになっています。削除されない場合は管理者にお問い合わせください。\n作成されるVCのビットレートは192kbps、人数制限はありません。',
 			}],
 			fetchReply: true,
 	};
