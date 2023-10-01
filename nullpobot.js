@@ -333,12 +333,20 @@ rest = new REST({ version: '10' }).setToken(config.get('DISCORD_TOKEN.DEBUG'));
 			await rest.put(
 				Routes.applicationCommands(botID),
 				{ body: commands_rest },
-			);//herokuで実行されているときのみグローバルコマンドを登録する
+			);//production用 グローバルコマンドを登録する
+			await rest.put(
+				Routes.applicationGuildCommands(botID, nullpo_debug_server_id),
+				{ body: Commands_rest_NullpoDebug },
+			);//production用 nullpo_debugのサーバーコマンドを登録する
 		} else {
+		await rest.put(
+			Routes.applicationCommands(botID_debug),
+			{ body: commands_rest },
+		);//debug用 グローバルコマンドを登録する
 		await rest.put(
 			Routes.applicationGuildCommands(botID_debug, nullpo_debug_server_id),
 			{ body: Commands_rest_NullpoDebug },
-		);//ローカルで実行されているときのみnullpo_debugのサーバーコマンドを登録する
+		);//debug用 nullpo_debugのサーバーコマンドを登録する
 		}
 		console.log('アプリケーションコマンドの登録完了');
 	} catch (error) {
@@ -358,7 +366,7 @@ client.on('interactionCreate', async (interaction) => {//コマンド・ボタ�
 			return;
 		}
 		try {
-			await resistered_command.execute(interaction);
+			await resistered_command.execute(interaction, client);
 		} catch (error) {
 			console.error(`${interaction.commandName}(slash command)を実行できませんでした。`);
 			throw_webhook("error", "command execute: Error executing. → " + interaction.commandName, error, "slash command");
