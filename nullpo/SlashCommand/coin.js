@@ -21,13 +21,16 @@ module.exports = {
         }
         const user = interaction.options.getUser('user') ?? interaction.user;
         const userId = user.id;
+        const member_with_nick = user.globalName ? (user.username + '(' + user.globalName + ')') : user.username;
         dbclient.connection(`SELECT * FROM coins WHERE id = '${userId}'`).then(async res => {
             if(res.length == 0) {
                 await interaction.reply({
                     content: 'ユーザーが見つかりませんでした。ユーザーが所持しているコイン数は0です。',
                     ephemeral: true
                 });
-                dbclient.connection(`INSERT INTO coins (id) VALUES ('${userId}')`);
+                dbclient.connection(`INSERT INTO coins (id) VALUES ('${userId}')`).then(() => {
+                    console.log(member_with_nick + ' さんを追加しました。');
+                });
                 return;
             }
             const coin = res[0].amount;
