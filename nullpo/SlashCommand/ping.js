@@ -15,16 +15,12 @@ module.exports = {
     async execute(interaction, client) {
         logger('command');
         await interaction.reply({
-            content: `pong!\nWebSocket Ping: ${client.ws.ping}ms\nAPI Endpoint Ping: 計測中...\n
-            WebSocket PingはDiscord APIとぬるぽbot間の応答速度。ぬるぽbotはアメリカのサーバー上で実行しているため良い傾向にあります。\n
-            API Endpoint Pingはコマンドを実行しbotの処理が開始されてから、このメッセージが作成されるまでの時間。読み上げbotの計測方法と同じです。\n負荷のかかる処理を行っていたり、Discord APIに障害が起きていたりすると値が大きくなります。`,
+            content: `pong!\nWebSocket Ping:    ${client.ws.ping}ms\nAPI Endpoint Ping: 計測中...\n\nWebSocket PingはDiscord APIとぬるぽbot間の応答速度。ぬるぽbotはアメリカのサーバー上で実行しているため良い傾向にあります。\nAPI Endpoint Pingはコマンドを実行しbotの処理が開始されてから、このメッセージが作成されるまでの時間。読み上げbotの計測方法と同じです。\n負荷のかかる処理を行っていたり、Discord APIに障害が起きていたりすると値が大きくなります。`,
             ephemeral: true
         });
         let msg = await interaction.fetchReply();
         await interaction.editReply({
-            content: `pong!\nWebSocket Ping: ${client.ws.ping}ms\nAPI Endpoint Ping: ${msg.createdTimestamp - interaction.createdTimestamp}ms\n
-            WebSocket PingはDiscord APIとぬるぽbot間の応答速度。ぬるぽbotはアメリカのサーバー上で実行しているため良い傾向にあります。\n
-            API Endpoint Pingはコマンドを実行しbotの処理が開始されてから、このメッセージが作成されるまでの時間。読み上げbotの計測方法と同じです。\n負荷のかかる処理を行っていたり、Discord APIに障害が起きていたりすると値が大きくなります。`
+            content: `pong!\nWebSocket Ping:    ${client.ws.ping}ms\nAPI Endpoint Ping: ${msg.createdTimestamp - interaction.createdTimestamp}ms\n\nWebSocket PingはDiscord APIとぬるぽbot間の応答速度。ぬるぽbotはアメリカのサーバー上で実行しているため良い傾向にあります。\nAPI Endpoint Pingはコマンドを実行しbotの処理が開始されてから、このメッセージが作成されるまでの時間。読み上げbotの計測方法と同じです。\n負荷のかかる処理を行っていたり、Discord APIに障害が起きていたりすると値が大きくなります。`
         });
     }
 };
