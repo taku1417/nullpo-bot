@@ -5,8 +5,8 @@ module.exports = {
             .setType(ApplicationCommandType.Message),
     async execute(interaction) {
 		const message = interaction.options.getMessage('message');
-	if (message.system) return interaction.reply({ content: "システムメッセージはピン留めできません", ephemeral: true });
-	if (message.pinned) {
+		if (message.system) return interaction.reply({ content: "システムメッセージはピン留めできません", ephemeral: true });
+		if (message.pinned) {
 			await message.unpin()
    			.then(() => interaction.reply({content: "ピン止めを解除しました", ephemeral: true}))
    			.catch(console.error)

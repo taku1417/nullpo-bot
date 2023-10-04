@@ -12,7 +12,7 @@ module.exports = {
             .setDescription('所持コイン数を表示したいユーザーを選択してください。')),
     async execute(interaction, client) {
         logger('command');
-        if(interaction.options.getUser('user') && !interaction.member.permissions.has(PermissionsBitField.Flags.ManageGuild)) {
+        if(interaction.options.getUser('user') && !interaction.member.permissions.has(PermissionsBitField.Flags.ManageGuild)) {// ユーザー指定あり、かつ権限なし => 使用不可
             await interaction.reply({
                 content: '他ユーザーのコイン数の表示は管理者のみ使用可能です。',
                 ephemeral: true
@@ -23,21 +23,30 @@ module.exports = {
         const userId = user.id;
         const member_with_nick = user.globalName ? (user.username + '(' + user.globalName + ')') : user.username;
         dbclient.connection(`SELECT * FROM coins WHERE id = '${userId}'`).then(async res => {
-            if(res.length == 0) {
-                await interaction.reply({
-                    content: 'ユーザーが見つかりませんでした。ユーザーが所持しているコイン数は0です。',
-                    ephemeral: true
-                });
-                dbclient.connection(`INSERT INTO coins (id) VALUES ('${userId}')`).then(() => {
-                    console.log(member_with_nick + ' さんを追加しました。');
-                });
-                return;
+            if(res.length == 0) {// = 該当ユーザーが存在しない
+                if(interaction.options.getUser('user')){// ユーザー指定ありなら追加しない
+                    await interaction.reply({
+                        content: 'ユーザーが見つかりませんでした。',
+                        ephemeral: true
+                    });
+                    return;
+                } else {
+                    await interaction.reply({
+                        content: 'ユーザーが見つかりませんでした。coinsテーブルに追加します。',
+                        ephemeral: true
+                    });
+                    dbclient.connection(`INSERT INTO coins (id) VALUES ('${userId}')`).then(() => {
+                        console.log(member_with_nick + ' さんをcoinsテーブルに登録しました。');
+                    });
+                    return;
+                }
             }
-            const coin = res[0].amount;
+            const coin = res[0].amount;//複数居ないが、一応
             await interaction.reply({
                 content: `<@${userId}>さんの所持コイン数は${coin}です。`,
                 ephemeral: true
             });
+            return;
         });
     }    
 };
