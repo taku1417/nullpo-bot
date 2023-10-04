@@ -1,6 +1,6 @@
 const {ButtonBuilder, ActionRowBuilder, ButtonStyle} = require('discord.js');
 let number;
-const throw_webhook = require('../../../function/throw_webhook.js');
+const throw_webhook = require('../../../../function/throw_webhook.js');
 
 /**
  * VC作成ボタンが押されたときの処理

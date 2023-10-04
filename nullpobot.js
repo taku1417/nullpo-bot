@@ -33,9 +33,10 @@ const client = new Client({
 const nplogger = require('./nullpo/log/logger.js');
 //const delete_logger = require('./nullpo/log/delete_logger.js');
 all_log = 0,join_log = 0,move_log = 0,leave_log = 0,clock_log = 0,restart_log = 0,command_log = 0,message_log = 0,unknown_log = 0;
-const yes_button = require('./nullpo/components/button/yes.js');
-const no_button = require('./nullpo/components/button/no.js');
-const VoiceChatCreate = require('./nullpo/components/button/VoiceChatCreate.js');
+const dbclient = require('./nullpo/Built-inModule/database/index.js');
+const yes_button = require('./nullpo/components/button/rental_return/yes.js');
+const no_button = require('./nullpo/components/button/rental_return/no.js');
+const VoiceChatCreate = require('./nullpo/components/button/VC/VoiceChatCreate.js');
 const cronjob = require('./nullpo/events/cron.js');
 const nullpo_server_id = '966674976956645407',nullpo_casino_server_id = '1015585928779137105',nullpo_debug_server_id = '979084665958834216';
 const nullpo_admin_log = '997341001809133588',nullpo_casino_admin_log = '1042484015720042546',nullpo_debug_test = '986475538770194432';
@@ -43,6 +44,7 @@ const botID = process.env.NODE_ENV === 'heroku' ? process.env.CLIENT_ID_prod : c
 client.Commands = new Collection();
 client.slashCommands = new Collection();
 commands_rest = [];
+client.buttons = new Collection();
 client.Commands_NullpoDebug = new Collection();
 client.SlashCommands_NullpoDebug = new Collection();
 Commands_rest_NullpoDebug = [];
@@ -51,7 +53,7 @@ const schedule = require('node-schedule');
 const VCJoinLeaveCheck = require('./nullpo/components/VCJoinLeaveCheck.js');
 const ServerLogChannelFinder = require('./nullpo/components/ServerLogChannelFinder.js');
 const MessageUpdateLogger = require('./nullpo/log/message/update.js');
-
+global_settings = {};
 client.once('ready', () => {	
 	client.user.setPresence({
 		activities: [{
@@ -59,8 +61,12 @@ client.once('ready', () => {
 		}],
 		status: "dnd"
 	});
+	dbclient.connection("SELECT * FROM global_settings").then(async res => {
+		global_settings = await res[0];
+		global_settings.coin_max = await parseInt(global_settings.coin_max);
+		global_settings.coin_min = await parseInt(global_settings.coin_min);
+	});//guild関係ない設定を取得
 });
-
 errorCount = 0,SuccessLogin = 0;
 const tex_dblog = '979084899703218186',tex_jihou = '997274370122731611',tex_nlpcs_nofi = '1015852168810606592',tex_jllog = '978962695418155019',tex_pjsekai = '999675995936280717';
 const vc_atumare = '997274624045879407',vc_pjsekai = '981173824294879322',vc_apex = '992161885862502400',vc_music = '982523943309180978',vc_spla = '1017431011442819142',vc_granblue = '1083006425791463494';
@@ -291,34 +297,54 @@ for (const file of slashCommandFiles) {
 	}
 }
 
-/*
+const buttonsPath = path.join(__dirname, '/nullpo/components/button');
+const buttonsFolders = fs.readdirSync(buttonsPath);
+
+for (const folder of buttonsFolders) {
+	const buttonsFiles = fs.readdirSync(`${buttonsPath}/${folder}`).filter(file => file.endsWith('.js'));
+	if(buttonsFiles.length === 0) continue;
+	for (const file of buttonsFiles) {
+		const button = require(`${buttonsPath}/${folder}/${file}`);
+		if('data' in button && 'execute' in button) {
+			client.buttons.set(button.data.customId, button);
+		}
+	}
+}
+
 const CommandsNDPath = path.join(__dirname, '/nullpo/components/appCommand/nullpo_debug');
 const CommandNDFiles = fs.readdirSync(CommandsNDPath).filter(file => file.endsWith('.js'));
 
-logger.trace('[Djs] Start loading debug server commands');
-for (const file of CommandNDFiles) {
+if(CommandNDFiles.length === 0) {
+	console.log('no found nullpo_debug appCommand. Skip command registration.')
+} else {
+	logger.trace('[Djs] Start loading debug server commands');
+	for (const file of CommandNDFiles) {
 	logger.trace(`[Djs d:cmd] load ${file}`);
-	const command = require(`./nullpo/components/appCommand/${file}`);
-	Commands_rest_NullpoDebug.push(command.data.toJSON());
-	if('data' in command && 'execute' in command) {
+		const command = require(`./nullpo/components/appCommand/${file}`);
+		Commands_rest_NullpoDebug.push(command.data.toJSON());
+		if('data' in command && 'execute' in command) {
 		logger.trace(`[Djs g:slcmd] load ${file}`);
-		client.Commands_NullpoDebug.set(command.data.name, command);
+			client.Commands_NullpoDebug.set(command.data.name, command);
+		}
 	}
 }
-*/
+
 
 const slashCommandsNDPath = path.join(__dirname, '/nullpo/SlashCommand/nullpo_debug');
 const slashCommandNDFiles = fs.readdirSync(slashCommandsNDPath).filter(file => file.endsWith('.js'));
 
-logger.trace('[Djs] Start loading debug server slash commands');
+if(slashCommandNDFiles.length === 0) {
+	console.log('no found nullpo_debug slashCommand. Skip command registration.')
+} else {
+	logger.trace('[Djs] Start loading debug server slash commands');
 for (const file of slashCommandNDFiles) {
 	logger.trace(`[Djs d:slcmd] load ${file}`);
-	const filePath = path.join(slashCommandsNDPath, file);
-	const command = require(filePath);
-	Commands_rest_NullpoDebug.push(command.data.toJSON());
-	if ('data' in command && 'execute' in command) {
-		logger.trace(`[Djs d:slcmd] load ${file}`);
+		const command = require(`./nullpo/SlashCommand/nullpo_debug/${file}`);
+		Commands_rest_NullpoDebug.push(command.data.toJSON());
+		if ('data' in command && 'execute' in command) {
+			logger.trace(`[Djs d:slcmd] load ${file}`);
 		client.SlashCommands_NullpoDebug.set(command.data.name, command);
+		}
 	}
 }
 
@@ -373,7 +399,7 @@ client.on('interactionCreate', async (interaction) => {//コマンド・ボタ�
 		const resistered_command = interaction.client.slashCommands.get(interaction.commandName) || interaction.client.SlashCommands_NullpoDebug.get(interaction.commandName);
 		if (!resistered_command) {
 			logger.error(`No command matching ${interaction.commandName} was found.`);
-			throw_webhook("error", "command search: No Command matching. →" + interaction.commandName, "", "slash command");
+			throw_webhook("error", "command search: No Command matching. →" + interaction.commandName, `${interaction.user.username}さんが実行。`, "slash command");
 			interaction.reply({ content: '指定したコマンドが見つかりませんでした。コマンド名を確認して下さい。\nまた、このエラーは管理者に通知されました。改善されるまでお待ちください。', ephemeral: true })
 			return;
 		}
@@ -388,16 +414,30 @@ client.on('interactionCreate', async (interaction) => {//コマンド・ボタ�
 	}
 	if(interaction.isButton()){
 		logger.trace(`[Djs btn] Checking button ${interaction.customId}`);
-		if (interaction.customId === 'yes') yes_button(interaction);
-		if (interaction.customId === 'no') no_button(interaction);
-		if (interaction.customId === 'VoiceChatCreate') VoiceChatCreate(interaction);	
+		const resistered_button = interaction.client.buttons.get((interaction.customId).replace(/\d/g, ''));
+		if (!resistered_button) {
+			console.error(`${interaction.customId}に対応するボタンが見つかりませんでした。`);
+			throw_webhook("error", "button search: No Button matching. → " + interaction.customId, `${interaction.user.username}さんが実行。`, "button");
+			interaction.reply({ content: '指定したボタンが見つかりませんでした。このエラーは内部処理によるものです。\n管理者に通知しましたので、修正までお待ちください。', ephemeral: true })
+			return;
+		}
+		try {
+			await resistered_button.execute(interaction, client);
+		} catch (error) {
+			logger.error(`${interaction.customId}(button)を実行できませんでした。`);
+			throw_webhook("error", "button execute: Error executing. → " + interaction.customId, error, "button");
+			logger.error(error);
+		}
+		// if (interaction.customId === 'yes') yes_button(interaction);
+		// if (interaction.customId === 'no') no_button(interaction);
+		// if (interaction.customId === 'VoiceChatCreate') VoiceChatCreate(interaction);
 	}
 	if (interaction.isMessageContextMenuCommand()){
 		logger.trace(`[Djs mcmd] Checking command ${interaction.commandName}`);
 		const resistered_context = interaction.client.Commands.get(interaction.commandName);
 		if (!resistered_context) {
 			logger.error(`No command matching ${interaction.commandName} was found.`);
-			throw_webhook("error", "command search: No Command matching.", interaction.commandName, "", "message context menu");
+			throw_webhook("error", "command search: No Command matching.", interaction.commandName, `${interaction.user.username}さんが実行。`, "message context menu");
 			interaction.reply({ content: '指定したコマンドが見つかりませんでした。コマンド名を確認して下さい。\nまた、このエラーは管理者に通知されました。改善されるまでお待ちください。', ephemeral: true })
 			return;
 		}
@@ -503,7 +543,7 @@ client.on('ready', () => {
 			}],
 			status: "online"
 			});
-		setTimeout(() => {
+			setTimeout(() => {
 			if(process.env.NODE_ENV === 'heroku'){
 				client.user.setPresence({
 					activities: [{

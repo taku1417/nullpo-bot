@@ -1,5 +1,4 @@
-//const { Client, Intents } = require('discord.js');
-//const client = new Client({intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS]});
+const { ButtonBuilder, ButtonStyle } = require("discord.js");
 
 function no_button(interaction) {
         logger.trace("[button] no.js");
@@ -14,4 +13,12 @@ function no_button(interaction) {
         }
 }
 
-module.exports = no_button;
+module.exports = {
+        data: new ButtonBuilder()
+                .setCustomId('no')
+                .setLabel('いいえ')
+                .setStyle(ButtonStyle.Danger),
+        async execute(interaction, client) {
+                no_button(interaction);
+        }
+}
