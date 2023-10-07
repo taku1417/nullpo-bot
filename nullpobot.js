@@ -5,7 +5,7 @@ const path = require('node:path');
 if(process.env.NODE_ENV !== 'heroku') {
 	process.env.NODE_ENV === 'default';
 } 
-const throw_webhook = require('./function/throw_webhook.js');
+const { WebhookThrowBuilder, ThrowWebhook } = require('./function/ThrowWebhook.ts');
 const client = new Client({
 	intents: [
 		GatewayIntentBits.Guilds,
@@ -361,7 +361,7 @@ client.on('interactionCreate', async (interaction) => {//コマンド・ボタ�
 		const resistered_command = interaction.client.slashCommands.get(interaction.commandName) || interaction.client.SlashCommands_NullpoDebug.get(interaction.commandName);
 		if (!resistered_command) {
 			console.error(`No command matching ${interaction.commandName} was found.`);
-			throw_webhook("error", "command search: No Command matching. →" + interaction.commandName, "", "slash command");
+			ThrowWebhook(WebhookThrowBuilder().setType("error").setLocation("command search: No Command matching. →" + interaction.commandName ).setContent("").setExtra("slash command"));
 			interaction.reply({ content: '指定したコマンドが見つかりませんでした。コマンド名を確認して下さい。\nまた、このエラーは管理者に通知されました。改善されるまでお待ちください。', ephemeral: true })
 			return;
 		}
