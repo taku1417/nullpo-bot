@@ -18,7 +18,7 @@ function MessageUpdateLogger(client, oldMessage, newMessage){
     
 	let author_with_nick;
 	try {
-		if(newMessage.author.member.user.globalName != null) {
+		if(newMessage.member.user.globalName != null) {
             author_with_nick = newMessage.member.nickname != null ? (newMessage.member.user.username + ' (' + newMessage.member.displayName + ')') : (newMessage.member.user.username + '(' + newMessage.member.user.globalName + ')');
         } else { 
             author_with_nick = newMessage.member.nickname != null ? (newMessage.member.user.username + ' (' + newMessage.member.displayName + ')') : newMessage.member.user.username; 

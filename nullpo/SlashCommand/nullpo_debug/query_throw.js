@@ -1,6 +1,6 @@
 const logger = require('../../log/logger.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const query_execute = require('../../../nullpoweb.js');
+const dbclient = require('../../Built-inModule/database/index.js');
 const throw_webhook = require('../../../function/throw_webhook.js');
 
 
@@ -11,36 +11,44 @@ module.exports = {
         .setDefaultMemberPermissions(0)
         .addStringOption(option => option.setName('query').setDescription('クエリを入力してください。').setRequired(true)),
     async execute(interaction) {
-        logger("command");
-        var query_result;
-        try {
-            query_result = String(throw_query(interaction.options.getString('query')))
-        } catch (e) {
-                query_result = 'クエリが正常に実行されませんでした。';
-                throw_webhook("error", "command[query_throw]: クエリが正常に実行されませんでした。", e);
-                console.error(e);
-        }
         await interaction.reply({
-            content: query_result,
-            ephemeral: true
+            content: 'クエリを実行しています。しばらくお待ちください。',
+            ephemeral: true,
+            fetchReply: true
         });
-    },
+        logger("command");
+        await dbclient.connection(interaction.options.getString('query')).then(async res => {
+            const res_json = JSON.stringify(res);
+            if(interaction.replied || interaction.deferred) {
+                console.log(res);
+                if(res == undefined) {
+                    await interaction.editReply({
+                        content: "クエリを実行しましたが、結果はありませんでした。INSERTなどは戻り値がありません。",
+                        ephemeral: true,
+                        fetchReply: true
+                    });
+                } else {
+                    await interaction.editReply({
+                        content: res_json,
+                        ephemeral: true,
+                        fetchReply: true
+                    });
+                }
+            } else {
+                if(res == undefined) {
+                    await interaction.reply({
+                        content: "クエリを実行しましたが、結果はありませんでした。INSERTなどは戻り値がありません。",
+                        ephemeral: true,
+                        fetchReply: true
+                    });
+                } else {
+                    await interaction.reply({
+                        content: res_json,
+                        ephemeral: true,
+                        fetchReply: true
+                    });
+                }
+            }
+        });
+    }
 };
-
-async function throw_query (query) {
-    reply_message = '';
-    await dbclient.connect().catch(err => {reply_message = err; console.error("\n\n[query] dbclient connect error", err);});
-    await dbclient.query(query, (err, result) => {
-        if (err) {
-            console.error("\n\n[query] query error", err);
-            throw_webhook("error", "command[query_throw]: クエリが正常に実行されませんでした。", err);
-            reply_message = err;
-        } else {
-            console.log(result);
-			reply_message = result;
-        }
-    });
-    await setTimeout(() => {}, 3000);
-    await dbclient.release;
-    return reply_message;
-}
