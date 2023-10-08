@@ -18,7 +18,7 @@ async function VoiceChatCreate(interaction) {
         fetchReply: true,
     }).catch(err => {
         throw_webhook("error", "command[VoiceChatCreate]: ボイスチャット作成時にエラーが発生しました。", err); 
-        console.error("\n\n[VoiceChatCreate] VoiceChatCreate error", err);
+        logger.error("\n\n[VoiceChatCreate] VoiceChatCreate error", err);
     });
     switch(interaction.channelId){//ボタンのあるチャンネルID
         case '1108624508211966012'://debug鯖でのテスト用
@@ -73,7 +73,7 @@ function execute(interaction, category, VCname, VCbitrate) {
                 ephemeral: true,
                 fetchReply: true
             });
-            console.log('[VCC] VC created: ' + number + '-' + VCname);
+            logger.info('[VCC] VC created: ' + number + '-' + VCname);
         }).catch(err => {
             if(err.code == 50035) {
                 interaction.editReply({
@@ -81,7 +81,7 @@ function execute(interaction, category, VCname, VCbitrate) {
                     ephemeral: true,
                     fetchReply: true
                 });
-                console.error(err);
+                logger.error(err);
             } else {
                 interaction.editReply({
                     content: 'なんらかのエラーによりチャンネルの作成に失敗しました。時間をおいてもう一度お試しください。\n何度もこのエラーが出る場合は管理者にお問い合わせください。',
@@ -89,7 +89,7 @@ function execute(interaction, category, VCname, VCbitrate) {
                     fetchReply: true
                 });
                 throw_webhook('error', `VoiceChatCreate.js:作成失敗(${VCname})`, err, "作成上限以外のエラー");
-                console.error(err);
+                logger.error(err);
             }
             interaction.message.edit({
                 components: [new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId('VoiceChatCreate').setStyle(ButtonStyle.Success).setLabel('サブVCを作成する'))],

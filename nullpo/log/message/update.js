@@ -1,4 +1,4 @@
-const logger = require('../logger.js');
+const nplogger = require('../logger.js');
 const ServerLogChannelFinder = require('../../components/ServerLogChannelFinder.js');
 const nullpo_server_id = '966674976956645407',nullpo_casino_server_id = '1015585928779137105',nullpo_debug_server_id = '979084665958834216';
 /**
@@ -13,7 +13,7 @@ function MessageUpdateLogger(client, oldMessage, newMessage){
     if(oldMessage.content == newMessage.content) return;
     if(newMessage.guild == null) return;
 
-    logger("edit");
+    nplogger("edit");
 	const Month = new Date().getMonth()+1,Day = new Date().getDate(),Hour = new Date().getHours(),Min = new Date().getMinutes(),Sec = new Date().getSeconds(),Hour0 = ('0' + Hour).slice(-2),Min0 = ('0' + Min).slice(-2),Sec0 = ('0' + Sec).slice(-2),Year = new Date().getFullYear();
     
 	let author_with_nick;
@@ -24,7 +24,7 @@ function MessageUpdateLogger(client, oldMessage, newMessage){
             author_with_nick = newMessage.member.nickname != null ? (newMessage.member.user.username + ' (' + newMessage.member.displayName + ')') : newMessage.member.user.username; 
         }//globalName = ユーザー表示名 / nickname = サーバー表示名
 	} catch (error) {
-		console.log("\n\n" + error);
+		logger.warn("\n\n" + error);
 		return;
 	}
 

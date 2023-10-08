@@ -12,10 +12,10 @@ function throw_webhook (type, location, content, extra) {
                 value2: content ?? "不明",
                 value3: extra ?? "なし"
             }).then((res) => {
-                console.log(res.data);
+                logger.info("[throwWebhook] " + res.data);
             }
             ).catch((error) => {
-                console.error(error);
+                logger.error("[throwWebhook] webhookの送信に失敗しました。\n\n" + error);
             });
             break;
     }

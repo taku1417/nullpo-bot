@@ -7,6 +7,7 @@ const throw_webhook = require('../../../function/throw_webhook');
  * @param {PG.Query} query_sql
  * @return {boolean} query_result
  * @throws {Error} query_error
+ * @deprecated
  */
 async function query_execute(pg, query_sql) {
     let connection = null;
@@ -15,14 +16,14 @@ async function query_execute(pg, query_sql) {
         var query = { text: query_sql, values: [] };
         connection.query( query, function( err, result ){
             if ( err ){//クエリ実行のエラー時
-                console.error("[postgreSQL] query error occurred.\n[postgreSQL] クエリ実行時にエラーが発生しました。\n\n" + { err } );
+                logger.error("[postgreSQL] query error occurred.\n[postgreSQL] クエリ実行時にエラーが発生しました。\n\n" + { err } );
                 throw_webhook("error", "postgreSQL: query error.", err);
             } else {//実行成功時
         
             }
         });
     } catch ( e ){//クエリ接続等のエラー時
-        console.error("[postgreSQL] error occurred.\n[postgreSQL] エラーが発生しました。\n\n" + e);
+        logger.error("[postgreSQL] error occurred.\n[postgreSQL] エラーが発生しました。\n\n" + e);
         throw_webhook("error", "postgreSQL: error.", e);
     } finally {
         if( connection ){

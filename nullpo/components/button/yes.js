@@ -1,5 +1,5 @@
 function yes_button(interaction) {
-	//console.log(lendSystemCurrent + "||" + lendSystemMode);//test用
+	//logger.trace(lendSystemCurrent + "||" + lendSystemMode);//test用
 	itemSearch = lendSystemCurrent => {
 		const itemName = ItemList.find(item => item.id === lendSystemCurrent).name;
 		return itemName;

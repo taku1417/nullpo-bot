@@ -1,6 +1,7 @@
 const throw_webhook = require('../../function/throw_webhook.js');
 const ServerLogChannelFinder = require('./ServerLogChannelFinder.js');
 const LogDMsender = require('./VoiceChat/LogDMsender.js');
+const nplogger = require('../../nullpo/log/logger.js');
 /**
  * VCへの入退室を検知し、ログの出力や入退室の間隔の確認を行う
  * @param {Discord.Client} client 
@@ -16,19 +17,20 @@ async function VCJoinLeaveCheck(client, oldState, newState){//type: "join", "lea
     const oldIgnore = oldState.channel == null ? null : (oldState.channel.type == 13/*GUILD_STAGE_VOICE*/ || oldState.channel.name.includes("非表示"));//ステージチャンネル、非表示と名前にあるチャンネルを無視
     const newIgnore = newState.channel == null ? null : (newState.channel.type == 13/*GUILD_STAGE_VOICE*/ || newState.channel.name.includes("非表示"));//ステージチャンネル、非表示と名前にあるチャンネルを無視
 
-    //  console.log(oldIgnore + " " + newIgnore) //デバッグ用
+    //  logger.trace(oldIgnore + " " + newIgnore) //デバッグ用
 
     let type, logChannel, embed;
     if(oldChannelID == null && newChannelID != null) type = "join";
     else if(oldChannelID != null && newChannelID == null) type = "leave";
     else if(oldChannelID != null && newChannelID != null) type = "move";//ごみこーど
 
-    console.log(`[VC] ${type} ${userid} ${oldChannelID} -> ${newChannelID}`);
+    logger.trace(`[VC] ${type} ${userid} ${oldChannelID} -> ${newChannelID}`);
     if(oldChannelID == null && newChannelID == null) return;//ないとは思うがどちらもnullなら無視
     if(oldChannelID == newChannelID) return;//移動してないので無視 カメラ起動やミュート切り替えなどを条件に使う場合このif文を使う
 
     switch(type){
         case "join":
+            nplogger("join");
             logChannel = ServerLogChannelFinder(client, newState, "VC入退室ログ");
             embed = {
                 color: 0x00CC00,
@@ -53,6 +55,7 @@ async function VCJoinLeaveCheck(client, oldState, newState){//type: "join", "lea
             }
             break;
         case "leave":
+            nplogger("leave");
             logChannel = ServerLogChannelFinder(client, oldState, "VC入退室ログ");
             embed = {
                 color: 0xCC0000,
@@ -77,6 +80,7 @@ async function VCJoinLeaveCheck(client, oldState, newState){//type: "join", "lea
             }
             break;
         case "move":
+            nplogger("move");
             logChannel = ServerLogChannelFinder(client, newState, "VC入退室ログ");
             embed = {
                 color: 0x0000CC,

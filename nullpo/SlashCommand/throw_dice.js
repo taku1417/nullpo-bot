@@ -1,7 +1,7 @@
 const { SlashCommandBuilder } = require('discord.js');
 const tintiro = require('./throw_dice/tintiro.js');
 const dice_custom = require('./throw_dice/custom.js');
-const logger = require('../log/logger.js');
+const nplogger = require('../log/logger.js');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -28,7 +28,7 @@ module.exports = {
 						.setDescription('ダイスの面数(最大値)')
 						.setRequired(true))),
 	async execute(interaction) {
-		logger("command");
+		nplogger("command");
 		if(interaction.options.getSubcommand() === 'tintiro') {
 			const dice = [Math.floor(Math.random() * 6) + 1, Math.floor(Math.random() * 6) + 1, Math.floor(Math.random() * 6) + 1];
 			await interaction.reply({ content: "チンチロリンの結果\n"+dice[0]+"\n"+dice[1]+"\n"+dice[2]+"\n"+tintiro(dice)+"です。", ephemeral: false});
@@ -49,7 +49,7 @@ module.exports = {
 					await interaction.reply({ content: amount+"d"+max+"の結果\n"+dice+"\nが出ました。", ephemeral: false});
 				} catch (error) {
 					await interaction.reply({ content: "なんらかの要因でエラーが発生しました。ほとんどの場合discord側の文字数制限によるものです。個数等を減らして再度試してください。", ephemeral: true});
-					console.error(error);
+					logger.warn(error);
 				}
 			}
 		}

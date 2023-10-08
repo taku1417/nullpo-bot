@@ -9,13 +9,13 @@ module.exports = {
 	if (message.pinned) {
 			await message.unpin()
    			.then(() => interaction.reply({content: "ピン止めを解除しました", ephemeral: true}))
-   			.catch(console.error)
-			await console.log(interaction.member.user.tag + "がメッセージをピン止めを解除しました  メッセージID: " + message.id)
+   			.catch(logger.error)
+			await logger.debug(interaction.member.user.tag + "がメッセージをピン止めを解除しました  メッセージID: " + message.id)
 		} else {
   			await message.pin()
     		.then(() => interaction.reply({content: "ピン止めしました", ephemeral: true}))
-    		.catch(console.error)
-			await console.log(interaction.member.user.tag + "がメッセージをピン止めしました  メッセージID: " + message.id)
+    		.catch(logger.error)
+			await logger.debug(interaction.member.user.tag + "がメッセージをピン止めしました  メッセージID: " + message.id)
 		}
     },
 };

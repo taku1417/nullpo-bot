@@ -1,4 +1,4 @@
-const logger = require('../log/logger.js');
+const nplogger = require('../log/logger.js');
 const { SlashCommandBuilder, PermissionsBitField } = require('discord.js');
 const dbclient = require('../Built-inModule/database/index.js');
 const throw_webhook = require('../../function/throw_webhook.js');
@@ -11,7 +11,7 @@ module.exports = {
             .setName('user')
             .setDescription('所持コイン数を表示したいユーザーを選択してください。')),
     async execute(interaction, client) {
-        logger('command');
+        nplogger('command');
         if(interaction.options.getUser('user') && !interaction.member.permissions.has(PermissionsBitField.Flags.ManageGuild)) {
             await interaction.reply({
                 content: '他ユーザーのコイン数の表示は管理者のみ使用可能です。',
@@ -29,7 +29,7 @@ module.exports = {
                     ephemeral: true
                 });
                 dbclient.connection(`INSERT INTO coins (id) VALUES ('${userId}')`).then(() => {
-                    console.log(member_with_nick + ' さんを追加しました。');
+                    logger.info(member_with_nick + ' さんを追加しました。');
                 });
                 return;
             }

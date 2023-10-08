@@ -1,4 +1,4 @@
-const logger = require("../log/logger");
+const nplogger = require("../log/logger");
 const { Client, GatewayIntentBits, SlashCommandBuilder } = require("discord.js");
 const client = new Client({ intents: [GatewayIntentBits.Guilds]});
 const admin_command_notification = client.channels.cache.get('1038810354853085245');
@@ -34,7 +34,7 @@ module.exports = {
             )
         .setRequired(true)),
 async execute(interaction) {
-    logger("command");
+    nplogger("command");
     const type = interaction.options.getString('item_name');
     switch(type){
         case 'mithril':

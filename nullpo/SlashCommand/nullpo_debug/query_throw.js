@@ -1,4 +1,4 @@
-const logger = require('../../log/logger.js');
+const nplogger = require('../../log/logger.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const dbclient = require('../../Built-inModule/database/index.js');
 const throw_webhook = require('../../../function/throw_webhook.js');
@@ -16,11 +16,11 @@ module.exports = {
             ephemeral: true,
             fetchReply: true
         });
-        logger("command");
+        nplogger("command");
         await dbclient.connection(interaction.options.getString('query')).then(async res => {
             const res_json = JSON.stringify(res);
             if(interaction.replied || interaction.deferred) {
-                console.log(res);
+                logger.trace(res);
                 if(res == undefined) {
                     await interaction.editReply({
                         content: "クエリを実行しましたが、結果はありませんでした。INSERTなどは戻り値がありません。",

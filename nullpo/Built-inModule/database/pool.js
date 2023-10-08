@@ -11,24 +11,24 @@ const pool = new Pool({
 });
 
 pool.on('error', (err, client) => {
-    console.error('[DB] Unexpected error on idle client', err);
+    logger.error('[DB] Unexpected error on idle client', err);
     throw_webhook("error", "postgreSQL(DB): query error.", err);
 });
 
 pool.on('connect', (client) => {
-    console.log('[DB] connected.');
+    logger.debug('[DB] pool connected.');
 });
 
 pool.on('remove', (client) => {
-    console.log('[DB] client removed.');
+    logger.debug('[DB] pool removed.');
 });
 
 pool.on('acquire', (client) => {
-    console.log('[DB] client acquired. total: ' + pool.totalCount + ', idle: ' + pool.idleCount + ', waiting: ' + pool.waitingCount);
+    logger.trace('[DB] client acquired. total: ' + pool.totalCount + ', idle: ' + pool.idleCount + ', waiting: ' + pool.waitingCount);
 });
 
 pool.on('release', (client) => {
-    console.log('[DB] client released. total: ' + pool.totalCount + ', idle: ' + pool.idleCount + ', waiting: ' + pool.waitingCount);
+    logger.trace('[DB] client released. total: ' + pool.totalCount + ', idle: ' + pool.idleCount + ', waiting: ' + pool.waitingCount);
 });
 
 
