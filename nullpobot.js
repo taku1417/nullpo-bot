@@ -414,7 +414,7 @@ client.on('interactionCreate', async (interaction) => {//コマンド・ボタ�
 });
 client.on('messageUpdate', async (oldMessage, newMessage) => {
 	logger.trace(`[Djs c:on] messageUpdate`);
-	MessageUpdatelogger(client, oldMessage, newMessage);
+	MessageUpdateLogger(client, oldMessage, newMessage);
 });
 client.on('messageDelete', message => {
 	logger.trace(`[Djs c:on] messageDelete`);
