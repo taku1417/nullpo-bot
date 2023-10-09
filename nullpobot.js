@@ -16,6 +16,20 @@ fatalを除くプロセス停止を伴うエラー: 予期していない(catch�
 
 なお、これに準拠していない場合もある。
 */
+const log4js = require('log4js');
+logger = log4js.getLogger();
+logger.level = (process.env.NODE_ENV === 'heroku' ? 'info' : 'debug');//herokuの場合はinfo,それ以外はdebug 適宜変更
+/* nullpo-botにおけるログレベルの意味
+trace: 独自実装部の細かいログ debug程常に必要でないときに使用 例:定時処理中の進捗
+debug: 独自実装部での、導入前にconsole.logで出力していたもの 例:定時処理開始,終了やコマンドの実行
+info: 通常のログ 例:bot起動時や回数ログ(nplogger)
+warn: 予期していて(catchしている)、無視できるエラー もしくは、エラーでないが注意が必要なもの 例:コマンドの実行エラー
+error: 予期していて(catchしている)、無視できないがすぐには措置が必要でないエラー 例:dbの接続エラー
+fatal: 予期していて(catchしている)、直ちに措置が必要なエラー 例:discord APIへの接続エラー
+fatalを除くプロセス停止を伴うエラー: 予期していない(catchしていない)エラー
+
+なお、これに準拠していない場合もある。
+*/
 if(process.env.NODE_ENV !== 'heroku') {
 	process.env.NODE_ENV === 'default';
 } 
