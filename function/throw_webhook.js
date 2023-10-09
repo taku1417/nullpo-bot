@@ -2,10 +2,12 @@ const axios = require('axios');
 const config = require('config');
 
 function throw_webhook (type, location, content, extra) {
+    logger.trace("[throwWebhook] executing...");
     let webhook_url;
     type = type != "" ? type.toLowerCase() : "error";
     switch (type) {
         case 'error': //content=error message
+            logger.trace("[throwWebhook] switch: error");
             webhook_url = (process.env.NODE_ENV === 'heroku') ? process.env.WEBHOOK_ERROR : config.get('WEBHOOK.ERROR');
             axios.post(webhook_url, {
                 value1: location ?? "不明",
@@ -19,6 +21,7 @@ function throw_webhook (type, location, content, extra) {
             });
             break;
     }
+    logger.trace("[throwWebhook] ended.");
 }
 
 module.exports = throw_webhook;

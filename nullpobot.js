@@ -453,16 +453,19 @@ client.on('messageDelete', message => {
         switch(message.guild.id) {
 			case nullpo_server_id:
 				if(message.author.bot == true) return;
+				logger.trace("[Djs mdel] send message delete log");
 				ServerLogChannelFinder(client, null, "メッセージログ", nullpo_server_id).send({embeds: [embed]});
-					break;
+				break;
 			case nullpo_casino_server_id:
 				if(message.author.bot == true) return;
-					ServerLogChannelFinder(client, null, "メッセージログ", nullpo_casino_server_id).send({embeds: [embed]});
-					break;
+				logger.trace("[Djs mdel] send message delete log");
+				ServerLogChannelFinder(client, null, "メッセージログ", nullpo_casino_server_id).send({embeds: [embed]});
+				break;
 			case nullpo_debug_server_id:
 				if(message.author.bot == true) return;
-					ServerLogChannelFinder(client, null, "メッセージログ", nullpo_debug_server_id).send({embeds: [embed]});
-					break;
+				logger.trace("[Djs mdel] send message delete log");
+				ServerLogChannelFinder(client, null, "メッセージログ", nullpo_debug_server_id).send({embeds: [embed]});
+				break;
 			default:
 					break;
         }
@@ -470,6 +473,7 @@ client.on('messageDelete', message => {
 });
 
 client.once('ready', () => {
+	logger.trace('[Djs c:once] ready');
 	client.channels.cache.get(tex_dblog).send('ぬるぽbotが起動しました。');//デバッグ鯖のログに流れる
 	
 	const VCCembed = {
@@ -489,6 +493,7 @@ client.once('ready', () => {
 });
 
 client.on('ready', () => {
+	logger.trace('[Djs c:on] ready');
 	const VCCreateButton_sub = new ButtonBuilder().setCustomId('VoiceChatCreate').setStyle(ButtonStyle.Success).setLabel('サブVCを作成する').setDisabled(false);
 	const VCCreateButton_test = new ButtonBuilder().setCustomId('VoiceChatCreate').setStyle(ButtonStyle.Success).setLabel('テストVCを作成する').setDisabled(false);
 	setInterval(() => {

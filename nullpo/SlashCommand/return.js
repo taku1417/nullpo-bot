@@ -48,8 +48,9 @@ module.exports = {
 				)
 		),
 	async execute(interaction) {
+		logger.trace("[SlashCommand] return.js");
 		const id = interaction.options.getString('item_name');
-        	nplogger("command");
+		nplogger("command");
 		const buttonyes = new ButtonBuilder().setCustomId('yes').setStyle(ButtonStyle.Success).setLabel('はい');
 		const buttonno = new ButtonBuilder().setCustomId('no').setStyle(ButtonStyle.Danger).setLabel('いいえ');
 		if (rental[id] >= 1) {

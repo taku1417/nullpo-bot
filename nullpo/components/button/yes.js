@@ -1,11 +1,12 @@
 function yes_button(interaction) {
-	//logger.trace(lendSystemCurrent + "||" + lendSystemMode);//test用
+	logger.trace("[button] yes.js");
 	itemSearch = lendSystemCurrent => {
 		const itemName = ItemList.find(item => item.id === lendSystemCurrent).name;
 		return itemName;
 	}
 	switch (lendSystemMode) {
 		case 'rental':
+			logger.trace("[button] yes.js: rental");
 			rental[lendSystemCurrent]++;
 			interaction.reply({
 				content: itemSearch(lendSystemCurrent) + "を借りました。ぬるぽ倉庫から取り出してください。",
@@ -17,6 +18,7 @@ function yes_button(interaction) {
 			lendSystemMode = '';
 			break;
 		case 'return':
+			logger.trace("[button] yes.js: return");
 			rental[lendSystemCurrent]--;
 			interaction.reply({
 				content: itemSearch(lendSystemCurrent) + "を返却しました。あった場所に戻してください。",

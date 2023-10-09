@@ -11,6 +11,7 @@ module.exports = {
             .setName('user')
             .setDescription('所持コイン数を表示したいユーザーを選択してください。')),
     async execute(interaction, client) {
+        logger.trace("[SlashCommand] coin.js");
         nplogger('command');
         if(interaction.options.getUser('user') && !interaction.member.permissions.has(PermissionsBitField.Flags.ManageGuild)) {
             await interaction.reply({

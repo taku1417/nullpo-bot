@@ -28,6 +28,7 @@ module.exports = {
 						.setDescription('ダイスの面数(最大値)')
 						.setRequired(true))),
 	async execute(interaction) {
+		logger.trace("[SlashCommand] throw_dice.js");
 		nplogger("command");
 		if(interaction.options.getSubcommand() === 'tintiro') {
 			const dice = [Math.floor(Math.random() * 6) + 1, Math.floor(Math.random() * 6) + 1, Math.floor(Math.random() * 6) + 1];

@@ -34,6 +34,7 @@ module.exports = {
             )
         .setRequired(true)),
 async execute(interaction) {
+    logger.trace("[SlashCommand] recipe.js");
     nplogger("command");
     const type = interaction.options.getString('item_name');
     switch(type){

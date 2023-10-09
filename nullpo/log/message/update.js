@@ -9,6 +9,7 @@ const nullpo_server_id = '966674976956645407',nullpo_casino_server_id = '1015585
  * @returns 
  */
 function MessageUpdateLogger(client, oldMessage, newMessage){
+    logger.trace("[Message] update.js");
     if(newMessage.author.bot == true) return;
     if(oldMessage.content == newMessage.content) return;
     if(newMessage.guild == null) return;
@@ -51,6 +52,7 @@ function MessageUpdateLogger(client, oldMessage, newMessage){
         timestamp: new Date(),
     };
 
+    logger.trace("[Log] update.js: switch");
     switch(newMessage.guild.id) {
         case nullpo_server_id:
                 ServerLogChannelFinder(client, null, "メッセージログ", nullpo_server_id).send({embeds: [embed]});

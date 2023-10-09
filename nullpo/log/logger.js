@@ -1,4 +1,5 @@
 function nplogger(logtype){//コンソールにログを出力する用
+        logger.trace("[Log] logger.js");
         all_log++;
         const Month = new Date().getMonth()+1,Day = new Date().getDate(),Hour = new Date().getHours(),Min = new Date().getMinutes(),Sec = new Date().getSeconds(),MilliSec = new Date().getMilliseconds(),Hour0 = ('0' + Hour).slice(-2),Min0 = ('0' + Min).slice(-2),Sec0 = ('0' + Sec).slice(-2),MilliSec0 = ('00' + MilliSec).slice(-3);
         switch(logtype){

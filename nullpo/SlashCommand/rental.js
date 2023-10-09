@@ -48,8 +48,9 @@ module.exports = {
 				)
 		),
 	async execute(interaction) {
+		logger.trace("[SlashCommand] rental.js");
 		const id = interaction.options.getString('item_name');
-      		nplogger("command");
+		nplogger("command");
 		//update_from_db("rental");
 		const buttonyes = new ButtonBuilder().setCustomId('yes').setStyle(ButtonStyle.Success).setLabel('はい');
 		const buttonno = new ButtonBuilder().setCustomId('no').setStyle(ButtonStyle.Danger).setLabel('いいえ');

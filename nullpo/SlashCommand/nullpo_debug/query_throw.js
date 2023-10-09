@@ -11,6 +11,7 @@ module.exports = {
         .setDefaultMemberPermissions(0)
         .addStringOption(option => option.setName('query').setDescription('クエリを入力してください。').setRequired(true)),
     async execute(interaction) {
+        logger.trace("[SlashCommand] query_throw.js");
         await interaction.reply({
             content: 'クエリを実行しています。しばらくお待ちください。',
             ephemeral: true,

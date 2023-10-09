@@ -7,6 +7,7 @@ module.exports = {
         .setName('daily')
         .setDescription('デイリーコインを受け取ります。'),
     async execute(interaction) {
+        logger.trace("[SlashCommand] daily.js");
         nplogger("command");
         daily_db(interaction);
         /*await interaction.reply({

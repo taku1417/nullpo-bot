@@ -17,6 +17,7 @@ module.exports = {
                 .setName('check')
                 .setDescription('現在の設定を確認します。')),
     async execute(interaction) {
+        logger.trace("[SlashCommand] vc-notification.js");
         nplogger("command");
         const onoff = interaction.options.getBoolean('onoff');
         const check = interaction.options.getSubcommand() === 'check';
