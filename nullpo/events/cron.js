@@ -1,9 +1,8 @@
 const cron = require('node-cron');
-const dailyReset = require('./dailyReset.js');
 
 function cronjob() {
+    logger.trace("[Events] cron.js");
     cron.schedule('0 0 * * *', () => {
-        dailyReset();
     });
 }
 

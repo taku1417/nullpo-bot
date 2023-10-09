@@ -5,13 +5,14 @@ const Retry_ms_initial = 5000;  //. retry every 5 sec
  * @param {Pool} pg
  * @param {number|null} retry_ms
  * @return {undefined}
+ * @deprecated
  */
 function try_reconnect(pg, retry_ms){
     retry_ms ?? Retry_ms_initial;
         setTimeout( function(){
-        console.log( '[postgreSQL] reconnecting...' );
+        logger.info( '[postgreSQL] reconnecting...' );
         pg.on( 'error', function( err ){
-            console.log( '[postgreSQL] db connection error on working. retry connect after' + retry_ms + "ms.\n" + "[postgreSQL] データベースへの接続に失敗しました。" + retry_ms + "ミリ秒後に再接続を試みます。", err );
+            logger.error( '[postgreSQL] db connection error on working. retry connect after' + retry_ms + "ms.\n" + "[postgreSQL] データベースへの接続に失敗しました。" + retry_ms + "ミリ秒後に再接続を試みます。", err );
             if( err.code && err.code.startsWith( '5' ) ){
                 //. terminated by admin?
                 try_reconnect( pg, retry_ms );

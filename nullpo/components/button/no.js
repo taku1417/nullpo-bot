@@ -2,6 +2,7 @@
 //const client = new Client({intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS]});
 
 function no_button(interaction) {
+        logger.trace("[button] no.js");
         if (lendSystemCurrent != '') {
                 interaction.reply({
                         content: "キャンセルしました。",

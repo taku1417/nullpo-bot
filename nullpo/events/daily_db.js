@@ -6,7 +6,11 @@ const dbclient = ((process.env.NODE_ENV === 'heroku')
 ? new dbClient({connectionString: process.env.DATABASE_URL, ssl: {rejectUnauthorized: false}}) 
 : new dbClient({connectionString: config.get('DATABASE_URL'), ssl: {rejectUnauthorized: false}}));
 
-
+/**
+ * 
+ * @param {*} interaction 
+ * @deprecated
+ */
 function daily_db(interaction){
     let query = 'SELECT * FROM coins;';
 	dbclient.connect().catch(err => console.error("[daily] dbclient connect error", err));

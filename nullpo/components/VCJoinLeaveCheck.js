@@ -1,6 +1,7 @@
 const throw_webhook = require('../../function/throw_webhook.js');
 const ServerLogChannelFinder = require('./ServerLogChannelFinder.js');
 const LogDMsender = require('./VoiceChat/LogDMsender.js');
+const nplogger = require('../../nullpo/log/logger.js');
 /**
  * VCへの入退室を検知し、ログの出力や入退室の間隔の確認を行う
  * @param {Discord.Client} client 
@@ -9,6 +10,7 @@ const LogDMsender = require('./VoiceChat/LogDMsender.js');
  * @return {undefined}
  */
 async function VCJoinLeaveCheck(client, oldState, newState){//type: "join", "leave" or "move"
+    logger.trace("[Components] VCJoinLeaveCheck.js");
     const Month = new Date().getMonth()+1,Day = new Date().getDate(),Hour = new Date().getHours(),Min = new Date().getMinutes(),Sec = new Date().getSeconds(),Hour0 = ('0' + Hour).slice(-2),Min0 = ('0' + Min).slice(-2),Sec0 = ('0' + Sec).slice(-2),Year = new Date().getFullYear();
     const userid = newState.member.user.id;
     const oldChannelID = oldState.channelId ?? null;
@@ -16,19 +18,21 @@ async function VCJoinLeaveCheck(client, oldState, newState){//type: "join", "lea
     const oldIgnore = oldState.channel == null ? null : (oldState.channel.type == 13/*GUILD_STAGE_VOICE*/ || oldState.channel.name.includes("非表示"));//ステージチャンネル、非表示と名前にあるチャンネルを無視
     const newIgnore = newState.channel == null ? null : (newState.channel.type == 13/*GUILD_STAGE_VOICE*/ || newState.channel.name.includes("非表示"));//ステージチャンネル、非表示と名前にあるチャンネルを無視
 
-    //  console.log(oldIgnore + " " + newIgnore) //デバッグ用
+    //  logger.trace(oldIgnore + " " + newIgnore) //デバッグ用
 
     let type, logChannel, embed;
     if(oldChannelID == null && newChannelID != null) type = "join";
     else if(oldChannelID != null && newChannelID == null) type = "leave";
     else if(oldChannelID != null && newChannelID != null) type = "move";//ごみこーど
 
-    console.log(`[VC] ${type} ${userid} ${oldChannelID} -> ${newChannelID}`);
+    logger.trace(`[VC] ${type} ${userid} ${oldChannelID} -> ${newChannelID}`);
     if(oldChannelID == null && newChannelID == null) return;//ないとは思うがどちらもnullなら無視
     if(oldChannelID == newChannelID) return;//移動してないので無視 カメラ起動やミュート切り替えなどを条件に使う場合このif文を使う
 
+    logger.trace("[Components] VCJoinLeaveCheck.js: switch " + type);
     switch(type){
         case "join":
+            nplogger("join");
             logChannel = ServerLogChannelFinder(client, newState, "VC入退室ログ");
             embed = {
                 color: 0x00CC00,
@@ -53,6 +57,7 @@ async function VCJoinLeaveCheck(client, oldState, newState){//type: "join", "lea
             }
             break;
         case "leave":
+            nplogger("leave");
             logChannel = ServerLogChannelFinder(client, oldState, "VC入退室ログ");
             embed = {
                 color: 0xCC0000,
@@ -77,6 +82,7 @@ async function VCJoinLeaveCheck(client, oldState, newState){//type: "join", "lea
             }
             break;
         case "move":
+            nplogger("move");
             logChannel = ServerLogChannelFinder(client, newState, "VC入退室ログ");
             embed = {
                 color: 0x0000CC,
@@ -123,11 +129,12 @@ async function VCJoinLeaveCheck(client, oldState, newState){//type: "join", "lea
  * @private
  */
 function member_with_nick(State){
-        if(State.member.user.globalName != null) {
-            return State.member.nickname != null ? (State.member.user.username + ' (' + State.member.displayName + ')') : (State.member.user.username + '(' + State.member.user.globalName + ')');
-        } else { 
-            return State.member.nickname != null ? (State.member.user.username + ' (' + State.member.displayName + ')') : State.member.user.username; 
-        }//globalName = ユーザー表示名 / nickname = サーバー表示名
+    logger.trace("[Components] VCJoinLeaveCheck.js: member_with_nick");
+    if(State.member.user.globalName != null) {
+        return State.member.nickname != null ? (State.member.user.username + ' (' + State.member.displayName + ')') : (State.member.user.username + '(' + State.member.user.globalName + ')');
+    } else { 
+        return State.member.nickname != null ? (State.member.user.username + ' (' + State.member.displayName + ')') : State.member.user.username; 
+    }//globalName = ユーザー表示名 / nickname = サーバー表示名
 }
 
 /**
@@ -138,7 +145,8 @@ function member_with_nick(State){
  * @private
  */
 function markdownEscape(text){
-    return text.replace(/([\\*_\-#<>~])/g, '\\$1');
+    logger.trace("[Components] VCJoinLeaveCheck.js: markdownEscape");
+    return text.replace(/([\\*_\-#<>\|~])/g, '\\$1');
 }
 
 /**
@@ -150,6 +158,7 @@ function markdownEscape(text){
  * @private
  */
 function logMessageCreate(oldState, newState, type){
+    logger.trace("[Components] VCJoinLeaveCheck.js: logMessageCreate");
     let membercount = "";
     switch(type){
         case "join":

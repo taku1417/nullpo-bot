@@ -18,6 +18,7 @@ module.exports = {
 						.setDescription('表示するTipsの番号を入力してください。')
 						.setRequired(true))),
 	async execute(interaction) {
+		logger.trace("[SlashCommand] test.js");
 		if(interaction.options.getSubcommand() === 'tips') {
 			const tips = ["美味しいヤミー❗️✨🤟😁👍感謝❗️🙌✨感謝❗️🙌✨またいっぱい食べたいな❗️🍖😋🍴✨デリシャッ‼️🙏✨ｼｬ‼️🙏✨ ｼｬ‼️🙏✨ ｼｬ‼️🙏✨ ｼｬ‼️🙏✨ ｼｬ‼️🙏✨ ｼｬｯｯ‼ハッピー🌟スマイル❗️👉😁👈","食前の合掌、いただきます。"];
 			channelTest.send("[Tips:" + tips[interaction.options.getInteger('number')] + "]");

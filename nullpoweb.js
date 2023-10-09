@@ -8,17 +8,17 @@ const throw_webhook = require('./function/throw_webhook');
 const app = express();
 const PORT= process.env.PORT || 3000;
 app.listen(PORT,()=>{
-    console.log("listening server on port " + PORT);
+    logger.log("listening server on port " + PORT);
 })
 
-console.log( '[postgreSQL] connecting...' );
+logger.info( '[postgreSQL] connecting...' );
 var pg = new PG.Pool({
     connectionString: connectionString,
     port: 5432,
     ssl: {rejectUnauthorized: false}
 });
 pg.on( 'error', function( err ){
-    console.log( "[postgreSQL] db connection error on starting. retry connect every" + retry_ms + "ms.\n" + 
+    logger.error( "[postgreSQL] db connection error on starting. retry connect every" + retry_ms + "ms.\n" + 
                     "[postgreSQL] データベースへの接続に失敗しました。" + retry_ms + "ミリ秒ごとに再接続を試みます。", err );
     throw_webhook("error", "postgreSQL: db connection error. retry connect every" + retry_ms + "ms.", err);
     if( err.code && err.code.startsWith( '5' ) ){
@@ -30,7 +30,7 @@ pg.on( 'error', function( err ){
 
 function try_reconnect( ts ){
   setTimeout( function(){
-    console.log( '[postgreSQL] reconnecting...' );
+    logger.info( '[postgreSQL] reconnecting...' );
     pg = new PG.Pool({
         connectionString: connectionString,
         port: 5432,
@@ -38,7 +38,7 @@ function try_reconnect( ts ){
 
     });
     pg.on( 'error', function( err ){
-      console.log( '[postgreSQL] db connection error on working. retry connect after' + retry_ms + "ms.\n" + 
+        logger.error( '[postgreSQL] db connection error on working. retry connect after' + retry_ms + "ms.\n" + 
                    "[postgreSQL] データベースへの接続に失敗しました。" + retry_ms + "ミリ秒後に再接続を試みます。", err );
       if( err.code && err.code.startsWith( '5' ) ){
         //. terminated by admin?
@@ -55,14 +55,14 @@ async function query_execute(query_sql) {
         var query = { text: query_sql, values: [] };
         connection.query( query, function( err, result ){
             if ( err ){//クエリ実行のエラー時
-                console.error("[postgreSQL] query error occurred.\n[postgreSQL] クエリ実行時にエラーが発生しました。\n\n" + { err } );
+                logger.error("[postgreSQL] query error occurred.\n[postgreSQL] クエリ実行時にエラーが発生しました。\n\n" + { err } );
                 throw_webhook("error", "postgreSQL: query error.", err);
             } else {//実行成功時
         
             }
         });
     } catch ( e ){//エラー時
-        console.error("[postgreSQL] error occurred.\n[postgreSQL] エラーが発生しました。\n\n" + e);
+        logger.error("[postgreSQL] error occurred.\n[postgreSQL] エラーが発生しました。\n\n" + e);
         throw_webhook("error", "postgreSQL: error.", e);
     } finally {
         if( connection ){
@@ -87,12 +87,12 @@ app.get( '/ping', async function( req, res ){
 	    var query = { text: sql, values: [] };
 	    conn.query( query, function( err, result ){
 		if( err ){
-		    console.log( { err } );
+		    logger.error( { err } );
 		    res.status( 400 );
 		    res.write( JSON.stringify( { status: false, error: err }, null, 2 ) );
 		    res.end();
 		}else{
-		    //console.log( { result } );
+		    //logger.debug( { result } );
 		    res.write( JSON.stringify( { status: true, result: result }, null, 2 ) );
 		    res.end();
 		}

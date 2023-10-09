@@ -7,6 +7,7 @@
  * @return {Discord.Channel}
  */
 function ServerLogChannelFinder(client, state, channelName, ServerID){
+    logger.trace("[Components] ServerLogChannelFinder.js");
     let serverID;
     if(state != null) {
         serverID = state.guild.id;

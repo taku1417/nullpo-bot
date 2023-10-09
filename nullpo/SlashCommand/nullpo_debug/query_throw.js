@@ -1,4 +1,4 @@
-const logger = require('../../log/logger.js');
+const nplogger = require('../../log/logger.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const dbclient = require('../../Built-inModule/database/index.js');
 const throw_webhook = require('../../../function/throw_webhook.js');
@@ -11,16 +11,17 @@ module.exports = {
         .setDefaultMemberPermissions(0)
         .addStringOption(option => option.setName('query').setDescription('クエリを入力してください。').setRequired(true)),
     async execute(interaction) {
+        logger.trace("[SlashCommand] query_throw.js");
         await interaction.reply({
             content: 'クエリを実行しています。しばらくお待ちください。',
             ephemeral: true,
             fetchReply: true
         });
-        logger("command");
+        nplogger("command");
         await dbclient.connection(interaction.options.getString('query')).then(async res => {
             const res_json = JSON.stringify(res);
             if(interaction.replied || interaction.deferred) {
-                console.log(res);
+                logger.trace(res);
                 if(res == undefined) {
                     await interaction.editReply({
                         content: "クエリを実行しましたが、結果はありませんでした。INSERTなどは戻り値がありません。",
