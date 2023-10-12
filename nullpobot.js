@@ -70,13 +70,6 @@ client.once('ready', () => {
 errorCount = 0,SuccessLogin = 0;
 const tex_dblog = '979084899703218186',tex_jihou = '997274370122731611',tex_nlpcs_nofi = '1015852168810606592',tex_jllog = '978962695418155019',tex_pjsekai = '999675995936280717';
 const vc_atumare = '997274624045879407',vc_pjsekai = '981173824294879322',vc_apex = '992161885862502400',vc_music = '982523943309180978',vc_spla = '1017431011442819142',vc_granblue = '1083006425791463494';
-const mori = new schedule.RecurrenceRule();
-mori.minute = 0;
-//const job = schedule.scheduleJob(mori, function(){//森レイドのやつ
-	//channeljihou.send(`__**あと3分で森レイドが始まります！**__`)
-	//nplogger("clock");
-	//logger.trace(`森レイド通知`);
-//});
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
 rental = { mjc_pic: 0, mjc_swo: 0, mjc_sho: 0, star_guide: 0,ravan: 0,beer: 0,mrz_iron: 0,mrz_gold: 0,mrz_dia: 0,mrz_eme:0,soul_protection: 0,vortex: 0,haruspe: 0,moriDoll: 0,MGF: 0,MTF: 0,all_pic: 0, GR: 0,origin: 0,orichal: 0,youtou: 0,gokuen: 0,requiem: 0,ffggr: 0,枯れた心: 0,envenom: 0,AZI: 0,sac: 0,vega: 0,fulldora: 0,炎廃業: 0};
@@ -301,12 +294,15 @@ const buttonsPath = path.join(__dirname, '/nullpo/components/button');
 const buttonsFolders = fs.readdirSync(buttonsPath);
 
 for (const folder of buttonsFolders) {
+	console.log(`loading ${folder} buttons`)
 	const buttonsFiles = fs.readdirSync(`${buttonsPath}/${folder}`).filter(file => file.endsWith('.js'));
 	if(buttonsFiles.length === 0) continue;
 	for (const file of buttonsFiles) {
+		console.log(`loading ${file}`)
 		const button = require(`${buttonsPath}/${folder}/${file}`);
 		if('data' in button && 'execute' in button) {
-			client.buttons.set(button.data.customId, button);
+			client.buttons.set(button.data.data.custom_id, button);
+			console.log(`button ${button.data.data.custom_id} loaded`)
 		}
 	}
 }
@@ -320,7 +316,7 @@ if(CommandNDFiles.length === 0) {
 	logger.trace('[Djs] Start loading debug server commands');
 	for (const file of CommandNDFiles) {
 	logger.trace(`[Djs d:cmd] load ${file}`);
-		const command = require(`./nullpo/components/appCommand/${file}`);
+		const command = require(`./nullpo/components/appCommand/nullpo_debug/${file}`);
 		Commands_rest_NullpoDebug.push(command.data.toJSON());
 		if('data' in command && 'execute' in command) {
 		logger.trace(`[Djs g:slcmd] load ${file}`);
@@ -418,7 +414,7 @@ client.on('interactionCreate', async (interaction) => {//コマンド・ボタ�
 		if (!resistered_button) {
 			console.error(`${interaction.customId}に対応するボタンが見つかりませんでした。`);
 			throw_webhook("error", "button search: No Button matching. → " + interaction.customId, `${interaction.user.username}さんが実行。`, "button");
-			interaction.reply({ content: '指定したボタンが見つかりませんでした。このエラーは内部処理によるものです。\n管理者に通知しましたので、修正までお待ちください。', ephemeral: true })
+			interaction.reply({ content: '指定したボタンが見つかりませんでした。このエラーは内部処理によるものです。\n管理者に通知しましたので、修正までお待ちください。\nまた、状況確認のため管理者よりDMをさせていただく場合がございます。DMが嫌な場合はお手数ですがその旨を遠慮なくお伝えください。', ephemeral: true })
 			return;
 		}
 		try {
@@ -432,13 +428,13 @@ client.on('interactionCreate', async (interaction) => {//コマンド・ボタ�
 		// if (interaction.customId === 'no') no_button(interaction);
 		// if (interaction.customId === 'VoiceChatCreate') VoiceChatCreate(interaction);
 	}
-	if (interaction.isMessageContextMenuCommand()){
+	if (interaction.isContextMenuCommand()){
 		logger.trace(`[Djs mcmd] Checking command ${interaction.commandName}`);
-		const resistered_context = interaction.client.Commands.get(interaction.commandName);
+		const resistered_context = interaction.client.Commands.get(interaction.commandName) || interaction.client.Commands_NullpoDebug.get(interaction.commandName);
 		if (!resistered_context) {
-			logger.error(`No command matching ${interaction.commandName} was found.`);
-			throw_webhook("error", "command search: No Command matching.", interaction.commandName, `${interaction.user.username}さんが実行。`, "message context menu");
-			interaction.reply({ content: '指定したコマンドが見つかりませんでした。コマンド名を確認して下さい。\nまた、このエラーは管理者に通知されました。改善されるまでお待ちください。', ephemeral: true })
+			logger.error(`${interaction.commandName}に対応するコンテキストメニューコマンドが見つかりませんでした。`);
+			throw_webhook("error", "context command search: No Command matching.", interaction.commandName, `${interaction.user.username}さんが実行。`, "context menu");
+			interaction.reply({ content: '指定したコンテキストコマンドが見つかりませんでした。このエラーは内部処理によるものです。\n管理者に通知しましたので、修正までお待ちください。\nまた、状況確認のため管理者よりDMをさせていただく場合がございます。DMが嫌な場合はお手数ですがその旨を遠慮なくお伝えください。', ephemeral: true })
 			return;
 		}
 		try {
