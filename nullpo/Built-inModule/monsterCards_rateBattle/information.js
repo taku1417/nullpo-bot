@@ -1,5 +1,5 @@
 const dbclient = require('../database/index.js');
-const { ButtonBuilder, ButtonStyle, ActionRowBuilder, ChatInputCommandInteraction, ContextMenuCommandInteraction } = require('discord.js');
+const { ButtonBuilder, ButtonStyle, ActionRowBuilder, ChatInputCommandInteraction, ContextMenuCommandInteraction, EmbedBuilder } = require('discord.js');
 const throw_webhook = require('../../../function/throw_webhook.js');
 
 /**
@@ -11,14 +11,14 @@ const throw_webhook = require('../../../function/throw_webhook.js');
  * @private
  */
 function information(from, interaction, client){
-    const interactionUser = interaction.member.user;
+    const interactionMember = interaction.member;
     const member = interaction.options.getMember('user');
     const userId = member.id;
     const buttonyes = new ButtonBuilder().setCustomId('moncard_DBregi_yes').setStyle(ButtonStyle.Success).setLabel('はい');
 	const buttonno = new ButtonBuilder().setCustomId('moncard_DBregi_no').setStyle(ButtonStyle.Danger).setLabel('いいえ');
-    dbclient.connection(`SELECT * FROM monster_cards WHERE id = '${userId}'`).then(async res => {
+    dbclient.connection(`SELECT * FROM monster_cards WHERE discord_id = '${userId}'`).then(async res => {
         if(res.length == 0) {// = 該当ユーザーが存在しない
-            if(interactionUser == member){// 自分の場合
+            if(interactionMember == member){// 自分の場合
                 await interaction.reply({
                     embeds: [{
                         title: "データベースに登録されていないようです。",
@@ -40,12 +40,28 @@ function information(from, interaction, client){
                 return;
             }
         } else {// = 該当ユーザーが存在する => データベースから情報を取得、表示
+            const battleCount = await dbclient.connection(`SELECT * FROM moncard_battle_count WHERE discord_id = '${userId}'`)[0];
+            const timanRate = await dbclient.connection(`SELECT * FROM moncard_1v1 WHERE discord_id = '${userId}'`)[0];
+            const v4Rate = await dbclient.connection(`SELECT * FROM moncard_v4 WHERE discord_id = '${userId}'`)[0];
+            const totalBattleCount = Number(battleCount.timan_rate) + Number(battleCount.v4_rate) + Number(battleCount.free);
+            const totalWinCount = Number(battleCount.win_timan_rate) + Number(battleCount.win_v4_rate) + Number(battleCount.win_free);
+            const embeds = new EmbedBuilder()
+                .setTitle(`${member_with_nick(interaction)}さんの情報`)
+                .setDescription("Monster Cardsに関する情報を表示します。")
+                .setColor(0x00ff00)
+                .setThumbnail(member.user.displayAvatarURL())
+                .addFields(
+                    { name: "総試合数(free含む)", value: totalBattleCount + "回", inline: true },
+                    { name: "総勝利数(free含む)", value: totalWinCount + "回", inline: true },
+                    { name: "勝率(free含む)", value: (totalWinCount / totalBattleCount * 100).toFixed(1) + "%", inline: true },
+                    { name: "1v1 レート", value: timanRate.rate, inline: true },
+                    { name: "v4 レート", value: v4Rate.rate, inline: true },
+                    { name: "\u200B", value: "\u200B", inline: true }
+                )
+                .setFooter({ text: "Powered by nullpo-bot", iconURL: client.user.displayAvatarURL()})
+                .setTimestamp();
             await interaction.reply({
-                embeds: [{
-                    title: `${member_with_nick(interaction)}さんの情報`,
-                    description: "登録情報を表示します。",
-                    color: 0x00ff00
-                }],
+                embeds: [embeds],
                 ephemeral: true
             });
         }

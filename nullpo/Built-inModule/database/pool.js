@@ -6,7 +6,7 @@ const pool = new Pool({
     connectionString: connectionString,
     port: 5432,
     max: 6,
-    idleTimeoutMillis: 600000,
+    idleTimeoutMillis: 60000,
     ssl: {sslmode: 'require', rejectUnauthorized: false},
     connectionTimeoutMillis: 60000,
     application_name: 'nullpo-bot (discord.js)'
