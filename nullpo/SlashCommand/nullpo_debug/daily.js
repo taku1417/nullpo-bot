@@ -58,7 +58,7 @@ function CheckDaily(priviousDaily){
     const priviousdate = Date.parse(priviousDaily);
     const nowDate = new Date();
     const today = Date.parse(nowDate.getFullYear() + '/' + (nowDate.getMonth() + 1) + '/' + nowDate.getDate() + ' 00:00:00');
-    console.log((priviousdate + ' < ' + today + ' = ') + (priviousdate < today));
+    logger.debug((priviousdate + ' < ' + today + ' = ') + (priviousdate < today));
     return priviousdate < today;
 }
 //priviousDailyの日付が昨日以前のものなら受け取れる、という処理を組み込む
