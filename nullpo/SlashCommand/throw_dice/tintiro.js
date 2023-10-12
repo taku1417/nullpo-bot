@@ -3,6 +3,7 @@
  * inputは1～6の3つの数字の配列、ランダム
  **/
 function tintiro(input){
+	logger.trace("[SlashCommand] tintiro.js");
 //1～6以外の数字が入っていたらエラーを返す
 	if(input[0] > 6 || input[1] > 6 || input[2] > 6 || input[0] < 1 || input[1] < 1 || input[2] < 1) {
 		return "数字エラー";

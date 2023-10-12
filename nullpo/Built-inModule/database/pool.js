@@ -8,29 +8,29 @@ const pool = new Pool({
     max: 6,
     idleTimeoutMillis: 60000,
     ssl: {sslmode: 'require', rejectUnauthorized: false},
-    connectionTimeoutMillis: 60000,
+    connectionTimeoutMillis: 30000,
     application_name: 'nullpo-bot (discord.js)'
 });
 
 pool.on('error', (err) => {
-    console.error('[DB] Unexpected error on idle client', err);
+    logger.error('[DB] Unexpected error on idle client', err);
     throw_webhook("error", "postgreSQL(DB): query error.", err);
 });
 
 pool.on('connect', () => {
-    console.log('[DB] connected.');
+    logger.debug('[DB] pool connected.');
 });
 
 pool.on('remove', () => {
-    console.log('[DB] client removed.');
+    logger.debug('[DB] pool removed.');
 });
 
 pool.on('acquire', () => {
-    console.log('[DB] client acquired. total: ' + pool.totalCount + ', idle: ' + pool.idleCount + ', waiting: ' + pool.waitingCount);
+    logger.trace('[DB] client acquired. total: ' + pool.totalCount + ', idle: ' + pool.idleCount + ', waiting: ' + pool.waitingCount);
 });
 
 pool.on('release', () => {
-    console.log('[DB] client released. total: ' + pool.totalCount + ', idle: ' + pool.idleCount + ', waiting: ' + pool.waitingCount);
+    logger.trace('[DB] client released. total: ' + pool.totalCount + ', idle: ' + pool.idleCount + ', waiting: ' + pool.waitingCount);
 });
 
 

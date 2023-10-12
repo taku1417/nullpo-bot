@@ -1,4 +1,4 @@
-const logger = require('../../log/logger.js');
+const nplogger = require('../../log/logger.js');
 const dbclient = require('../../Built-inModule/database/index.js');
 const { GatewayIntentBits, SlashCommandBuilder } = require('discord.js');
 const e = require('express');
@@ -8,7 +8,8 @@ module.exports = {
         .setName('daily')
         .setDescription('デイリーコインを受け取ります。'),
     async execute(interaction) {
-        logger("command");
+        logger.trace("[SlashCommand] daily.js");
+        nplogger("command");
         const userId = interaction.user.id;
         dbclient.connection(`SELECT * FROM coins WHERE id = '${userId}'`).then(async res => {
             if(res.length == 0) {// = 該当ユーザーが存在しない
@@ -57,7 +58,7 @@ function CheckDaily(priviousDaily){
     const priviousdate = Date.parse(priviousDaily);
     const nowDate = new Date();
     const today = Date.parse(nowDate.getFullYear() + '/' + (nowDate.getMonth() + 1) + '/' + nowDate.getDate() + ' 00:00:00');
-    console.log((priviousdate + ' < ' + today + ' = ') + (priviousdate < today));
+    logger.debug((priviousdate + ' < ' + today + ' = ') + (priviousdate < today));
     return priviousdate < today;
 }
 //priviousDailyの日付が昨日以前のものなら受け取れる、という処理を組み込む

@@ -1,4 +1,5 @@
 function dice_custom(amount,max,dice){// /dice custom用、diceに出目を格納する
+        logger.trace("[SlashCommand] dice_custom.js");
         if(amount < 1 || max < 1){//振った個数の確認
                 return dice;//処理自体しない
         } else {

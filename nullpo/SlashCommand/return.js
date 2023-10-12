@@ -1,4 +1,4 @@
-const logger = require('../log/logger.js');
+const nplogger = require('../log/logger.js');
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle, SlashCommandBuilder } = require('discord.js');
 itemSearch = item_name => {
 	const itemName = ItemList.find(item => item.id === item_name).name;
@@ -48,8 +48,9 @@ module.exports = {
 				)
 		),
 	async execute(interaction) {
+		logger.trace("[SlashCommand] return.js");
 		const id = interaction.options.getString('item_name');
-        	logger("command");
+		nplogger("command");
 		const buttonyes = new ButtonBuilder().setCustomId('yes').setStyle(ButtonStyle.Success).setLabel('はい');
 		const buttonno = new ButtonBuilder().setCustomId('no').setStyle(ButtonStyle.Danger).setLabel('いいえ');
 		if (rental[id] >= 1) {
