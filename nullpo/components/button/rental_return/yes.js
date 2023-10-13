@@ -1,4 +1,4 @@
-const { ButtonBuilder, ButtonStyle } = require('@discordjs/builders');
+const { ButtonBuilder, ButtonStyle } = require('discord.js');
 
 function yes_button(interaction) {
 	logger.trace("[button] yes.js");

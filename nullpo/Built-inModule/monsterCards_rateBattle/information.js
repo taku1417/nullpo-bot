@@ -1,7 +1,7 @@
 const dbclient = require('../database/index.js');
 const { ButtonBuilder, ButtonStyle, ActionRowBuilder, ChatInputCommandInteraction, ContextMenuCommandInteraction, EmbedBuilder } = require('discord.js');
 const throw_webhook = require('../../../function/throw_webhook.js');
-
+db_regist = [];
 /**
  * monsterCardsの情報を表示する コンテキスト、スラッシュコマンド共通 fromでどちらから呼ばれたかを判別
  * @param {String} from 
@@ -28,6 +28,7 @@ function information(from, interaction, client){
                     components: [new ActionRowBuilder().addComponents(buttonyes, buttonno)],
                     ephemeral: true
                 });
+
                 return;
             } else {// 他人の場合
                 await interaction.reply({
