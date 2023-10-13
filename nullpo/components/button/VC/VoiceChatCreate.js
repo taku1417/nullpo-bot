@@ -100,4 +100,12 @@ function execute(interaction, category, VCname, VCbitrate) {
     })
 }
 
-module.exports = VoiceChatCreate;
+module.exports = {
+    data: new ButtonBuilder()
+        .setCustomId('VoiceChatCreate')
+        .setStyle(ButtonStyle.Success)
+        .setLabel('サブVCを作成する'),
+    async execute(interaction, client) {
+        VoiceChatCreate(interaction);
+    }
+};

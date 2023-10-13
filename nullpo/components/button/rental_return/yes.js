@@ -1,3 +1,5 @@
+const { ButtonBuilder, ButtonStyle } = require('@discordjs/builders');
+
 function yes_button(interaction) {
 	logger.trace("[button] yes.js");
 	itemSearch = lendSystemCurrent => {
@@ -34,4 +36,12 @@ function yes_button(interaction) {
 	}
 }
 
-module.exports = yes_button;
+module.exports = {
+	data: new ButtonBuilder()
+		.setCustomId('yes')
+		.setLabel('はい')
+		.setStyle(ButtonStyle.Success),
+	async execute(interaction, client) {
+		yes_button(interaction);
+	}
+};

@@ -294,15 +294,15 @@ const buttonsPath = path.join(__dirname, '/nullpo/components/button');
 const buttonsFolders = fs.readdirSync(buttonsPath);
 
 for (const folder of buttonsFolders) {
-	console.log(`loading ${folder} buttons`)
+	logger.trace(`loading ${folder} buttons`)
 	const buttonsFiles = fs.readdirSync(`${buttonsPath}/${folder}`).filter(file => file.endsWith('.js'));
 	if(buttonsFiles.length === 0) continue;
 	for (const file of buttonsFiles) {
-		console.log(`loading ${file}`)
+		logger.trace(`loading ${file}`)
 		const button = require(`${buttonsPath}/${folder}/${file}`);
 		if('data' in button && 'execute' in button) {
 			client.buttons.set(button.data.data.custom_id, button);
-			console.log(`button ${button.data.data.custom_id} loaded`)
+			logger.trace(`button ${button.data.data.custom_id} loaded`)
 		}
 	}
 }
@@ -311,7 +311,7 @@ const CommandsNDPath = path.join(__dirname, '/nullpo/components/appCommand/nullp
 const CommandNDFiles = fs.readdirSync(CommandsNDPath).filter(file => file.endsWith('.js'));
 
 if(CommandNDFiles.length === 0) {
-	console.log('no found nullpo_debug appCommand. Skip command registration.')
+	logger.debug('no found nullpo_debug appCommand. Skip command registration.')
 } else {
 	logger.trace('[Djs] Start loading debug server commands');
 	for (const file of CommandNDFiles) {
@@ -330,7 +330,7 @@ const slashCommandsNDPath = path.join(__dirname, '/nullpo/SlashCommand/nullpo_de
 const slashCommandNDFiles = fs.readdirSync(slashCommandsNDPath).filter(file => file.endsWith('.js'));
 
 if(slashCommandNDFiles.length === 0) {
-	console.log('no found nullpo_debug slashCommand. Skip command registration.')
+	logger.debug('no found nullpo_debug slashCommand. Skip command registration.')
 } else {
 	logger.trace('[Djs] Start loading debug server slash commands');
 for (const file of slashCommandNDFiles) {
@@ -412,7 +412,7 @@ client.on('interactionCreate', async (interaction) => {//コマンド・ボタ�
 		logger.trace(`[Djs btn] Checking button ${interaction.customId}`);
 		const resistered_button = interaction.client.buttons.get((interaction.customId).replace(/\d/g, ''));
 		if (!resistered_button) {
-			console.error(`${interaction.customId}に対応するボタンが見つかりませんでした。`);
+			logger.error(`${interaction.customId}に対応するボタンが見つかりませんでした。`);
 			throw_webhook("error", "button search: No Button matching. → " + interaction.customId, `${interaction.user.username}さんが実行。`, "button");
 			interaction.reply({ content: '指定したボタンが見つかりませんでした。このエラーは内部処理によるものです。\n管理者に通知しましたので、修正までお待ちください。\nまた、状況確認のため管理者よりDMをさせていただく場合がございます。DMが嫌な場合はお手数ですがその旨を遠慮なくお伝えください。', ephemeral: true })
 			return;
