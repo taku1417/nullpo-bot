@@ -1,7 +1,6 @@
 function nplogger(logtype){//コンソールにログを出力する用
         logger.trace("[Log] logger.js");
         all_log++;
-        const Month = new Date().getMonth()+1,Day = new Date().getDate(),Hour = new Date().getHours(),Min = new Date().getMinutes(),Sec = new Date().getSeconds(),MilliSec = new Date().getMilliseconds(),Hour0 = ('0' + Hour).slice(-2),Min0 = ('0' + Min).slice(-2),Sec0 = ('0' + Sec).slice(-2),MilliSec0 = ('00' + MilliSec).slice(-3);
         switch(logtype){
                 case "join":
                         join_log++;
@@ -29,7 +28,7 @@ function nplogger(logtype){//コンソールにログを出力する用
                         unknown_log++;
                         break;
         }
-        logger.info("[" + Month + "/" + Day + " " + Hour0 + ":" + Min0 + ":" + Sec0 + "." + MilliSec0 + "]  {%s}    " + 'all:%d,join:%d,move:%d,leave:%d,clock:%d,restart:%d,command:%d,message:%d,unknown:%d',logtype,all_log,join_log,move_log,leave_log,clock_log,restart_log,command_log,message_log,unknown_log);
+        logger.info( " {%s}\n" + 'all:%d,join:%d,move:%d,leave:%d,clock:%d,restart:%d,command:%d,message:%d,unknown:%d',logtype,all_log,join_log,move_log,leave_log,clock_log,restart_log,command_log,message_log,unknown_log);
 }
 
 module.exports = nplogger
