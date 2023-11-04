@@ -1,7 +1,6 @@
 const dbclient = require('../database/index.js');
 const { ButtonBuilder, ButtonStyle, ActionRowBuilder, ChatInputCommandInteraction, ContextMenuCommandInteraction, EmbedBuilder } = require('discord.js');
 const throw_webhook = require('../../../function/throw_webhook.js');
-db_regist = [];
 /**
  * monsterCardsの情報を表示する コンテキスト、スラッシュコマンド共通 fromでどちらから呼ばれたかを判別
  * @param {String} from 
@@ -28,7 +27,10 @@ function information(from, interaction, client){
                     components: [new ActionRowBuilder().addComponents(buttonyes, buttonno)],
                     ephemeral: true
                 });
-
+                if (db_regist.find(object => object.did === interaction.member.id) == undefined) {
+                    db_regist.filter(object => object.did != interaction.member.id)
+                }
+                db_regist.push({did: interaction.member.id, msgid: (await interaction.fetchReply()).then(msg => msg.id)});// ボタンを持つメッセージのinteraction発行者のdiscordのidをdid,ボタンを持つメッセージのidをmsgidとして配列に格納
                 return;
             } else {// 他人の場合
                 await interaction.reply({

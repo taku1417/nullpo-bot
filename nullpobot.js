@@ -53,6 +53,7 @@ const schedule = require('node-schedule');
 const VCJoinLeaveCheck = require('./nullpo/components/VCJoinLeaveCheck.js');
 const ServerLogChannelFinder = require('./nullpo/components/ServerLogChannelFinder.js');
 const MessageUpdateLogger = require('./nullpo/log/message/update.js');
+db_regist = [];
 global_settings = {};
 client.once('ready', () => {	
 	client.user.setPresence({
