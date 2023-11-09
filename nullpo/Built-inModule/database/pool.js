@@ -1,5 +1,5 @@
 const config = require('config');
-var connectionString = (process.env.NODE_ENV === 'heroku') ? process.env.DATABASE_URL : config.get('DATABASE_URL');
+var connectionString = (process.env.NODE_ENV === 'heroku') ? process.env.DATABASE_URL : config.get('DATABASE.POSTGRESQL');
 var { Pool } = require('pg');
 
 const pool = new Pool({

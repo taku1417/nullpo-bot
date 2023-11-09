@@ -30,6 +30,7 @@ const client = new Client({
 		GatewayIntentBits.GuildPresences
 	]
 });
+const VisualTimer = require('./nullpo/Built-inModule/VisualTimer/index.js');
 const nplogger = require('./nullpo/log/logger.js');
 //const delete_logger = require('./nullpo/log/delete_logger.js');
 all_log = 0,join_log = 0,move_log = 0,leave_log = 0,clock_log = 0,restart_log = 0,command_log = 0,message_log = 0,unknown_log = 0;
@@ -41,6 +42,9 @@ const cronjob = require('./nullpo/events/cron.js');
 const nullpo_server_id = '966674976956645407',nullpo_casino_server_id = '1015585928779137105',nullpo_debug_server_id = '979084665958834216';
 const nullpo_admin_log = '997341001809133588',nullpo_casino_admin_log = '1042484015720042546',nullpo_debug_test = '986475538770194432';
 const botID = process.env.NODE_ENV === 'heroku' ? process.env.CLIENT_ID_prod : config.get('CLIENT_ID.PRODUCTION');const botID_debug = process.env.NODE_ENV === 'heroku' ? process.env.CLIENT_ID_DEBUG : config.get('CLIENT_ID.DEBUG');
+visual_timer_parent = [];
+visual_timer_current = [];
+visual_timer_edit_count = 0;
 client.Commands = new Collection();
 client.slashCommands = new Collection();
 commands_rest = [];
@@ -62,11 +66,6 @@ client.once('ready', () => {
 		}],
 		status: "dnd"
 	});
-	dbclient.connection("SELECT * FROM global_settings").then(async res => {
-		global_settings = await res[0];
-		global_settings.coin_max = await parseInt(global_settings.coin_max);
-		global_settings.coin_min = await parseInt(global_settings.coin_min);
-	});//guild関係ない設定を取得
 });
 errorCount = 0,SuccessLogin = 0;
 const tex_dblog = '979084899703218186',tex_jihou = '997274370122731611',tex_nlpcs_nofi = '1015852168810606592',tex_jllog = '978962695418155019',tex_pjsekai = '999675995936280717';
@@ -529,7 +528,7 @@ client.once('ready', () => {
 	if(process.env.NODE_ENV === 'default') client.channels.cache.get('1108624508211966012').messages.fetch('1146451411681431603').then(message => message.edit({components:[new ActionRowBuilder().addComponents([VCCreateButton_test])]}));//ボタンを直す
 });
 
-client.on('ready', () => {
+client.on('ready', async () => {
 	logger.trace('[Djs c:on] ready');
 	const VCCreateButton_sub = new ButtonBuilder().setCustomId('VoiceChatCreate').setStyle(ButtonStyle.Success).setLabel('サブVCを作成する').setDisabled(false);
 	const VCCreateButton_test = new ButtonBuilder().setCustomId('VoiceChatCreate').setStyle(ButtonStyle.Success).setLabel('テストVCを作成する').setDisabled(false);
@@ -601,6 +600,13 @@ client.on('ready', () => {
 	// 	});
 	// }, 10000);//10秒ごとにbotがオンラインかどうかを確認、オフラインならメッセージを送信
 
+	global_settings = await dbclient.connection("SELECT * FROM global_settings;");
+	logger.debug(global_settings);
+	//guild関係ない設定を取得
+
+	setInterval(() => {
+		VisualTimer.refresh(client);
+	}, await global_settings[0].VTimer_refresh_interval);//VisualTimerの更新間隔
 	
 	const VCCembed = {
 			color: 0xF0E68C,
