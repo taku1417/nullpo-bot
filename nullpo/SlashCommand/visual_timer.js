@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, ChatInputCommandInteraction, Client } = require('discord.js');
-const visualTimer = require('../../Built-inModule/VisualTimer/index.js');
+const visualTimer = require('../Built-inModule/VisualTimer/index.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
