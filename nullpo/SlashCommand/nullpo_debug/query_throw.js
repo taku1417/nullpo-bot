@@ -18,38 +18,48 @@ module.exports = {
             fetchReply: true
         });
         nplogger("command");
-        await dbclient.connection(interaction.options.getString('query')).then(async res => {
-            const res_json = JSON.stringify(res);
-            if(interaction.replied || interaction.deferred) {
-                logger.trace(res);
-                if(res == undefined) {
-                    await interaction.editReply({
-                        content: "クエリを実行しましたが、結果はありませんでした。INSERTなどは戻り値がありません。",
-                        ephemeral: true,
-                        fetchReply: true
-                    });
-                } else {
-                    await interaction.editReply({
-                        content: res_json,
-                        ephemeral: true,
-                        fetchReply: true
-                    });
-                }
+        let res;
+        try {
+            res = await dbclient.connection(interaction.options.getString('query'));
+        } catch(e) {
+            await interaction.editReply({
+                content: 'クエリを実行中にエラーが発生しました。',
+                ephemeral: true,
+                fetchReply: true
+            });
+            throw_webhook(e);
+            return;
+        }
+        const res_json = JSON.stringify(res);
+        if(interaction.replied || interaction.deferred) {
+            logger.trace(res);
+            if(res == undefined) {
+                await interaction.editReply({
+                    content: "クエリを実行しましたが、結果はありませんでした。INSERTなどは戻り値がありません。",
+                    ephemeral: true,
+                    fetchReply: true
+                });
             } else {
-                if(res == undefined) {
-                    await interaction.reply({
-                        content: "クエリを実行しましたが、結果はありませんでした。INSERTなどは戻り値がありません。",
-                        ephemeral: true,
-                        fetchReply: true
-                    });
-                } else {
-                    await interaction.reply({
-                        content: res_json,
-                        ephemeral: true,
-                        fetchReply: true
-                    });
-                }
+                await interaction.editReply({
+                    content: res_json,
+                    ephemeral: true,
+                    fetchReply: true
+                });
             }
-        });
+        } else {
+            if(res == undefined) {
+                await interaction.reply({
+                    content: "クエリを実行しましたが、結果はありませんでした。INSERTなどは戻り値がありません。",
+                    ephemeral: true,
+                    fetchReply: true
+                });
+            } else {
+                await interaction.reply({
+                    content: res_json,
+                    ephemeral: true,
+                    fetchReply: true
+                });
+            }
+        }
     }
-};
+}
