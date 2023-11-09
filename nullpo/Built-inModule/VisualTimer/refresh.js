@@ -13,6 +13,7 @@ async function refresh(client) {
     const dbres = await dbclient.connection(`SELECT * FROM visual_timer_current;`);
     const timer_parent_res = await dbclient.connection(`SELECT * FROM visual_timer;`);
     visual_timer_current = [];
+    visual_timer_parent = [];
     if(timer_parent_res.length == 0) return;
     timer_parent_res.forEach(async (element) => {
       visual_timer_parent.push({

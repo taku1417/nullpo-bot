@@ -603,8 +603,12 @@ client.on('ready', async () => {
 	global_settings = await dbclient.connection("SELECT * FROM global_settings;");
 	logger.debug(global_settings);
 	//guild関係ない設定を取得
-
+	setInterval(async () => {
+		global_settings = await dbclient.connection("SELECT * FROM global_settings;");
+	}, global_settings[0].settings_reload_interval);//設定のリロード
+	
 	setInterval(() => {
+		logger.level = global_settings[0].log_level;//ログレベル
 		VisualTimer.refresh(client);
 	}, await global_settings[0].VTimer_refresh_interval);//VisualTimerの更新間隔
 	

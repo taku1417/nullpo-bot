@@ -11,7 +11,7 @@ function connectionfunc(querySQL) {
         host: process.env.NODE_ENV === 'heroku' ? process.env.MYSQL_HOST : config.get('MYSQL.HOST'),
         user: process.env.NODE_ENV === 'heroku' ? process.env.MYSQL_USER : config.get('MYSQL.USER'),
         password: process.env.NODE_ENV === 'heroku' ? process.env.MYSQL_PASSWORD : config.get('MYSQL.PASSWORD'),
-        database: process.env.NODE_ENV === 'heroku' ? process.env.MYSQL_DATABASE_PRODUCTION : config.get('MYSQL.DATABASE.PRODUCTION'),
+        database: process.env.NODE_ENV === 'heroku' ? process.env.MYSQL_DATABASE_PRODUCTION : config.get('MYSQL.DATABASE.DEBUG'),
         port: 4000,
         ssl: {
             minVersion: 'TLSv1.2',
