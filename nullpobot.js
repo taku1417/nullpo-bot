@@ -608,10 +608,8 @@ client.on('ready', async () => {
 	}, global_settings[0].settings_reload_interval);//設定のリロード
 	
 	setInterval(() => {
-		console.time("VTimer_refresh")
 		logger.level = global_settings[0].log_level;//ログレベル
 		VisualTimer.refresh(client);
-		logger.debug(console.timeEnd("VTimer_refresh"));
 	}, await global_settings[0].VTimer_refresh_interval);//VisualTimerの更新間隔
 	
 	const VCCembed = {
