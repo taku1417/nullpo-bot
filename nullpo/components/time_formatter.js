@@ -10,15 +10,24 @@ function timeformatter(seconds, format){
     let minute = Math.floor(((seconds % 86400) % 3600) / 60);
     let second = ((seconds % 86400) % 3600) % 60;
     let formatted_time = '';
+    if(seconds < 0) {
+      logger.error('timeformatter: 不正な秒数が指定されました。');
+      throw_webhook('error', 'timeformatter', '不正な秒数が指定されました。');
+      throw new Error('timeformatter: 不正な秒数が指定されました。');
+    }
     if(format == 'digital') {
       if(day > 0) {formatted_time += day + ':' + ('00' + hour).slice(-2) + ':'}
-      else if(hour > 0) formatted_time += ( '00' + hour).slice(-2) + ':';
-      formatted_time += minute + ':' + second;
+      else if(hour > 0) formatted_time += ('00' + hour).slice(-2) + ':';
+      formatted_time += ('00' + minute).slice(-2) + ':' + ('00' + second).slice(-2);
     } else if(format == ('japanese' || 'ja')) {
-      if(day > 0) {formatted_time += day + '日'}
-      if(hour > 0) {formatted_time += hour + '時間'}
-      if(minute > 0) {formatted_time += minute + '分'}
-      formatted_time += second + '秒';
+      if(day > 0) formatted_time += day + '日';
+      if(hour > 0) formatted_time += hour + '時間';
+      if(minute > 0) formatted_time += minute + '分';
+      if(second > 0) formatted_time += second + '秒';
+    } else {
+      logger.error('timeformatter: 不正なフォーマットが指定されました。');
+      throw_webhook('error', 'timeformatter', '不正なフォーマットが指定されました。');
+      throw new Error('timeformatter: 不正なフォーマットが指定されました。');
     }
     return formatted_time;
 } 
