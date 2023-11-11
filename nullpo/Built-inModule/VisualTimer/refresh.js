@@ -1,5 +1,6 @@
 const { ChatInputCommandInteraction, Client, EmbedBuilder } = require('discord.js');
 const dbclient = require('../database/index.js');
+const timeformatter = require('../../components/time_formatter.js');
 
 /**
  * VisualTimer管轄の各embedを更新する
@@ -56,7 +57,7 @@ async function refresh(client) {
       let embed_field_value = '';
       user_list.forEach(async (element) => {
         const current_time = Math.floor((element.end_date_unix - Date.now()) / 1000);
-        embed_field_value += `\n<@${element.discord_id}>: ${current_time}秒`;
+        embed_field_value += `\n<@${element.discord_id}>: ${timeformatter(current_time, 'digital')}`;
       });
       embed.fields[1].value = embed_field_value;
       await target_timer_message.edit({embeds: [embed]});

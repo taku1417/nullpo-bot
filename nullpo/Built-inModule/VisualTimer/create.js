@@ -2,6 +2,7 @@ const { ChatInputCommandInteraction, Client, ActionRowBuilder, EmbedBuilder } = 
 const dbclient = require('../database/index.js');
 const throw_webhook = require('../../../function/throw_webhook.js');
 const start_stop = require('../../components/button/visual_timer/start_stop.js');
+const timeformatter = require('../../components/time_formatter.js');
 
 /**
  * ビジュアルタイマーの作成
@@ -36,7 +37,7 @@ async function create(interaction, client) {
 		.setColor(0xFFCC00)
 		.setDescription(description)
 		.addFields(
-			{ name: "このタイマーの時間", value: `${time}秒`},
+			{ name: "このタイマーの時間", value: `${timeformatter(time, 'japanese')}`},
 			{ name: "残り時間", value: `誰も開始していません！`}
 		)
 		.setTimestamp(new Date())
