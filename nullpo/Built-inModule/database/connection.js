@@ -4,9 +4,7 @@ const mysql = require('mysql2');
 const throw_webhook = require('../../../function/throw_webhook.js');
 
 function connectionfunc(querySQL) {
-    logger.trace("[db] connection.js")
-    // const res = await execute(querySQL);
-    // return res;
+    logger.trace("[db] connection.js");
     const connection = mysql.createConnection({
         host: process.env.NODE_ENV === 'heroku' ? process.env.MYSQL_HOST : config.get('MYSQL.HOST'),
         user: process.env.NODE_ENV === 'heroku' ? process.env.MYSQL_USER : config.get('MYSQL.USER'),
@@ -34,6 +32,7 @@ function connectionfunc(querySQL) {
                 reject(err);
             } else {
                 resolve(res);
+                connection.end();
             }
         });
     });

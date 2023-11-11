@@ -22,6 +22,11 @@ async function create(interaction, client) {
 		throw_webhook('タイマーの作成に失敗しました。', interaction.user, client);
 		return;
 	}
+	if(time < 1 || time > 31536000) {
+		interaction.followUp({content: 'タイマーの作成に失敗しました。時間は1秒～31536000秒にしてください。', ephemeral: true});
+		throw_webhook('タイマーの作成に失敗 不正な時間(' + time + ') 頻発するならバグの可能性あり', interaction.user, client);
+		return;
+	}
 	await dbclient.connection('BEGIN;');
 	const res = await dbclient.connection(`INSERT INTO visual_timer (channel_id, message_id, name, description, time) VALUES ('${channel.id}', '${timer_message.id}', '${name}', '${description}', ${time})`);
 
@@ -46,6 +51,13 @@ async function create(interaction, client) {
 	});
 	await dbclient.connection('COMMIT;');
 	interaction.followUp({content: 'タイマーを作成しました。', ephemeral: true});
+	visual_timer_parent.push({
+		channel_id: channel.id,
+		message_id: timer_message.id,
+		name: name,
+		description: description,
+		time: time
+	});
 	return;
 }
 

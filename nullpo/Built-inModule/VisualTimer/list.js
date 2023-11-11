@@ -8,10 +8,16 @@ const throw_webhook = require('../../../function/throw_webhook.js');
  * @param {Client} client
  */
 async function list(interaction, client) {
+  interaction.deferReply();
   const dbres = await dbclient.connection(`SELECT * FROM visual_timer`);
-  if(dbres[0]) //todo: dbの中身が空の時の戻り値分からん...あとにする...
+  if(dbres.length == 0) {
+    interaction.followUp({
+      content: '現在、作成されているタイマーはありません。',
+      ephemeral: true
+    });
+  }
   dbres[0].forEach(async timer => {
-
+    
   });
 }
 
