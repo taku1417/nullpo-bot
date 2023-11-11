@@ -20,7 +20,18 @@ async function stop(target_timer_message, target_timer, interaction, client){
     throw_webhook('error', 'visual_timer/stop', 'タイマーの停止に失敗しました。target => ' + target_timer_id + ' | ' + target_user_id + ' | ' + interaction.user + 'さんが実行');
     return;
   }
-  await interaction.followUp({content: '現在、タイマーの停止機能は開発中です...\n実装を急ぐための措置です。ご了承ください。', ephemeral: true});
+  await dbclient.connection('BEGIN;');
+  const try_delete = await dbclient.connection(`DELETE FROM visual_timer_current WHERE discord_id = ${target_user_timer.discord_id} AND timer_message_id = ${target_timer_id};`);
+  if(try_delete.affectedRows == 0) {
+    interaction.followUp({content: 'タイマーの停止に失敗しました。', ephemeral: true});
+    throw_webhook('error', 'visual_timer/stop', 'visual_timer_currentからの削除に失敗しました。target => ' + target_timer_id + ' | ' + target_user_id + ' | ' + interaction.user + 'さんが実行');
+    await dbclient.connection('ROLLBACK;');
+    return;
+  } else {
+    visual_timer_current.filter(object => object.discord_id != target_user_timer.id && object.message_id != target_timer_id);
+    interaction.followUp({content: 'タイマーを停止しました。'});
+    await dbclient.connection('COMMIT;');
+  }
 }
 
 module.exports = stop;

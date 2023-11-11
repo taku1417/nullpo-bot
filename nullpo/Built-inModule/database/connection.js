@@ -32,9 +32,9 @@ function connectionfunc(querySQL) {
                 reject(err);
             } else {
                 resolve(res);
-                connection.end();
             }
         });
+        connection.end();
     });
 }
 
