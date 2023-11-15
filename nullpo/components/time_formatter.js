@@ -1,3 +1,5 @@
+const throw_webhook = require('../../function/throw_webhook.js');
+
 /**
  * 秒数から(D:HH:)MM:SS またはD日H時間M分S秒形式の文字列を生成する
  * @param {number} seconds 秒数
@@ -11,9 +13,7 @@ function timeformatter(seconds, format){
     let second = ((seconds % 86400) % 3600) % 60;
     let formatted_time = '';
     if(seconds < 0) {
-      logger.error('timeformatter: 不正な秒数が指定されました。');
-      throw_webhook('error', 'timeformatter', '不正な秒数が指定されました。');
-      throw new Error('timeformatter: 不正な秒数が指定されました。');
+      seconds = 0;
     }
     if(format == 'digital') {
       if(day > 0) {formatted_time += day + ':' + ('00' + hour).slice(-2) + ':'}

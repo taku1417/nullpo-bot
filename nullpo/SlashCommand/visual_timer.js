@@ -69,12 +69,16 @@ module.exports = {
                 ja: 'ビジュアルタイマーを削除します。'
             })
             .addStringOption(option =>
-                option.setName('message_id')
-                .setDescription('Enter the MessageID of the visual timer.')
+                option.setName('name')
+                .setNameLocalizations({
+                    ja: '名前'
+                })
+                .setDescription('Select/Enter the name of the visual timer.')
                 .setDescriptionLocalizations({
-                    ja: '削除するビジュアルタイマーのメッセージIDを入力してください。メッセージIDは、ビジュアルタイマーに書いてある"MessageID: "の後ろの数字です。'
+                    ja: '削除するビジュアルタイマーの名前を選択・入力してください。'
                 })
                 .setRequired(true)
+                .setAutocomplete(true)
             )
         )
         .addSubcommand(subcommand =>
@@ -100,6 +104,13 @@ module.exports = {
                 break;
             case 'list':
                 visualTimer.list(interaction, client);
+                break;
+        }
+    },
+    async autocomplete(interaction, client) {
+        switch(interaction.options.getSubcommand()) {
+            case 'delete':
+                visualTimer.autoComplete.delete(interaction, client);
                 break;
         }
     }

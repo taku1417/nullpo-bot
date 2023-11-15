@@ -44,6 +44,7 @@ const nullpo_admin_log = '997341001809133588',nullpo_casino_admin_log = '1042484
 const botID = process.env.NODE_ENV === 'heroku' ? process.env.CLIENT_ID_prod : config.get('CLIENT_ID.PRODUCTION');const botID_debug = process.env.NODE_ENV === 'heroku' ? process.env.CLIENT_ID_DEBUG : config.get('CLIENT_ID.DEBUG');
 visual_timer_parent = [];
 visual_timer_current = [];
+visual_timer_executing_user = [];
 visual_timer_edit_count = 0;
 client.Commands = new Collection();
 client.slashCommands = new Collection();
@@ -408,6 +409,25 @@ client.on('interactionCreate', async (interaction) => {//コマンド・ボタ�
 			logger.error(error);
 		}
 	}
+	if(interaction.isAutocomplete()){
+		logger.trace(`[Djs ac] Checking command ${interaction.commandName}`);
+		const resistered_autocomplete = interaction.client.slashCommands.get(interaction.commandName) || interaction.client.SlashCommands_NullpoDebug.get(interaction.commandName);
+
+		if (!resistered_autocomplete) {
+			logger.error(`No command matching ${interaction.commandName} was found.`);
+			throw_webhook("error", "command search: No Command matching. →" + interaction.commandName, `${interaction.user.username}さんが実行。`, "autocomplete");
+			interaction.reply({ content: '指定したコマンドが見つかりませんでした。コマンド名を確認して下さい。\nまた、このエラーは管理者に通知されました。改善されるまでお待ちください。', ephemeral: true })
+			return;
+		}
+		try {
+			logger.trace(`[Djs ac] Execute command ${interaction.commandName}`);
+			await resistered_autocomplete.autocomplete(interaction, client);
+		} catch (error) {
+			logger.error(`${interaction.commandName}(autocomplete)を実行できませんでした。`);
+			throw_webhook("error", "command complete: Error autocomplete. → " + interaction.commandName, error, "autocomplete");
+			logger.error(error);
+		}
+	}
 	if(interaction.isButton()){
 		logger.trace(`[Djs btn] Checking button ${interaction.customId}`);
 		const resistered_button = interaction.client.buttons.get((interaction.customId).replace(/\d/g, ''));
@@ -424,9 +444,6 @@ client.on('interactionCreate', async (interaction) => {//コマンド・ボタ�
 			throw_webhook("error", "button execute: Error executing. → " + interaction.customId, error, "button");
 			logger.error(error);
 		}
-		// if (interaction.customId === 'yes') yes_button(interaction);
-		// if (interaction.customId === 'no') no_button(interaction);
-		// if (interaction.customId === 'VoiceChatCreate') VoiceChatCreate(interaction);
 	}
 	if (interaction.isContextMenuCommand()){
 		logger.trace(`[Djs mcmd] Checking command ${interaction.commandName}`);

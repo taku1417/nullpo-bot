@@ -20,6 +20,7 @@ async function refresh(client) {
       visual_timer_parent.push({
         channel_id: element.channel_id,
         message_id: element.message_id,
+        author_id: element.author_id,
         name: element.name,
         description: element.description,
         time: element.time
@@ -32,9 +33,8 @@ async function refresh(client) {
           embed.fields[1].value = '誰も開始していません！';
           await target_timer_message.edit({embeds: [embed]});
         } catch (error) {
-          logger.warn('visual_timer/refresh: タイマーメッセージのembed更新に失敗しました。作成してすぐ発生する可能性のあるエラーです。頻繁に発生する場合は要チェック！' + error);
+          logger.warn('visual_timer/refresh: タイマーメッセージのembed更新に失敗しました。作成してすぐの場合発生する可能性のあるエラーです。頻繁に発生する場合は要チェック！' + error);
         }
-        await dbclient.connection('COMMIT;');
         return;
       }
     });
@@ -75,13 +75,9 @@ async function refresh(client) {
         .setFooter({ text: "Visual Timer  Powered by ぬるぽbot"});
       client.users.fetch(element.discord_id).then(user => user.send({embeds: [embed]}));
       try {
-        await dbclient.connection('BEGIN;');
         await dbclient.connection(`DELETE FROM visual_timer_current WHERE id = ${element.id};`);
-        await dbclient.connection('COMMIT;');
         visual_timer_current = visual_timer_current.filter(object => object.id != element.id);//visual_timer_current(配列)から削除
-        logger.debug(visual_timer_current);
       } catch (error) {
-        await dbclient.connection('ROLLBACK;');
         throw_webhook('error', 'visual_timer/refresh', 'visual_timer_currentからの削除に失敗しました。target => ' + element.id + ' | ' + element.message_id + ' | ' + element.discord_id + ' | ' + element.end_date_unix);
         return;
       }

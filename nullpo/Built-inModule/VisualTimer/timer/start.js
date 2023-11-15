@@ -18,7 +18,9 @@ async function start(target_timer_message, target_timer, interaction, client){
   const target_user_timer = visual_timer_current.find(object => object.discord_id == target_user.id && object.message_id == target_timer_id);
   if(target_user_timer != undefined) {//本来はstopに分岐するはず
     interaction.followUp({content: 'タイマーの開始に失敗しました。', ephemeral: true});
+    logger.error('visual_timer/start: タイマーの開始に失敗しました。target => ' + target_timer_id + ' | ' + target_user.id + ' | ' + interaction.user + 'さんが実行');
     throw_webhook('error', 'visual_timer/start', 'タイマーの開始に失敗しました。target => ' + target_timer_id + ' | ' + target_user.id + ' | ' + interaction.user + 'さんが実行');
+    visual_timer_executing_user = visual_timer_executing_user.filter(object => object != interaction.user.id);
     return;
   }
   let enddate = Date.now() + target_timer[0].time * 1000;
@@ -38,9 +40,12 @@ async function start(target_timer_message, target_timer, interaction, client){
     await dbclient.connection('COMMIT;');
   } catch (error) {
     interaction.followUp({content: 'タイマーの開始に失敗しました。', ephemeral: true});
+    logger.error('visual_timer/start: visual_timer_currentへのpushに失敗しました。target => ' + target_timer_id + ' | ' + target_user.id + ' | ' + interaction.user + 'さんが実行');
     throw_webhook('error', 'visual_timer/start', 'visual_timer_currentへのpushに失敗しました。target => ' + target_timer_id + ' | ' + target_user.id + ' | ' + interaction.user + 'さんが実行');
     await dbclient.connection('ROLLBACK;');
     return;
+  } finally {
+    visual_timer_executing_user = visual_timer_executing_user.filter(object => object != interaction.user.id);
   }
 }
 
