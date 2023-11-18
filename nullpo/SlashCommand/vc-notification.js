@@ -1,4 +1,5 @@
 const config = require("config");
+const nplogger = require('../log/logger.js');
 const { SlashCommandBuilder } = require('discord.js');
 const VCNoticeRole = process.env.NODE_ENV === 'heroku' ? process.env.VC_NOTICE_ROLE : config.get("VC_NOTICE_ROLE");
 
@@ -16,6 +17,8 @@ module.exports = {
                 .setName('check')
                 .setDescription('現在の設定を確認します。')),
     async execute(interaction) {
+        logger.trace("[SlashCommand] vc-notification.js");
+        nplogger("command");
         const onoff = interaction.options.getBoolean('onoff');
         const check = interaction.options.getSubcommand() === 'check';
         if (check) {
@@ -36,7 +39,7 @@ module.exports = {
                 try {
                 interaction.member.roles.add(VCNoticeRole);
                 } catch (error) {
-                    console.error(error);
+                    logger.error(error);
                     if(interaction.member.roles.cache.has(VCNoticeRole)) {
                         await interaction.reply({
                             content: 'VC入退室通知の設定に失敗しました。既に有効になっている可能性があります。',
@@ -59,7 +62,7 @@ module.exports = {
                 try {
                     interaction.member.roles.remove(VCNoticeRole);
                 } catch (error) {
-                    console.error(error);
+                    logger.error(error);
                     if(!interaction.member.roles.cache.has(VCNoticeRole)) {
                         await interaction.reply({
                             content: 'VC入退室通知の設定に失敗しました。既に無効になっている可能性があります。',

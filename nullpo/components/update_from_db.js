@@ -20,7 +20,12 @@ if(process.env.NODE_ENV === "heroku"){
                 ssl: true
         });
 }
-
+/**
+ * 
+ * @param {*} mode 
+ * @param {*} type 
+ * @deprecated
+ */
 function update_from_db(mode,type){
         var query = "SELECT * FROM rental;";
         if(mode === "load"){
@@ -30,7 +35,7 @@ function update_from_db(mode,type){
                         var row = [];
                         dbclient.query(query, function(err, result) {
                                 if (err) {
-                                        console.error("[update_from_db] query error", err);
+                                        logger.error("[update_from_db] query error", err);
                                         process.exit(1);
                                 } else {
                                         for (var i = 0; i < result.rows.length; i++) {

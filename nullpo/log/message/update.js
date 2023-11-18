@@ -1,4 +1,4 @@
-const logger = require('../logger.js');
+const nplogger = require('../logger.js');
 const ServerLogChannelFinder = require('../../components/ServerLogChannelFinder.js');
 const nullpo_server_id = '966674976956645407',nullpo_casino_server_id = '1015585928779137105',nullpo_debug_server_id = '979084665958834216';
 /**
@@ -22,7 +22,7 @@ function MessageUpdateLogger(client, oldMessage, newMessage){
             author_with_nick = newMessage.member.nickname != null ? (newMessage.member.user.username + ' (' + newMessage.member.displayName + ')') : newMessage.member.user.username; 
         }//globalName = ユーザー表示名 / nickname = サーバー表示名
 	} catch (error) {
-		console.log("\n\n" + error);
+		logger.warn("\n\n" + error);
 		return;
 	}
 
@@ -49,6 +49,7 @@ function MessageUpdateLogger(client, oldMessage, newMessage){
         timestamp: new Date(),
     };
 
+    logger.trace("[Log] update.js: switch");
     switch(newMessage.guild.id) {
         case nullpo_server_id:
                 ServerLogChannelFinder(client, null, "メッセージログ", nullpo_server_id).send({embeds: [embed]});

@@ -10,6 +10,7 @@ const VCNoticeRole = process.env.NODE_ENV === 'heroku' ? process.env.VC_NOTICE_R
  * @return {undefined}
  */
 function LogDMsender(client, oldState, newState, message){
+    logger.trace("[VoiceChat] LogDMsender.js");
     if(oldState.guild.id == '979084665958834216' || newState.guild.id == '979084665958834216') return;//debug鯖を除外
     client.guilds.cache.get('1015585928779137105').roles.cache.get(VCNoticeRole).members.forEach(member => member.send(message));
 }
