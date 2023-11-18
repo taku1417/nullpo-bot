@@ -9,9 +9,9 @@ const nullpo_server_id = '966674976956645407',nullpo_casino_server_id = '1015585
  * @returns 
  */
 function MessageUpdateLogger(client, oldMessage, newMessage){
+    logger.trace("[Message] update.js");
     if(newMessage.author.bot == true || oldMessage.content == newMessage.content || newMessage.guild == null) return;
-    
-    logger("edit");
+    nplogger("edit");
 	const Month = new Date().getMonth()+1,Day = new Date().getDate(),Hour = new Date().getHours(),Min = new Date().getMinutes(),Sec = new Date().getSeconds(),Hour0 = ('0' + Hour).slice(-2),Min0 = ('0' + Min).slice(-2),Sec0 = ('0' + Sec).slice(-2),Year = new Date().getFullYear();
     
 	let author_with_nick;
