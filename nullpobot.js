@@ -1,4 +1,4 @@
-const { Client, GatewayIntentBits, Collection, REST, Routes, ButtonBuilder, ActionRowBuilder, ButtonStyle, ChannelType } = require('discord.js');
+const { Client, GatewayIntentBits, Collection, REST, Routes, ButtonBuilder, ActionRowBuilder, ButtonStyle, ChannelType, EmbedBuilder } = require('discord.js');
 const config = require('config');
 const fs = require('node:fs');
 const path = require('node:path');
@@ -471,6 +471,7 @@ client.on('messageUpdate', async (oldMessage, newMessage) => {
 });
 client.on('messageDelete', message => {
 	logger.trace(`[Djs c:on] messageDelete`);
+	if(message.author.bot == true) return;
 	nplogger("delete");
 	const Month = new Date().getMonth()+1,Day = new Date().getDate(),Hour = new Date().getHours(),Min = new Date().getMinutes(),Sec = new Date().getSeconds(),Hour0 = ('0' + Hour).slice(-2),Min0 = ('0' + Min).slice(-2),Sec0 = ('0' + Sec).slice(-2),Year = new Date().getFullYear();
 	let author_with_nick;
@@ -484,44 +485,48 @@ client.on('messageDelete', message => {
 		logger.error("\n\n" + error);
 		return;
 	}
-        const embed = {
-                color: 0xCC0000,
-                description: String(message.channel) + 'にてメッセージが削除されました。',
-                author: {
-                        name: author_with_nick,
-                        icon_url: message.author.displayAvatarURL(),
-                },
-                fields: [{
-                        name: 'メッセージ内容',
-                        value: message.content,
-                },{
-			name: '日付',
-			value: Year + '/' + Month + '/' + Day + ' ' + Hour0 + ':' + Min0 + ':' + Sec0 + '(JST)',
-		},{
-			name: 'メッセージID',
-			value: message.id,
-		}],
-                timestamp: new Date(),
-        };
-        switch(message.guild.id) {
-			case nullpo_server_id:
-				if(message.author.bot == true) return;
-				logger.trace("[Djs mdel] send message delete log");
-				ServerLogChannelFinder(client, null, "メッセージログ", nullpo_server_id).send({embeds: [embed]});
+
+	let MsgContent = message.content;
+	let embed = new EmbedBuilder()
+		.setColor(0xCC0000)
+		.setAuthor({name: author_with_nick, iconURL: message.author.displayAvatarURL()})
+		.setDescription(String(message.channel) + 'にてメッセージが削除されました。')
+		.setTimestamp(new Date())
+	if(MsgContent.length > 1000) {//1Fieldの文字数制限回避
+			embed.addFields({name: `メッセージ内容(1/${Math.ceil(MsgContent.length / 1000)})`, value: MsgContent.slice(0, 1000)});
+			for(let i = 1000; i < MsgContent.length; i += 1000) {
+					embed.addFields({name: `(${(i/1000) + 1}/${Math.ceil(MsgContent.length / 1000)})`, value: MsgContent.slice(i, i + 1000)});
+			}
+	} else {
+		embed.addFields({name: 'メッセージ内容', value: MsgContent});
+	}
+	embed.addFields(
+		{name: '日付', value: Year + '/' + Month + '/' + Day + ' ' + Hour0 + ':' + Min0 + ':' + Sec0 + '(JST)'},
+		{name: 'メッセージID', value: message.id}
+	);
+        
+	let channel = null;
+	switch(message.guild.id) {
+		case nullpo_server_id:
+			logger.trace("[Djs mdel] send message delete log");
+			channel = ServerLogChannelFinder(client, null, "メッセージログ", nullpo_server_id);
+			break;
+		case nullpo_casino_server_id:
+			logger.trace("[Djs mdel] send message delete log");
+			channel = ServerLogChannelFinder(client, null, "メッセージログ", nullpo_casino_server_id);
+			break;
+		case nullpo_debug_server_id:
+			logger.trace("[Djs mdel] send message delete log");
+			channel = ServerLogChannelFinder(client, null, "メッセージログ", nullpo_debug_server_id);
+			break;
+		default:
 				break;
-			case nullpo_casino_server_id:
-				if(message.author.bot == true) return;
-				logger.trace("[Djs mdel] send message delete log");
-				ServerLogChannelFinder(client, null, "メッセージログ", nullpo_casino_server_id).send({embeds: [embed]});
-				break;
-			case nullpo_debug_server_id:
-				if(message.author.bot == true) return;
-				logger.trace("[Djs mdel] send message delete log");
-				ServerLogChannelFinder(client, null, "メッセージログ", nullpo_debug_server_id).send({embeds: [embed]});
-				break;
-			default:
-					break;
-        }
+	}
+	if(channel != null) {channel.send({embeds: [embed]})}
+	else {
+		logger.warn("[Djs mdel] ログチャンネルが見つかりませんでした。");
+		throw_webhook("error", "message delete: ログチャンネルが見つかりませんでした。", "メッセージログスレッドがクローズしていないか確認してください。" + message.guild.name, "message delete");
+	};
 	//delete_logger(message);
 });
 

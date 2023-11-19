@@ -1,5 +1,7 @@
 const nplogger = require('../logger.js');
 const ServerLogChannelFinder = require('../../components/ServerLogChannelFinder.js');
+const { EmbedBuilder } = require('discord.js');
+const throw_webhook = require('../../../function/throw_webhook.js');
 const nullpo_server_id = '966674976956645407',nullpo_casino_server_id = '1015585928779137105',nullpo_debug_server_id = '979084665958834216';
 /**
  * メッセージの編集をログに記録する
@@ -26,42 +28,80 @@ function MessageUpdateLogger(client, oldMessage, newMessage){
 		return;
 	}
 
-    const embed = {
-        color: 0xe62aed,
-        description: String(newMessage.channel) + 'にてメッセージが編集されました。',
-        author: {
-            name: author_with_nick,
-            icon_url: newMessage.author.displayAvatarURL(),
-        },
-        fields: [{
-            name: '変更前のメッセージ',
-            value: oldMessage.content,
-        },{
-            name: '変更後のメッセージ',
-            value: newMessage.content,
-        },{
-            name: '日付',
-            value: Year + '/' + Month + '/' + Day + ' ' + Hour0 + ':' + Min0 + ':' + Sec0 + '(JST)',
-        },{
-            name: 'メッセージID',
-            value: `${newMessage.id}\n[対象のメッセージに飛ぶ](${newMessage.url})`,
-        }],
-        timestamp: new Date(),
-    };
+    let embed = new EmbedBuilder()
+        .setColor(0xe62aed)
+        .setAuthor({name: author_with_nick, iconURL: newMessage.author.displayAvatarURL()})
+        .setTimestamp(new Date());
+    let embed2 = null;
+    let oldMsgContent = oldMessage.content, newMsgContent = newMessage.content;
+    if(oldMsgContent.length + newMsgContent.length > 5500) {//全体文字数制限回避
+        embed2 = new EmbedBuilder()
+            .setColor(0xe62aed)
+            .setDescription('(2/2)')
+            .setTimestamp(new Date())
+        embed.setDescription(String(newMessage.channel) + 'にてメッセージが編集されました。\n(1/2)');
+        embed.addFields({name: `変更前のメッセージ(1/${Math.ceil(oldMsgContent.length / 1000)})`, value: oldMsgContent.slice(0, 1000)});
+        for(let i = 1000; i < oldMsgContent.length; i += 1000) {
+            embed.addFields({name: `(${(i/1000) + 1}/${Math.ceil(oldMsgContent.length / 1000)})`, value: oldMsgContent.slice(i, i + 1000)});
+        }
+        embed2.addFields({name: `変更後のメッセージ(1/${Math.ceil(newMsgContent.length / 1000)})`, value: newMsgContent.slice(0, 1000)});
+        for(let i = 1000; i < newMsgContent.length; i += 1000) {
+            embed2.addFields({name: `(${(i/1000) + 1}/${Math.ceil(newMsgContent.length / 1000)})`, value: newMsgContent.slice(i, i + 1000)});
+        }
+        embed2.addFields(
+            {name: '日付', value: Year + '/' + Month + '/' + Day + ' ' + Hour0 + ':' + Min0 + ':' + Sec0 + '(JST)'},
+            {name: 'メッセージID', value:`${newMessage.id}\n[対象のメッセージに飛ぶ](${newMessage.url})`}
+        );
+    } else if(oldMsgContent.length > 1000 || newMsgContent.length > 1000) {//1Fieldの文字数制限回避
+        embed.setDescription(String(newMessage.channel) + 'にてメッセージが編集されました。');
+        embed.addFields(
+            {name: '日付', value: Year + '/' + Month + '/' + Day + ' ' + Hour0 + ':' + Min0 + ':' + Sec0 + '(JST)'},
+            {name: 'メッセージID', value:`${newMessage.id}\n[対象のメッセージに飛ぶ](${newMessage.url})`}
+        );
+        if(oldMsgContent.length > 1000) {
+            embed.addFields({name: `変更前のメッセージ(1/${Math.ceil(oldMsgContent.length / 1000)})`, value: oldMsgContent.slice(0, 1000)});
+            for(let i = 1000; i < oldMsgContent.length; i += 1000) {
+                embed.addFields({name: `(${(i/1000) + 1}/${Math.ceil(oldMsgContent.length / 1000)})`, value: oldMsgContent.slice(i, i + 1000)});
+            }
+        }
+        embed.addFields({name: `変更後のメッセージ(1/${Math.ceil(newMsgContent.length / 1000)})`, value: newMsgContent.slice(0, 1000)});
+        for(let i = 1000; i < newMsgContent.length; i += 1000) {
+            embed.addFields({name: `(${(i/1000) + 1}/${Math.ceil(newMsgContent.length / 1000)})`, value: newMsgContent.slice(i, i + 1000)});
+        }
+    } else {//通常
+        embed.setDescription(String(newMessage.channel) + 'にてメッセージが編集されました。');
+        embed.addFields(
+            {name: '変更前のメッセージ', value: oldMsgContent},
+            {name: '変更後のメッセージ', value: newMsgContent},
+            {name: '日付', value: Year + '/' + Month + '/' + Day + ' ' + Hour0 + ':' + Min0 + ':' + Sec0 + '(JST)'},
+            {name: 'メッセージID', value:`${newMessage.id}\n[対象のメッセージに飛ぶ](${newMessage.url})`}
+        );
+    }
+    
 
     logger.trace("[Log] update.js: switch");
+    let channel;
     switch(newMessage.guild.id) {
         case nullpo_server_id:
-                ServerLogChannelFinder(client, null, "メッセージログ", nullpo_server_id).send({embeds: [embed]});
+                channel = ServerLogChannelFinder(client, null, "メッセージログ", nullpo_server_id);
             break;
         case nullpo_casino_server_id:
-                ServerLogChannelFinder(client, null, "メッセージログ", nullpo_casino_server_id).send({embeds: [embed]});
+                channel = ServerLogChannelFinder(client, null, "メッセージログ", nullpo_casino_server_id);
             break;
         case nullpo_debug_server_id:
-                ServerLogChannelFinder(client, null, "メッセージログ", nullpo_debug_server_id).send({embeds: [embed]});
+                channel = ServerLogChannelFinder(client, null, "メッセージログ", nullpo_debug_server_id);
             break;
         default:
             break;
+    }
+    if(channel != null) {
+        channel.send({embeds: [embed]});
+        if(embed2 != null) {
+            channel.send({embeds: [embed2]});
+        }
+    } else {
+        logger.error("メッセージログチャンネルが見つかりませんでした。");
+        throw_webhook("error", 'MessageUpdateLogger', "メッセージログチャンネルが見つかりませんでした。メッセージログスレッドがクローズされていないか確認してください。" + newMessage.guild.name);
     }
 }
 
