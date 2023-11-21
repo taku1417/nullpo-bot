@@ -69,6 +69,8 @@ function MessageUpdateLogger(client, oldMessage, newMessage){
             embed.addFields({name: `(${(i/1000) + 1}/${Math.ceil(newMsgContent.length / 1000)})`, value: newMsgContent.slice(i, i + 1000)});
         }
     } else {//通常
+        oldMsgContent = oldMsgContent ?? ' ';
+        newMsgContent = newMsgContent ?? ' ';
         embed.setDescription(String(newMessage.channel) + 'にてメッセージが編集されました。');
         embed.addFields(
             {name: '変更前のメッセージ', value: oldMsgContent},

@@ -1,10 +1,12 @@
+const { Client, VoiceState, Channel } = require('discord.js');
+
 /**
  * stateのサーバー内から特定の名前のチャンネルを探す stateを使わずに直接サーバーIDを指定する場合はstateにnullを渡す必要がある 複数見つかった場合、最初のチャンネルを返す
- * @param {Discord.Client} client
- * @param {Discord.VoiceState} state
+ * @param {Client} client
+ * @param {VoiceState} state
  * @param {string} channelName
  * @param {string} ServerID
- * @return {Discord.Channel}
+ * @return {Channel}
  */
 function ServerLogChannelFinder(client, state, channelName, ServerID){
     logger.trace("[Components] ServerLogChannelFinder.js");
