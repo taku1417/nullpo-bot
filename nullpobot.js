@@ -498,14 +498,14 @@ client.on('messageDelete', message => {
 					embed.addFields({name: `(${(i/1000) + 1}/${Math.ceil(MsgContent.length / 1000)})`, value: MsgContent.slice(i, i + 1000)});
 			}
 	} else {
-		if(MsgContent == null) MsgContent = ' ';
+		if(MsgContent == null) MsgContent = '(none)';
 		embed.addFields({name: 'メッセージ内容', value: MsgContent});
 	}
 	embed.addFields(
 		{name: '日付', value: Year + '/' + Month + '/' + Day + ' ' + Hour0 + ':' + Min0 + ':' + Sec0 + '(JST)'},
 		{name: 'メッセージID', value: message.id}
 	);
-        
+
 	let channel = null;
 	switch(message.guild.id) {
 		case nullpo_server_id:
