@@ -8,7 +8,7 @@
     "log4js": "^6.9.1",
     "mysql2": "^3.6.2",
     "newrelic": "^10.6.2",
-    "node-cron": "^3.0.2",
+    "node-cron": "^3.0.3",
     "node-schedule": "^2.1.1",
     "pg": "^8.9.0",
     "pify": "^6.1.0",
