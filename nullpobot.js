@@ -588,7 +588,7 @@ client.on('ready', async () => {
 			logger.trace('[VCC] Checking ' + VCC_list[i] + '...');
 			try {
 				for(let channel of client.channels.cache) {
-					if ( String(channel[1].name).match(RegExp("\d+-" + VCC_list[i])) && channel[1].type === ChannelType.GuildVoice) {
+					if ( String(channel[1].name).match(RegExp("[0-9]+-" + VCC_list[i])) && channel[1].type === ChannelType.GuildVoice) {
 						if(channel[1].members.size === 0) {
 							channel[1].delete().catch(error => logger.error(error));
 							logger.debug('[VCC] VC removed: ' + channel[1].name);
