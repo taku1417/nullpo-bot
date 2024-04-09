@@ -15,6 +15,6 @@
     "uuid": "^9.0.0"
   },
   "devDependencies": {
-    "config": "^3.3.9"
+    "config": "^3.3.11"
   }
 }
