@@ -97,16 +97,25 @@ module.exports = {
     async execute(interaction, client) {
         switch(interaction.options.getSubcommand()) {
             case 'create':
+                logger.trace("[SlashCommand] visual_timer.js: create");
                 visualTimer.create(interaction, client);
                 break;
             case 'delete':
+                logger.trace("[SlashCommand] visual_timer.js: delete");
                 visualTimer.delete(interaction, client);
                 break;
             case 'list':
+                logger.trace("[SlashCommand] visual_timer.js: list");
                 visualTimer.list(interaction, client);
                 break;
         }
     },
+    /**
+     * autocomplete
+     * @param {ChatInputCommandInteraction} interaction
+     * @param {Client} client
+     * @returns {void}
+     */
     async autocomplete(interaction, client) {
         switch(interaction.options.getSubcommand()) {
             case 'delete':

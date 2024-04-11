@@ -15,6 +15,7 @@ module.exports = {
      * @returns 
      */
     async execute(interaction, client) {
+        logger.trace("[button] visual_timer/start_stop.js");
         await interaction.deferReply({ephemeral: true});
         if(visual_timer_executing_user.find(object => object == interaction.user.id) != undefined) {
             interaction.followUp({content: '連打しないでください...。', ephemeral: true});

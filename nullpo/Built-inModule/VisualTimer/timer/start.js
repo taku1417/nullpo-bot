@@ -13,6 +13,7 @@ const start_stop = require("../../../components/button/visual_timer/start_stop.j
  * @param {Client} client 
  */
 async function start(target_timer_message, target_timer, interaction, client){
+  logger.trace("[VisualTimer] start.js");
   const target_user = interaction.user;
   const target_timer_id = target_timer_message.id;
   const target_user_timer = visual_timer_current.find(object => object.discord_id == target_user.id && object.message_id == target_timer_id);

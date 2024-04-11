@@ -32,6 +32,7 @@ async function delete_(interaction, client){
       case 'ja':
         interaction.respond([{name: '有効なタイマーが見つかりませんでした。後でもう一度お試しください。', value: 'none'}].map(choice => choice));
         break;
+      case 'en-US':
       default:
         interaction.respond([{name: 'No results found. Try again later.', value: 'none'}].map(choice => choice));
         break;

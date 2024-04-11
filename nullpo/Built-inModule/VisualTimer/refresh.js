@@ -8,8 +8,10 @@ const timeformatter = require('../../components/time_formatter.js');
  * @param {Client} client 
  */
 async function refresh(client) {
+  logger.trace("[VisualTimer] refresh.js");
   visual_timer_edit_count++;
   if(visual_timer_edit_count == global_settings[0].VTimer_refresh_access_db_count) {//10回に1回、embedを更新する
+    logger.trace("[VisualTimer] refresh.js: refresh embeds.");
     old_visual_timer_current = visual_timer_current;
     const dbres = await dbclient.connection(`SELECT * FROM visual_timer_current;`);
     const timer_parent_res = await dbclient.connection(`SELECT * FROM visual_timer;`);

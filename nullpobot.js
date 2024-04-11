@@ -627,7 +627,9 @@ client.on('ready', async () => {
 	logger.debug(global_settings);
 	//guild関係ない設定を取得
 	setInterval(async () => {
+		logger.trace('[Djs] Start reloading global settings');
 		global_settings = await dbclient.connection("SELECT * FROM global_settings;");
+		logger.trace('[Djs] Global settings reloaded');
 	}, global_settings[0].settings_reload_interval);//設定のリロード
 	
 	setInterval(() => {
