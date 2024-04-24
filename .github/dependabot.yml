@@ -8,7 +8,10 @@ updates:
   - package-ecosystem: "npm" # See documentation for possible values
     directory: "/" # Location of package manifests
     schedule:
-      interval: "daily"
+      interval: "weekly"
+      day: "wednesday"
+      time: "01:00"
+      timezone: "Asia/Tokyo"
     target-branch: "update-package"
     commit-message:
       prefix: "[npm] "
