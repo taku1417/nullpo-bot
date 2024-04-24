@@ -12,8 +12,7 @@ async function list(interaction, client) {
   await interaction.deferReply({ephemeral: true});
   if(visual_timer_parent.length == 0) {
     await interaction.followUp({
-      content: '現在、作成されているタイマーはありません。',
-      ephemeral: true
+      content: '現在、作成されているタイマーはありません。'
     });
     return;
   }

@@ -6,4 +6,5 @@ exports.edit = require('./edit');
 exports.list = require('./list');
 exports.preview = require('./preview');
 exports.autoComplete = require('./autoComplete');
-exports.settings = require('./settings');
+exports.channel = require('./channel');
+exports.group = require('./group');

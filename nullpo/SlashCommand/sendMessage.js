@@ -1,7 +1,5 @@
 const nplogger = require('../log/logger.js');
 const { SlashCommandBuilder, PermissionsBitField, ChatInputCommandInteraction, Client } = require('discord.js');
-const dbclient = require('../Built-inModule/database/index.js');
-const throw_webhook = require('../../function/throw_webhook.js');
 
 module.exports = {
     data: new SlashCommandBuilder()

@@ -2,7 +2,8 @@ const throw_webhook = require('../../function/throw_webhook.js');
 
 /**
  * 秒数から(D:HH:)MM:SS またはD日H時間M分S秒形式の文字列を生成する
- * @param {number} seconds 秒数
+ * @param {Number} seconds 秒数
+ * @param {String} format フォーマット(digital | japanese)
  * @returns {string} (DD:HH:)MM:SSまたはD日H時間M分S秒形式の文字列
  * @usage timeformatter(123456, digital) => '1:10:17:36' | timeformatter(1234, japanese) => '20分34秒'
  */
