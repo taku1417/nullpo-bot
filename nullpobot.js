@@ -46,6 +46,9 @@ visual_timer_parent = [];
 visual_timer_current = [];
 visual_timer_executing_user = [];
 visual_timer_edit_count = 0;
+tips_group = [];
+tips_channel = [];
+tips_content = [];
 client.Commands = new Collection();
 client.slashCommands = new Collection();
 commands_rest = [];
@@ -625,6 +628,7 @@ client.on('ready', async () => {
 
 	global_settings = await dbclient.connection("SELECT * FROM global_settings;");
 	logger.debug(global_settings);
+	tips_group = await dbclient.connection("SELECT * FROM tips_group;");
 	//guild関係ない設定を取得
 	setInterval(async () => {
 		logger.trace('[Djs] Start reloading global settings');

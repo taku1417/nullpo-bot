@@ -16,7 +16,6 @@ async function create(interaction, client){
   const interval = interaction.options.getInteger('interval') ?? 10;
   const format = interaction.options.getString('format') ?? "&b&l[tips]";
   const channel = interaction.options.getChannel('channel') ?? interaction.channel;
-  const tips_group = [];
 
   try {
     let groupID;

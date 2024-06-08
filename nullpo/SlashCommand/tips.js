@@ -33,6 +33,8 @@ module.exports = {
                                     ja: 'Tipsグループの名前を入力してください。'
                                 })
                                 .setRequired(true)
+                                .setMinLength(2)
+                                .setMaxLength(32)
                         )
                         .addNumberOption(option =>
                             option
@@ -116,7 +118,17 @@ module.exports = {
                         .setDescriptionLocalizations({
                             ja: 'Tipsグループを一覧表示します。'
                         })
+                        .addBooleanOption(option =>
+                            option
+                                .setName('check_db')
+                                .setDescription('Display groups from database if true; from internal data if false. Default is false.')
+                                .setDescriptionLocalizations({
+                                    ja: 'trueの場合はデータベースから、falseの場合は内部に保持しているデータから取得してグループを表示します。デフォルトはfalseです。'
+                                })
+                                .setRequired(false)
+                            )
                 )
+                
         )
         .addSubcommandGroup(subcommandGroup => // channel
             subcommandGroup
