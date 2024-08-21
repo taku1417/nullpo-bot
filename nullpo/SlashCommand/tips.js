@@ -285,6 +285,26 @@ module.exports = {
                         })
                         .setRequired(true)
                 )
+                .addStringOption(option =>
+                    option
+                        .setName('expiration_date')
+                        .setDescription('Please specify the expiration date of the tip in YYYY/MM/DD h:mm:ss or timestamp format (optional).')
+                        .setDescriptionLocalizations({
+                            ja: 'Tipsの有効期限をYYYY/MM/DD h:mm:ssまたはタイムスタンプ形式で指定してください。(任意)'
+                        })
+                        .setRequired(false)
+                        .setAutocomplete(true)
+                    )
+                .addStringOption(option =>
+                    option
+                        .setName('timezone')
+                        .setDescription('Please specify the timezone for the expiration date (optional).Default is UTC.')
+                        .setDescriptionLocalizations({
+                            ja: '有効期限のタイムゾーンを指定してください。(任意)デフォルトは日本標準時です。'
+                        })
+                        .setRequired(false)
+                        .setAutocomplete(true)
+                )
         )
         .addSubcommand(subcommand => // remove
             subcommand
