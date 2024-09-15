@@ -27,7 +27,7 @@ const client = new Client({
 		GatewayIntentBits.GuildVoiceStates,
 		GatewayIntentBits.MessageContent,
 		GatewayIntentBits.GuildMessages,
-		GatewayIntentBits.GuildPresences
+		GatewayIntentBits.GuildPresences,
 	]
 });
 const VisualTimer = require('./nullpo/Built-inModule/VisualTimer/index.js');
@@ -58,6 +58,11 @@ const schedule = require('node-schedule');
 const VCJoinLeaveCheck = require('./nullpo/components/VCJoinLeaveCheck.js');
 const ServerLogChannelFinder = require('./nullpo/components/ServerLogChannelFinder.js');
 const MessageUpdateLogger = require('./nullpo/log/message/update.js');
+const RoleRestrictions = require('./nullpo/Built-inModule/RoleRestrictions/index.js');
+Restriction_Role = {
+  "979084665958834216": '1284416400055603273',
+  '1015585928779137105': '1281279644477296712'
+};//今後db化する roleid,serverid
 db_regist = [];
 global_settings = {};
 client.once('ready', () => {	
@@ -529,6 +534,15 @@ client.on('messageDelete', message => {
 		throw_webhook("error", "message delete: ログチャンネルが見つかりませんでした。", "メッセージログスレッドがクローズしていないか確認してください。" + message.guild.name, "message delete");
 	};
 	//delete_logger(message);
+});
+
+client.on('guildMemberUpdate', (oldMember, newMember) => {
+	logger.trace('[Djs c:on] guildMemberUpdate');
+	try {
+		if(oldMember.roles.cache.size !== newMember.roles.cache.size) RoleRestrictions.execute(oldMember, newMember);//ロールの数が変わったら実行
+	} catch (err) {
+		logger.warn("[Djs GmemUpd] エラーが発生しました。" + err);
+	}
 });
 
 client.once('ready', () => {
