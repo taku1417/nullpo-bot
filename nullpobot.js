@@ -1,4 +1,4 @@
-const { Client, GatewayIntentBits, Collection, REST, Routes, ButtonBuilder, ActionRowBuilder, ButtonStyle, ChannelType, EmbedBuilder } = require('discord.js');
+const { Client, GatewayIntentBits, Collection, REST, Routes, ButtonBuilder, ActionRowBuilder, ButtonStyle, ChannelType, EmbedBuilder, MessageFlags } = require('discord.js');
 const config = require('config');
 const fs = require('node:fs');
 const path = require('node:path');
@@ -41,7 +41,8 @@ const VoiceChatCreate = require('./nullpo/components/button/VC/VoiceChatCreate.j
 const cronjob = require('./nullpo/events/cron.js');
 const nullpo_server_id = '966674976956645407',nullpo_casino_server_id = '1015585928779137105',nullpo_debug_server_id = '979084665958834216';
 const nullpo_admin_log = '997341001809133588',nullpo_casino_admin_log = '1042484015720042546',nullpo_debug_test = '986475538770194432';
-const botID = process.env.NODE_ENV === 'heroku' ? process.env.CLIENT_ID_prod : config.get('CLIENT_ID.PRODUCTION');const botID_debug = process.env.NODE_ENV === 'heroku' ? process.env.CLIENT_ID_DEBUG : config.get('CLIENT_ID.DEBUG');
+const botID = process.env.NODE_ENV === 'heroku' ? process.env.CLIENT_ID_prod : config.get('CLIENT_ID.PRODUCTION');
+const botID_debug = process.env.NODE_ENV === 'heroku' ? process.env.CLIENT_ID_DEBUG : config.get('CLIENT_ID.DEBUG');
 visual_timer_parent = [];
 visual_timer_current = [];
 visual_timer_executing_user = [];
@@ -247,12 +248,18 @@ client.on('ready', () => {
 	logger.info(tips.length + "件のtipsを読み込みました。");
 
 	cron.schedule('0 1-23 * * *', () => {
-		channeljihou.send(`${new Date().getHours()}時になりました。` + "[Tips:" + tips[Math.floor(Math.random() * tips.length)] + "]");
+		channeljihou.send({
+			content: `${new Date().getHours()}時になりました。` + "[Tips:" + tips[Math.floor(Math.random() * tips.length)] + "]",
+			flags: MessageFlags.SuppressNotifications
+		});
 		logger.trace('[cron] tips');
 		nplogger("clock");
 	})//tips(大体毎時)
 	cron.schedule('0 0 * * *', () => {
-		channeljihou.send(`${new Date().getMonth()+1}月${new Date().getDate()}日、${new Date().getHours()}時になりました。` + "[Tips:" + tips[Math.floor(Math.random() * tips.length)] + 	"]");
+		channeljihou.send({
+			content: `${new Date().getMonth()+1}月${new Date().getDate()}日、${new Date().getHours()}時になりました。` + "[Tips:" + tips[Math.floor(Math.random() * tips.length)] + 	"]",
+			flags: MessageFlags.SuppressNotifications
+		});
 		logger.trace('[cron] tips,date change');
 		nplogger("clock");
 	})//tips(0時)
